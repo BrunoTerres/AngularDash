@@ -1,0 +1,237 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="estoqueController">
+
+    <div role="main">
+              
+        <div class="row">
+                <div class="col-md-12 col-sm-20 col-xs-12">                   
+                    <div class="dashboard_graph">
+                        <div class="row x_title">
+                                <div class="col-md-6">
+                                    <h3>Analise de Estoque</h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">                                    
+                                       
+                                        <label style="margin-right: 5px"><h4> <input type="checkbox" ng-model="filtroPesquisa.checkBox"> Não Relacionar Produtos  Drop Shipping?</h4>
+                                        </label> 
+                                        <button style="margin-top: 5px" class="btn btn-round btn-default pull-right" type="button" ng-click="estoque()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>      
+                                    </div>
+                                </div>       
+                        </div><p/> 
+                        
+                        
+                        
+                        
+                        <div class="row">  
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">                                
+                                
+                                <div class="table-responsive" ng-show="divFornecedor">
+                                    <center><h3>Estoque por Fornecedor</h3></center><br>                                    
+                                    <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                         <select
+                                            style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                            class="form-control pull-left"
+                                            name="mySelect"
+                                            id="mySelect1"
+                                            ng-options="option.name for option in selecaoFornecedor.availableOptions track by option.id"
+                                            ng-change="filterFornecedor(selecaoFornecedor.selectedOption)"
+                                            ng-model="selecaoFornecedor.selectedOption">
+                                        </select>                                        
+                                        <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaFornecedor" class="form-control fonte-size-input">   
+                                    </div>  
+                                    <table class="table table-hover table-responsive">
+                                        <thead>
+                                            <tr>
+                                                
+                                                <th>Fornecedor</th>
+                                                <th>C. Atacado 005</th>
+                                                <th>E. Atacado 005</th>
+                                                <th>T. Atacado 005</th>
+                                                <th>C. Atacado 009</th>
+                                                <th>E. Atacado 009</th>
+                                                <th>T. Atacado 009</th>
+                                                <th>C. Ecommerce 005</th>
+                                                <th>E. Ecommerce 005</th>
+                                                <th>T. Ecommerce 005</th>
+                                                <th>C. Ecommerce 008</th>
+                                                <th>E. Ecommerce 008</th>
+                                                <th>T. Ecommerce 008</th>
+                                            
+                                            </tr>
+                                        </thead>
+                                        <tbody dir-paginate="i in estoqueDados.estoqueGeral| filter: pesquisaFornecedor  |itemsPerPage:contagemFornecedor" pagination-id="pesquisaFornecedor">
+                                            <tr data-toggle="collapse" data-target="#{{ i.codigoFornecedor }}" class="clickable" style="font-weight: bolder;color: #777575;">                                               
+                                                <td>{{ i.fornecedor }}</td>                                                
+                                                <td>{{ i.custoAtacado005 | currency: 'R$ ' }}</td>
+                                                <td>{{ i.estoqueAtacado005 }}</td>
+                                                <td>{{ i.ticketMedioAtacado005 | currency: 'R$ ' }}</td>                                                
+                                                <td>{{ i.custoAtacado009 | currency: 'R$ '}}</td>
+                                                <td>{{ i.estoqueAtacado009 }}</td>
+                                                <td>{{ i.ticketMedioAtacado009 | currency: 'R$ ' }}</td>                                                
+                                                <td>{{ i.custoEcommerce005 | currency: 'R$ '}}</td>
+                                                <td>{{ i.estoqueEcommerce005 }}</td>
+                                                <td>{{ i.ticketMedioEcommerce005 | currency: 'R$ ' }}</td>                                                
+                                                <td>{{ i.custoEcommerce008 | currency: 'R$ '}}</td>
+                                                <td>{{ i.estoqueEcommerce008 }}</td>
+                                                <td>{{ i.ticketMedioEcommerce008 | currency: 'R$ ' }}</td>
+                                            </tr>   
+                                           <tr>
+                                                <td colspan="100%">
+                                                    <div id="{{ i.codigoFornecedor }}" class="collapse in">
+                                                        <table>
+                                                             <table class="table table-hover" style="background-color: #e9eef3">
+                                                                <thead>
+                                                                    <tr>
+                                                                       <th></th>
+                                                                        <th>Código</th>
+                                                                        <th>Grupo</th>
+                                                                        <th>C. Atacado 005</th>
+                                                                        <th>E. Atacado 005</th>
+                                                                        <th>T. Atacado 005</th>
+                                                                        <th>C. Atacado 009</th>
+                                                                        <th>E. Atacado 009</th>
+                                                                        <th>T. Atacado 009</th>
+                                                                        <th>C. Ecommerce 005</th>
+                                                                        <th>E. Ecommerce 005</th>
+                                                                        <th>T. Ecommerce 005</th>
+                                                                        <th>C. Ecommerce 008</th>
+                                                                        <th>E. Ecommerce 008</th>
+                                                                        <th>T. Ecommerce 008</th>
+                                                                     
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr dir-paginate="x in i.grupos | filter: pesquisaGrupo  |itemsPerPage:contagemGrupo" pagination-id="pesquisaGrupo">
+                                                                        <td><a href="" ng-click="produtoEstoque(x.codigo, x.nome)"> <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                                        <td>{{ x.codigo }}</td>
+                                                                        <td>{{ x.nome}}</td>
+                                                                        <td>{{ x.custoAtacado005 | currency: 'R$ ' }}</td>
+                                                                        <td>{{ x.estoqueAtacado005 }}</td>
+                                                                        <td>{{ x.ticketMedioAtacado005 | currency: 'R$ '}}</td>
+                                                                        <td>{{ x.custoAtacado009 | currency: 'R$ ' }}</td>
+                                                                        <td>{{ x.estoqueAtacado009 }}</td>
+                                                                        <td>{{ x.ticketMedioAtacado009 | currency: 'R$ ' }}</td>
+                                                                        <td>{{ x.custoEcommerce005 | currency: 'R$ ' }}</td>
+                                                                        <td>{{ x.estoqueEcommerce005 }}</td>
+                                                                        <td>{{ x.ticketMedioEcommerce005 | currency: 'R$ '}}</td>
+                                                                        <td>{{ x.custoEcommerce008 | currency: 'R$ ' }}</td>
+                                                                        <td>{{ x.estoqueEcommerce008 }}</td>
+                                                                        <td>{{ x.ticketMedioEcommerce008 | currency: 'R$ '}}</td>
+                                                                    </tr>                                                                   
+                                                                </tbody>
+                                                            </table>  
+                                                            <dir-pagination-controls max-size="5"  pagination-id="pesquisaGrupo" boundary-links="true"></dir-pagination-controls>
+                                                        </table>                                                        
+                                                    </div>                                                        
+                                                </td>
+                                            </tr>
+                                        </tbody>                                    
+                                    </table>
+                                    <dir-pagination-controls max-size="5"  pagination-id="pesquisaFornecedor" boundary-links="true"></dir-pagination-controls>                                
+                                
+                                </div> 
+                              
+                                
+                            </div>
+                        </div>
+                        
+                        <!-- ========================= MODAL ESTOQUE GRUPOS- > PRODUTOS  =========================  -->                 
+                        <a id="modalGrupoProd" data-toggle="modal" data-target="#myModalGrupoProd"></a>                     
+                        <div class="modal fade" id="myModalGrupoProd" role="dialog">
+                            <div class="modal-dialog" style="width: 90%;  margin-top: 20px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                   <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                        <div align="center">                                         
+                                            <h4 class="modal-title">Estoque por Produto</h4>   
+                                        </div>                                     
+                                        <br>                                    
+                                        <p><b>Grupo: </b> {{ infoProduto.grupo }}</p>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="table-responsive">
+                                              <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                                    <select
+                                                        style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                                        class="form-control pull-left"
+                                                        name="mySelect"
+                                                        id="mySelect1"
+                                                        ng-options="option.name for option in selecaoProduto.availableOptions track by option.id"
+                                                        ng-change="filterProduto(selecaoProduto.selectedOption)"
+                                                        ng-model="selecaoProduto.selectedOption">
+                                                    </select>                                        
+                                                    <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaGrupo" class="form-control fonte-size-input">   
+                                                </div> 
+                                            <table class="table">
+                                                <thead>                                                    
+                                                    <tr>
+                                                        <th>Código</th>
+                                                        <th>Produto</th>
+                                                        <th>C. Atacado 005</th>
+                                                        <th>E. Atacado 005</th>
+                                                        <th>T. Atacado 005</th>
+                                                        <th>C. Atacado 009</th>
+                                                        <th>E. Atacado 009</th>
+                                                        <th>T. Atacado 009</th>
+                                                        <th>C. Ecommerce 005</th>
+                                                        <th>E. Ecommerce 005</th>
+                                                        <th>T. Ecommerce 005</th>
+                                                        <th>C. Ecommerce 008</th>
+                                                        <th>E. Ecommerce 008</th>
+                                                        <th>T. Ecommerce 008 </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr dir-paginate="i in produtoInfo.infoEstoqueProduto.data | filter: pesquisaProduto  |itemsPerPage:contagemProduto" pagination-id="pesquisaProduto">
+                                                        <td>{{i.codigo }}</td>
+                                                        <td>{{ i.produto}}</td>
+                                                        <td>{{ i.custoAtacado005 | currency: 'R$ ' }}</td>
+                                                        <td>{{ i.estoqueAtacado005 }}</td>
+                                                        <td>{{ i.tickMedioA005 | currency: 'R$ '}}</td>
+                                                        <td>{{ i.custoAtacado009 | currency: 'R$ ' }}</td>
+                                                        <td>{{ i.estoqueAtacado009 }}</td>
+                                                        <td>{{ i.ticketMediaA009 | currency: 'R$ ' }}</td>
+                                                        <td>{{ i.custoEcommerce005 | currency: 'R$ ' }}</td>
+                                                        <td>{{ i.estoqueEcommerce005 }}</td>
+                                                        <td>{{ i.ticketMedioE005 | currency: 'R$ '}}</td>
+                                                        <td>{{ i.custoEcommerce008 | currency: 'R$ ' }}</td>
+                                                        <td>{{ i.estoqueEcommerce008 }}</td>
+                                                        <td>{{ i.ticketMedioE008 | currency: 'R$ '}}</td>                                                    
+                                                    </tr>                                                    
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td align='right' colspan="2"> <b>TOTAL:</b></td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.custoAtacadoTotal005| currency: 'R$ ' }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.estoqueAtacado005 }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.ticketMedioAtacado005| currency: 'R$ ' }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.custoAtacadoTotal009 | currency: 'R$ ' }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.estoqueAtacado009 }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.ticketMedioAtacado009 | currency: 'R$ ' }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.custoEcommerceTotal005 | currency: 'R$ ' }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.estoqueEcommerce005 }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.ticketMedioEcommerce005 | currency: 'R$ ' }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.custoEcommerceTotal008   | currency: 'R$ ' }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.estoqueEcommerce008   }}</td>
+                                                        <td>{{ produtoInfo.infoEstoqueProduto.total.ticketMedioEcommerce008 | currency: 'R$ ' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <dir-pagination-controls max-size="5"  pagination-id="pesquisaProduto" boundary-links="true"></dir-pagination-controls>
+                                        </div>                                        
+                                    </div>
+                                    <div class="modal-footer">                                        
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div> 
+                       
+                        
+                        <!-- FIM CLASS ROW -->    
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+        </div>
+    </div>
+</div>
+    
+

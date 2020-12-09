@@ -1,0 +1,71 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="dreLojasController">    
+    <div role="main">       
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Demonstrativo de Resultado - Lojas <small></small></h3>
+                        </div>   
+                        
+                        <div class="col-md-12 col-sm-20 col-xs-12">                       
+                            <div class="pull-right divMenu1" >  
+                                <div class="pull-left"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;" ng-init="empresa.id = 0">
+                                    <select class="form-control form-line focused show-tick" ng-model="empresa.id">
+                                            <option ng-selected="empresa.id == 0" ng-value="0" value="0">Selecione a Loja</option> <!-- not selected / blank option -->
+                                            <option ng-repeat="b in lojas" ng-value="b.empresa" value="{{b.empresa}}" ng-selected="empresa.id == b.id">{{b.nomeEmpresa}}</option>
+                                    </select>
+                                </div> 
+                                <div class="pull-right"  style="margin: auto">
+                                    <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                    <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                    <button class="btn btn-round btn-default pull-right" type="button" ng-click="dreLojas()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button> 
+                                </div>                                
+                            </div>
+                        </div>       
+                    </div>         
+                    <div class="row">                        
+                        <div class="animated flipInY col-md-12 col-sm-20 col-xs-12 marginTop20" ng-show="divGeral">
+                        
+                            <div class="col-md-12">
+                                <center><span class="col-md-12"><legend><h1>Demonstrativo de Resultado</h1></legend></span></center>                                                  
+                            </div> 
+                            <div class="col-md-12">
+                                <table class="tableDre">
+                                    <thead class="dreThead">
+                                        <tr>                                      
+                                            <th class="width5">Código</th>
+                                            <th class="width20">Descrição</th>
+                                            <th>Crédito</th>
+                                            <th>Débito</th>
+                                            <th>Saldo</th>
+                                            <th>Data Início</th>
+                                            <th>Data Final</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody ng-repeat="i in dreInfo" >
+                                        <tr ng-class="{'infoMenuDre': i.nivel == 1 || i.nivel == 2}">                                    
+    
+                                            <td ng-if="i.codigo.length > 4"><span style="margin-left: 20px;">{{ i.codigo }}</span></td>
+                                            <td ng-if="i.codigo.length == 4"><span style="margin-left: 10px;">{{ i.codigo }}</span></td>
+                                            <td ng-if="i.codigo.length <= 2">{{ i.codigo }}</td>
+                                            <td > {{ i.descricao }}</td>
+                                            <td>{{ i.credito | currency: 'R$ ' }}</td>
+                                            <td>{{ i.debito | currency: 'R$ ' }}</td>
+                                            <td>{{ i.saldo | currency: 'R$ '}}</td>
+                                            <td>{{ i.dataInicio }}</td>
+                                            <td>{{ i.dataFinal }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                        </div>
+                    </div>
+                        <!-- FIM CLASS ROW -->  
+                    <div class="clearfix"></div>                     
+                </div>       
+            </div>
+        </div>   
+    </div>   
+</div>  

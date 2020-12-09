@@ -1,0 +1,76 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-controller="vendaxestoqueController">    
+    <div role="main">        
+      
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Vendas x Estoque<small></small></h3>
+                        </div>                           
+                     
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc"> 
+                                <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                <button class="btn btn-round btn-default pull-right" type="button" ng-click="vendaxEstoqueAtacadoEcommerce()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>
+                            </div>
+                        </div>      
+                            
+                    </div>        
+                    
+                    <div class="row">
+                        <!-- =========================  =========================  -->                       
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="divGeral">
+                            <div class="x_panel">
+                                <div class="x_title">
+                                    <!--
+                                    <h2><code>Atacado e Ecommerce</code> </h2>    
+                                    -->                              
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">
+                                    <p class="text-muted font-13 m-b-30 col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                       <!--
+                                        <code>Atenção! Para aquisição de produtos de outros estoques, entrar em contato com a Marizete.</code>
+                                       -->                                         
+                                    </p>
+                                    <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                        <div class="table-responsive">                                        
+                                            <table id="vendaxestoque" class="table display table-striped">
+                                                <thead>                                  
+                                                </thead> 
+                                                <tfoot>
+                                                        <tr>
+                                                            <th colspan="2" style="text-align:right">Total:</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th> 
+                                                            <th></th>  
+                                                            <th></th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </tfoot>                                                                                         
+                                             
+                                            </table>
+                                        </div>     
+                                    </div>
+                                        
+                                </div>
+                            </div>
+                        </div>  
+                        
+                        
+                    </div>
+                    <!-- FIM CLASS ROW -->   
+                </div>    
+                <div class="clearfix"></div>
+            </div>
+        </div>   
+    </div>
+    <br/>
+</div>  

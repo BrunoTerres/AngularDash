@@ -1,0 +1,901 @@
+<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12" ng-controller="analiseLogisticoController">
+
+        <div role="main">
+                  
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">                   
+                    <div class="dashboard_graph">
+                        <div class="row x_title">
+                                <div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">
+                                    <h3>Analise Logístico - Havan<small></small></h3>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">
+                                    <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 2px"> 
+                                        <div class="pull-right"  style="margin: auto" >
+                                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                            <button class="btn btn-round btn-default pull-right" type="button" ng-click="analiseLogisticaAtacado('0001412')" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>    
+                                        </div>                                                                   
+                                    </div>
+                                </div>       
+                        </div>    
+                        <div class="row"  style="margin-top: 20px" ng-show="divApresenta">
+                            
+                            <!-- ========================= ANALISE DE FATURADOS PARA ENVIAR E RECOLHIMENTO TRANSPORTADORA =========================  -->
+                            <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
+                                <div class="animated flipInY col-md-12 col-sm-20 col-xs-12 table-responsive">
+                                <center><h3>Faturamento</h3></center>                            
+                                <div style="margin-top: 10px; margin-bottom: 5px">
+                                    <div class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12">   
+                                                                
+                                        <div class="col-md-2 col-sm-2 col-xs-2 col-lg-2">
+                                            <select
+                                                style="border-radius: 4px;"                                     
+                                                class="form-control"
+                                                name="mySelect"
+                                                id="mySelect"
+                                                ng-options="option.name for option in dataEmpresa.availableOptions track by option.id"
+                                                ng-model="dataEmpresa.selectedOption"
+                                                ng-change="filterLogistico(dataEmpresa.selectedOption)"
+                                            ></select>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2 col-xs-2 col-lg-2">
+                                            <select
+                                                style="border-radius: 4px"         
+                                                class="form-control"
+                                                name="mySelect"
+                                                id="mySelect"
+                                                ng-options="option.name for option in data.availableOptions track by option.id"
+                                                ng-model="data.selectedOption"
+                                                ng-change="filterLogistico(data.selectedOption)"
+                                            ></select> 
+                                        </div>                                        
+                                        <div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">
+                                            <input type="text" style="border-radius: 4px;"  placeholder="Pesquisar" ng-model="pesquisaLogistico" class="form-control fonte-size-input">
+                                        </div>
+                                       
+                                                                                                                                                                        
+                                    </div>                                 
+                                </div>
+                                </div>
+                                <div class="animated flipInY col-md-12 col-sm-12 col-xs-12 col-lg-12 table-responsive" style=" min-height: 100px;max-height:  700px; margin-bottom: 30px">
+                                
+                                    <table class="table table-hover" style="margin-top: 10px; font-size: 11px">
+                                        <thead>
+                                            <tr >
+                                                <th ng-click="sortBy('empresa')" class="width5">Empresa<span class="sortorder" ng-show="propertyName === 'empresa'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('codigoVendedor')">Código Cliente<span class="sortorder" ng-show="propertyName === 'codigoVendedor'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('cliente')" class="width20">Nome Cliente <span class="sortorder" ng-show="propertyName === 'cliente'" ng-class="{reverse: reverse}"></span></th>                                           
+                                                <th ng-click="sortBy('vendedor')">Nome Vendedor <span class="sortorder" ng-show="propertyName === 'vendedor'" ng-class="{reverse: reverse}"></span></th>                                          
+                                                <th ng-click="sortBy('pedido')">Pedido <span class="sortorder" ng-show="propertyName === 'pedido'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('emissaoPD')">Emissão Pedido<span class="sortorder" ng-show="propertyName === 'emissaoPD'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('numero')">Número<span class="sortorder" ng-show="propertyName === 'numero'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('serie')">Série<span class="sortorder" ng-show="propertyName === 'serie'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('imei')">Possuí IMEI<span class="sortorder" ng-show="propertyName === 'imei'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('emissaoNF')">Emissão Nota Fiscal<span class="sortorder" ng-show="propertyName === 'emissaoNF'" ng-class="{reverse: reverse}"></span></th>                                                                          
+                                                <th ng-click="sortBy('qtde')">Quantidade <span class="sortorder" ng-show="propertyName === 'qtde'" ng-class="{reverse: reverse}"></span></th>
+                                                <th ng-click="sortBy('total')">Total <span class="sortorder" ng-show="propertyName === 'total'" ng-class="{reverse: reverse}"></span></th>   
+                                                <th>Data Entrega</th> 
+                                                <th>Carta de Correção</th>
+                                                <!--<th>Capital / Interior</th>-->                                            
+                                                <th>Prazo</th>      
+                                                <th>Observação</th> 
+                                                                                                                        
+                                            </tr>                                
+                                        </thead>
+                                        <tbody ng-repeat="i in infoAnalise.analiseLogistico.data | orderBy:propertyName:reverse | filter: pesquisaLogistico">
+                                            <tr data-toggle="collapse" data-target="#{{ i.id }}" class="clickable" ng-class="{'tudoFaturado': i.validador == '1', 'semExpedicao': i.validador =='3', 'semRastreio': i.validador=='2', 'baixa': i.baixada == 'S', 'frete': i.transportadoradd == 'P','entregue': i.entregueCliente == 'A'}"   ng-show="(data.selectedOption.id == 'X' || i.baixada == data.selectedOption.id  || i.transportadoradd == data.selectedOption.id ||  i.entregueCliente == data.selectedOption.id|| i.validador == data.selectedOption.id ) && (dataEmpresa.selectedOption.id == 'X' || i.empresa == dataEmpresa.selectedOption.id)">
+                                                <td>{{ i.empresa }}</td> 
+                                                <td>{{ i.codigoCliente }}</td> 
+                                                <td>{{ i.cliente }}</td> 
+                                                <td>{{ i.vendedor }}</td>                                         
+                                                <td>{{ i.numero_pedido }}</td>
+                                                <td>{{ i.emissao_pedido  | date:'dd-MM-yyyy'}}</td>
+                                                <td>{{ i.numero_nf }}</td>
+                                                <td>{{ i.serie }}</td>                                        
+                                                <td >{{ i.imei }}</td>                                        
+                                                <td>{{ i.emissao_nf  | date:'dd-MM-yyyy'}}</td>                                                                                                                 
+                                                <td>{{ i.qtde }}</td>
+                                                <td>{{ i.total | currency: 'R$ ' }}</td>                                       
+                                                <td>{{ i.dataEntregue }}</td>
+                                                <td>
+                                                    <span  ng-if="i.correcao !=''" title="{{ i.correcao }}" style="color: orange; font-size: 20px; text-align: center" class="fa fa-exclamation-triangle" aria-hidden="true"></span>
+                                                </td>
+                                                <!--<td>{{ i.cap_int}}</td>    -->
+                                                <td>{{ i.prazo}}</td>    
+                                                <td>{{ i.observacao}}</td>                                            
+                                            </tr> 
+                                            <tr  ng-show="(data.selectedOption.id == 'X' || i.baixada == data.selectedOption.id || i.validador == data.selectedOption.id || i.transportadoradd == data.selectedOption.id ||  i.entregueCliente == data.selectedOption.id  ) && (dataEmpresa.selectedOption.id == 'X' || i.empresa == dataEmpresa.selectedOption.id)">
+                                                <td colspan="100%" style="padding: 0px">
+                                                    <div id="{{  i.id }}" class="collapse">  
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+                                                            <div class="x_content" style="margin-top: 15px">
+                                                                <a href="" data-toggle="collapse" data-target="#{{ i.aid }}" class="clickable"><button class="btn-sm">Agendamento</button></a>  
+                                                                <a ng-show="botaoAgendamento" href="" data-toggle="collapse" data-target="#{{ i.eid }}" class="clickable"><button class="btn-sm">Estado</button></a> 
+                                                                <a href=""  ng-click="pesquisaObsNotaAtacado(i.empresa, i.numero_nf, i.serie,i.cliente,'','','S')"><button class="btn-sm">Observação</button></a>
+                                                                <a href="" data-toggle="collapse" data-target="#{{ i.rid }}" class="clickable"><button class="btn-sm">Transportadora <b ng-show=" i.transportadoradd == 'P' ">Nota Fiscal</b></button></a> 
+                                                                <a ng-show=" i.transportadoradd == 'P' " href="" data-toggle="collapse" data-target="#{{ i.tid }}" class="clickable"><button class="btn-sm">Nova Transportadora</button></a> 
+                                                                <a href="" data-toggle="collapse" data-target="#{{ i.fid }}" ng-click="modalCadastroFreteAtacado(i.empresa, i.numero_nf, i.serie, i.freteCadastrado)" class="clickable"><button class="btn-sm">Frete</button></a>  
+                                                                <a ng-show=" i.transportadoradd == 'N' " ng-if=" i.validador != '1'"  href="" data-toggle="collapse" data-target="#{{ i.cid }}" class="clickable"><button class="btn-sm" ng-show="botaoAgendamento">Cadastro Novo Transportador</button></a>    
+                                                            </div>                                                    
+                                                        </div> 
+                                                        <!-- ========================= MENU AGENDAMENTO =========================  -->
+                                                        <div id="{{ i.aid }}" class="collapse col-md-12">
+                                                            <table class="table table-hover " style="background-color: #e9eef3; margin-bottom: 10px; margin-top: 10px;width: 20%">
+                                                                <thead>
+                                                                    <tr>                                                        
+                                                                        <th ng-show="botaoAgendamento">Agendamento</th>  
+                                                                        <th>Data Agendamento</span></th>                                                                 
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>                                                                               
+                                                                        <td ng-show="botaoAgendamento" >
+                                                                            <button  class="buttonAnaliseLogistico" type="button" ng-click="AgendamentoDeEntrega(i.empresa,i.serie, i.numero_nf, i.cliente,i.emissao_nf, i.total, i.qtde)">Agendar</button> 
+                                                                        </td>   
+                                                                        <td>{{ i.dataAgendamento }}</td>                                   
+                                                                    </tr>                                                                   
+                                                                </tbody>
+                                                            </table>   
+                                                        </div>
+    
+                                                        <!-- ========================= MENU ESTADO =========================  -->
+                                                        <div id="{{ i.eid }}" class="collapse col-md-12">
+                                                                <table class="table table-hover " style="background-color: #e9eef3; margin-bottom: 10px; margin-top: 10px;width: 20%">
+                                                                    <thead>
+                                                                        <tr>                                                        
+                                                                            <th>Estado</th>  
+                                                                            <th>Possui Guia</span></th>                                                                 
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>                                                                               
+                                                                            <td>{{ i.estado }}</td>   
+                                                                            <td>{{ i.estadoGuia }}</td>                                   
+                                                                        </tr>                                                                   
+                                                                    </tbody>
+                                                                </table>   
+                                                        </div>
+    
+                                                        <!-- ========================= MENU TRANSPORTADORA NF =========================  -->
+                                                        <div id="{{ i.rid }}" class="collapse col-md-12">
+                                                            <table class="table table-hover" style="background-color: #e9eef3; margin-bottom: 10px; margin-top: 10px;width: 40%">
+                                                                <thead>
+                                                                    <tr> 
+                                                                        <th>Transportadora</span></th>                                                                
+                                                                        <th>Data Expedição</span></th>                                                    
+                                                                        <th>Rastreio</th>
+                                                                        <th>Emissão Rastreio</th>
+                                                                        <th ng-if="i.baixada == 'N'"  ng-show="i.validador != '1'"><span ng-show="botaoAgendamento">Baixa</span></th>  
+                                                                        <th ng-if="i.validador != '1'" ng-show="botaoAgendamento" >Data Baixa</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr> 
+                                                                        <td>{{ i.transportador }}</td>                                                        
+                                                                        <td>{{ i.data_expedicao | date:'dd-MM-yyyy' }}</td>                                                                                                               
+                                                                        <td>{{ i.rastreio }}</td>
+                                                                        <td>{{ i.impressao | date:'dd-MM-yyyy' }}</td>                                                               
+                                                                        <td  ng-if="i.baixada == 'N'" ng-show="i.validador != '1'">
+                                                                            <button ng-show="botaoAgendamento" ng-if="i.validador != '1'" class="buttonAnaliseLogistico" ng-click="baixarNota(i.empresa,i.serie, i.numero_nf, i.cliente,i.emissao_nf, i.total, i.qtde)" type="button">Baixa</button> 
+                                                                        </td>
+                                                                        <td ng-if="i.validador != '1'" ng-show="botaoAgendamento">{{ i.dataBaixada }}</td>                                                             
+                                                                    </tr>                                                                   
+                                                                </tbody>
+                                                            </table> 
+                                                        </div>
+    
+                                                        <!-- ========================= MENU TRANSPORTADORA NOVA =========================  -->
+                                                        <div id="{{ i.tid }}" class="panel-collapse collapse col-md-12">
+                                                            <table class="table table-hover" style="background-color: #e9eef3; margin-bottom: 10px; margin-top: 10px;width: 60%">
+                                                                <thead>
+                                                                    <tr>                                                    
+                                                                        <th>Transportador</th>
+                                                                        <th> Data Expedição</th>                                                                 
+                                                                        <th>Novo Rastreio</th> 
+                                                                        <th>Nova Emissão Rastreio</th>  
+                                                                        <th></th>                                                           
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>                                                                          
+                                                                        <td>{{ i.novoTransportador }}</td>
+                                                                        <td>{{ i.novaDtExpedicao }}</td>
+                                                                        <td>{{ i.novoRastreio }}</td>    
+                                                                        <td>{{ i.novoDtImpressao }}</td> 
+                                                                        <td><a href="" ng-click="pesquisarCadTransportadorAtacado(i.numero_nf,i.empresa,i.serie,i.cliente)"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Novo Transportador" ></button></td>  
+                                                                    </tr>                                                                   
+                                                                </tbody>
+                                                            </table> 
+                                                        </div>
+    
+                                                        <!-- ========================= MENU FRETE =========================  -->    
+                                                        <div id="{{ i.fid }}" class="panel-collapse collapse col-md-12">
+                                                            <div class="col-md-12" style="margin-top: 10px" ng-show="divFrete">
+                                                                <table class="table table-hover" style="background-color: #e9eef3; margin-bottom: 10px; margin-top: 10px;width: 60%">
+                                                                    <thead>
+                                                                        <tr>                                                                    
+                                                                            <th>Total Nota</th>
+                                                                            <th>Total Frete</th>  
+                                                                            <th>Percentual</th>
+                                                                            <th></th>
+                                                                        </tr>                                                              
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>{{ i.totalNF | currency: 'R$ ' }}</td>
+                                                                            <td>{{ i.valorDoFrete | currency: 'R$ ' }}</td>
+                                                                            <td>{{ i.porcentagemFrete | currency: ' ' }}%</td>
+                                                                            <td><a href="" ng-click="modalEditarFreteAtacado(i.empresa,i.numero_nf,i.serie)"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Frete" ></button></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>                                                            
+                                                            </div>        
+                                                        </div>
+    
+                                                        <!-- ========================= MENU CADASTRO TRANSPORTADORA =========================  --> 
+                                                        <div id="{{ i.cid }}" class="collapse col-md-12">
+                                                            <div class="col-md-12"> 
+                                                                                                
+                                                                <div class="col-md-4"  style="margin-bottom: 2px; margin-top: 2px; ">
+                                                                    <input type="text" style="border-radius: 4px;" placeholder="Código Transportador" ng-model="codigoTransportador.codigo" class="form-control fonte-size-input">    
+                                                                </div> 
+                                                                <div class="col-md-2"  style="margin: auto">
+                                                                    <button class="btn btn-default" type="button" style="height:35px;font-size: 13px" ng-click="pesquisaTransportadorAtacado('N',login.nome,i.empresa,i.numero_nf, i.serie,i.cliente)">Pesquisar</button>  
+                                                                </div>                                
+                                                            </div>                                                                                               
+                                                        </div>                                                 
+                                                            
+                                                    </div>                                        
+                                                </td>
+                                            </tr>                                  
+                                        </tbody>
+                                            <tr style="background-color: #F0F0F0">
+                                                <td align='right' colspan="10"> <b>TOTAL:</b></td>  
+                                                <td>{{  infoAnalise.analiseLogistico.qtdeTotal }}</td>
+                                                <td >{{  infoAnalise.analiseLogistico.valorTotal | currency: 'R$ ' }}</td>
+                                                <td colspan="8"></td>
+                                            </tr>
+                                    </table>                          
+                                </div>
+                            </div>
+    
+                            <!-- ========================= NOTAS X CHECKOUT - SC  =========================  -->
+                            <center><div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div class="tile-stats">                            
+                                    <div class="count"><center>Pendências - Santa Catarina</center></div>                             
+                                    <table class="table">
+                                        <thead>
+                                            <tr>                                            
+                                                <th>Data</th>                                                                                     
+                                                <th>Notas</th>
+                                                <th class="width5">#</th>
+                                                <th>Checkout</th>
+                                                <th class="width5">#</th>
+                                                <th>Data Expedição</th>
+                                                <th class="width5">#</th>
+                                                <th>Etiqueta</th>
+                                                <th class="width5"> # </th>
+                                                <th>Data Entrega</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in infoAnalise.checkoutxnotas.sc.data" class="txtAlign">                                         
+                                                <td>{{ i.data }}</td>
+                                                <td>{{ i.notas }}</td>
+                                                <td  ng-if="i.checkout > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.checkout,1,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.checkout ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.checkout }}</td>
+                                                <td  ng-if="i.dt_expedicao > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.dt_expedicao,2,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.dt_expedicao ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.dt_expedicao }}</td>
+                                                <td  ng-if="i.sem_etiqueta > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.sem_etiqueta,3,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.sem_etiqueta ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.sem_etiqueta }}</td>
+                                                <td  ng-if="i.sem_rastreio > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.sem_rastreio,4,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.sem_rastreio ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.sem_rastreio }}</td>
+                                            </tr>
+                                            <tr style="background-color: #F0F0F0">
+                                                <td align='right'> <b>TOTAL:</b></td>
+                                                <td> {{  infoAnalise.checkoutxnotas.sc.totalNota }} </td>
+                                                <td></td>
+                                                <td> {{  infoAnalise.checkoutxnotas.sc.totalCheckout }} </td>    
+                                                <td></td> 
+                                                <td> {{  infoAnalise.checkoutxnotas.sc.totalDtExpedicao }} </td> 
+                                                <td></td>  
+                                                <td> {{  infoAnalise.checkoutxnotas.sc.totalSemEtiqueta }} </td>  
+                                                <td></td>
+                                                <td> {{  infoAnalise.checkoutxnotas.sc.semDtEntrega }} </td>                                     
+                                            </tr>
+                                        </tbody>
+    
+                                    </table>
+                                </div>
+                            </div></center> 
+                            
+                            <!-- ========================= NOTAS X CHECKOUT - ES =========================  -->
+                            <center><div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div class="tile-stats">                           
+                                    <div class="count"><center>Pendências - Espírito Santo</center></div>                           
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Data</th>                                                                                     
+                                                <th>Notas</th>
+                                                <th class="width5">#</th>
+                                                <th>Checkout</th>
+                                                <th class="width5">#</th>
+                                                <th>Data Expedição</th>
+                                                <th class="width5">#</th>
+                                                <th>Etiqueta</th>
+                                                <th class="width5">#</th>
+                                                <th>Data Entrega</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in infoAnalise.checkoutxnotas.es.data" class="txtAlign">
+                                                <td>{{ i.data }}</td>
+                                                <td>{{ i.notas }}</td>
+                                                <td  ng-if="i.checkout > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.checkout,1,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.checkout ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.checkout }}</td>
+                                                <td  ng-if="i.dt_expedicao > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.checkout,2,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.dt_expedicao ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.dt_expedicao }}</td>
+                                                <td  ng-if="i.sem_etiqueta > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.checkout,3,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.sem_etiqueta ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.sem_etiqueta }}</td>
+                                                <td  ng-if="i.sem_rastreio > 0" ><a href="" ng-click="pesquisaPendenciasNotasAtacado(i.data,i.empresa,i.sem_rastreio,4,'0001412')"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td  ng-if="i.sem_rastreio ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                <td>{{ i.sem_rastreio }}</td>
+                                            </tr>
+                                            <tr style="background-color: #F0F0F0">
+                                                    <td align='right'> <b>TOTAL:</b></td>
+                                                    <td> {{  infoAnalise.checkoutxnotas.es.totalNota }} </td>
+                                                    <td></td>
+                                                    <td> {{  infoAnalise.checkoutxnotas.es.totalCheckout }} </td>    
+                                                    <td></td> 
+                                                    <td> {{  infoAnalise.checkoutxnotas.es.totalDtExpedicao }} </td> 
+                                                    <td></td>  
+                                                    <td> {{  infoAnalise.checkoutxnotas.es.totalSemEtiqueta }} </td>  
+                                                    <td></td>
+                                                    <td> {{  infoAnalise.checkoutxnotas.es.semDtEntrega }} </td>                                              
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div></center>                  
+                            
+                            <!-- ========================= MODAL PESQUISA CHECKOUT DE NOTAS  =========================  -->          
+                            <a id="modalPesquisaNotas" data-toggle="modal" data-target="#myModalPesquisaNotas"></a>                     
+                            <div class="modal fade" id="myModalPesquisaNotas" role="dialog">
+                                <div class="modal-dialog"  style="min-width: 55%; max-width: 65%;  margin-top: 25px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                            <div align="center">
+                                                <h4 class="modal-title" > Pesquisa Notas - 
+                                                    <b ng-if="infoPesquisa.value == 1">Checkout</b>
+                                                    <b ng-if="infoPesquisa.value == 2">Data de Expedição</b>
+                                                    <b ng-if="infoPesquisa.value == 3">Sem Etiqueta</b>
+                                                    <b ng-if="infoPesquisa.value == 4">Data de Entrega</b>
+                                                </h4>
+                                            </div>   
+                                            <p style="margin-top: 20px"><b>Data :</b> {{ infoPesquisa.data }}</p>                                 
+                                            <p style="margin-top: 2px"><b>Empresa :</b> {{ infoPesquisa.empresa }}</p> 
+                                            <p style="margin-top: 2px"><b>Total:</b> {{ infoPesquisa.total }}</p> 
+                                        </div>
+                                        <div class="modal-body">
+                                           <table class="table table-hover">
+                                               <thead>
+                                                   <tr>
+                                                       <th>#</th>
+                                                       <th>Número</th>
+                                                       <th>Série</th>                                                  
+                                                       <th>Observação</th>
+                                                       <th>Quantidade</th>
+                                                       <th>Total</th>
+                                                   </tr>
+                                               </thead>
+                                               <tbody>
+                                                   <tr ng-repeat="i in pesquisaNotas">   
+                                                       <td>{{ i.id }}</td>                                              
+                                                       <td>{{ i.numero }}</td>
+                                                       <td>{{ i.serie }}</td>
+                                                       <td>{{ i.observacao }}</td>
+                                                       <td>{{ i.quantidade }}</td>
+                                                       <td>{{ i.total |  currency: 'R$ ' }}</td>
+                                                   </tr>
+                                               </tbody>
+                                           </table>                                        
+                                        </div>                                
+                                        <div class="modal-footer">                                                                  
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>                       
+                          
+                            <!-- ========================= MODAL AGENDAMENTO  =========================  -->          
+                            <a id="modalAgendamento" data-toggle="modal" data-target="#myModalAgendamento"></a>                     
+                            <div class="modal fade" id="myModalAgendamento" role="dialog">
+                                <div class="modal-dialog"  style="width: 60%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                            <h4 class="modal-title" align='center'>Agendamento de Entrega</h4>  
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Usuário</th>
+                                                        <th>Cliente</th>                                              
+                                                        <th>Empresa</th>
+                                                        <th>Nota</th>
+                                                        <th>Serie</th>
+                                                        <th>Emissão</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>                                                
+                                                        <th>Data Para Agendamento</th>              
+                                                    </tr>                                               
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ infoAgendamento.usuario }}</td>
+                                                        <td>{{ infoAgendamento.cliente }}</td>                  
+                                                        <td>{{ infoAgendamento.empresa }}</td>
+                                                        <td>{{ infoAgendamento.nota }}</td>
+                                                        <td>{{ infoAgendamento.serie }}</td>
+                                                        <td>{{ infoAgendamento.emissao }}</td>
+                                                        <td>{{ infoAgendamento.quantidade }}</td>
+                                                        <td>{{ infoAgendamento.total | currency: 'R$ '}}</td>
+                                                        <td><input  type="date" style="border-radius: 4px" ng-model="infoAgendamento.agendamento"  width="50%"></td>                
+                                                    </tr>
+                                                </tbody>
+                                            </table>                                       
+                                            <b>Justificativa</b> 
+                                            <br>
+                                            <textarea  rows="5" style="width: 100%; border-radius: 4px" ng-model="infoAgendamento.justificativa" maxlength="1000"></textarea><br><br>                                        
+                                        </div>                                        
+                                        <div class="modal-footer"> 
+                                            <button class="btn buttonGeral" style="height: 60%" type="submit"  ng-click="agendamentoLogisticoAtacado()">Gravar</button> 
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>  
+    
+                            <!-- ========================= MODAL BAIXA =========================  -->          
+                            <a id="modalBaixa" data-toggle="modal" data-target="#myModalBaixa"></a>                     
+                            <div class="modal fade" id="myModalBaixa" role="dialog">
+                                <div class="modal-dialog"  style="width: 55%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                            <h4 class="modal-title" align='center'>Baixa de Nota Fiscal</h4>  
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Usuário</th>
+                                                        <th>Cliente</th>                                              
+                                                        <th>Empresa</th>
+                                                        <th>Nota</th>
+                                                        <th>Serie</th>
+                                                        <th>Emissão</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>                                              
+                                                    </tr>                                               
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>{{ infoBaixa.usuario }}</td>
+                                                        <td>{{ infoBaixa.cliente }}</td>                  
+                                                        <td>{{ infoBaixa.empresa }}</td>
+                                                        <td>{{ infoBaixa.nota }}</td>
+                                                        <td>{{ infoBaixa.serie }}</td>
+                                                        <td>{{ infoBaixa.emissao }}</td>
+                                                        <td>{{ infoBaixa.quantidade }}</td>
+                                                        <td>{{ infoBaixa.total | currency: 'R$ ' }}</td>                                                              
+                                                    </tr>
+                                                </tbody>
+                                            </table>                                       
+                                            <b>Justificativa</b> 
+                                            <br>
+                                            <textarea  rows="5" style="width: 100%; border-radius: 4px" ng-model="infoBaixa.justificativa" maxlength="1000"></textarea><br><br>                                        
+                                        </div>                                        
+                                        <div class="modal-footer"> 
+                                            <button class="btn buttonGeral" style="height: 60%" type="submit" ng-click="baixarNotaAtacado()">Gravar</button> 
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>      
+                            
+                            <!-- ========================= MODAL PARA CADASTRAR NOVO TRANSPORTADOR =========================  -->          
+                            <a id="modalNovoTransp" data-toggle="modal" data-target="#myModalNovoTransp"></a>                     
+                            <div class="modal fade" id="myModalNovoTransp" role="dialog">
+                                <div class="modal-dialog"  style="width: 55%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                            <h4 class="modal-title" align='center'>Alterar Cadastro Novo Transportador</h4>  
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="col-md-12" style="margin-top: 10px">
+                                                <form  method="POST" ng-submit="editarTransportadorNovoAtacado()" ng-show="divTrocaTransportador == false">
+                                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Usuário</label>
+                                                        <input type="text" class="form-control" placeholder="{{ login.usuario }}" disabled>
+                                                    </div> 
+                                                    <div class="form-group col-md-8">
+                                                        <label>Cliente</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoTransporte.cliente }}"  disabled>
+                                                    </div> 
+                                                
+                                                    <div class="form-group col-md-4">
+                                                        <label>Empresa</label>
+                                                        <input type="text" class="form-control" placeholder="{{ transporteInfo.transportadorNovo.empresa }}" disabled>
+                                                    </div> 
+                                                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Número</label>
+                                                        <input type="text" class="form-control" placeholder="{{ transporteInfo.transportadorNovo.numero }}" disabled>
+                                                    </div> 
+        
+                                                    <div class="form-group col-md-4">
+                                                        <label>Série</label>
+                                                        <input type="text" class="form-control" placeholder="{{ transporteInfo.transportadorNovo.serie }}" disabled>
+                                                    </div>                                       
+        
+                                                    <div class="form-group col-md-8">
+                                                        <label>Nome Transportador</label>
+                                                        <input type="text" class="form-control" placeholder="{{ transporteInfo.transportadorNovo.nomeTransportadora }}" disabled>
+                                                    </div> 
+                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Data Expedição</label>
+                                                        <input type="date" class="form-control" ng-model="transporteInfo.transportadorNovo.dataInicial">
+                                                    </div> 
+        
+                                                    <div class="form-group col-md-8">
+                                                        <label>Protocolo de Rastreamento</label>
+                                                        <input type="text" class="form-control" ng-model="transporteInfo.transportadorNovo.rastreio"> 
+                                                    </div>                                    
+                                                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Data Impressão</label>
+                                                        <input type="date" class="form-control" ng-model="transporteInfo.transportadorNovo.dataFim">  
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-12">
+                                                        <label for="exampleFormControlTextarea1">Justificativa <b style="color:red">*</b></label>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="transporteInfo.transportadorNovo.justificativa" minlength="15" maxlength="200" required rows="4"></textarea>
+                                                    </div>
+    
+                                                    <div class="form-group col-md-12" style="margin-top: 20px">                                                       
+                                                        <button class="btn buttonGeral col-md-2" style="height: 60%" type="submit">Alterar</button> 
+                                                        <button ng-click="divTrocaTransportador = !divTrocaTransportador" class="btn buttonGeral col-md-2" style="height: 60%" type="button">Alterar Transportador</button>
+                                                    </div>                                                    
+                                                    
+                                                    <legend class="col-md-12"></legend> 
+                                                    <div class="form-group col-md-6">
+                                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                    </div>                                                      
+                                                </form> 
+                                                
+                                                <div class="col-md-12" ng-show="divTrocaTransportador == true"> 
+                                                                                            
+                                                    <div class="col-md-10"  style="margin-bottom: 2px; margin-top: 2px; ">
+                                                        <input type="text" style="border-radius: 4px;" placeholder="Código Transportador" ng-model="codigoTransportador.codigo" class="form-control fonte-size-input">    
+                                                    </div> 
+                                                    <div class="col-md-2"  style="margin: auto">
+                                                        <button class="btn btn-default" type="button" style="height:35px;font-size: 13px" ng-click="pesquisaTransportadorAtacado('S','','','','','')">Pesquisar</button>  
+                                                    </div>                                
+                                                </div>
+                                            </div>                           
+                                        </div>                                        
+                                        <div class="modal-footer"> 
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+                             
+                            <!-- ========================= MODAL PARA ALTERAR NOVO TRANSPORTADOR =========================  -->          
+                            <a id="modalTransCadastro" data-toggle="modal" data-target="#myModalTransCadastro"></a>                     
+                            <div class="modal fade" id="myModalTransCadastro" role="dialog">
+                                <div class="modal-dialog"  style="width: 55%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                            <h4 class="modal-title" align='center'>Cadastro Novo Transportador</h4>  
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="col-md-12" style="margin-top: 10px">
+                                                <form  method="POST" ng-submit="cadastroTransportadorAtacado()" ng-show="divCadastroTransporte">
+                                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Usuário</label>
+                                                        <input type="text" class="form-control" placeholder="{{ login.nome }}" disabled>
+                                                    </div> 
+                                                    <div class="form-group col-md-8">
+                                                        <label>Cliente</label>
+                                                        <input type="text" class="form-control" placeholder="{{ cadastroTransportador.cliente }}"  disabled>
+                                                    </div> 
+                                                
+                                                    <div class="form-group col-md-4">
+                                                        <label>Empresa</label>
+                                                        <input type="text" class="form-control" placeholder="{{ cadastroTransportador.empresa }}" disabled>
+                                                    </div> 
+                                                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Número</label>
+                                                        <input type="text" class="form-control" placeholder="{{ cadastroTransportador.numero }}" disabled>
+                                                    </div> 
+        
+                                                    <div class="form-group col-md-4">
+                                                        <label>Série</label>
+                                                        <input type="text" class="form-control" placeholder="{{ cadastroTransportador.serie }}" disabled>
+                                                    </div>                                       
+        
+                                                    <div class="form-group col-md-8">
+                                                        <label>Nome Transportador</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoTransportador.transportador.data.nome }}" disabled>
+                                                    </div> 
+                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Data Expedição <b style="color:red">*</b></label>
+                                                        <input type="date" class="form-control" ng-model="dateTransporte.dataExpedicao" required>
+                                                    </div> 
+        
+                                                    <div class="form-group col-md-8">
+                                                        <label>Protocolo de Rastreamento <b style="color:red">*</b></label>
+                                                        <input type="text" class="form-control" ng-model="cadastroTransportador.rastreio" required> 
+                                                    </div>                                    
+                                                    
+                                                    <div class="form-group col-md-4">
+                                                        <label>Data Impressão <b style="color:red">*</b></label>
+                                                        <input type="date" class="form-control" ng-model="dateTransporte.dataImpressao" required>  
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-12">
+                                                        <label for="exampleFormControlTextarea1">Justificativa <b style="color:red">*</b></label>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="cadastroTransportador.justificativa" minlength="15" maxlength="200" rows="4"></textarea>
+                                                    </div>
+    
+                                                    <div class="form-group col-md-12" style="margin-top: 20px">
+                                                        <button type="submit"class="btn btn-round btn-primary">Cadastrar</button>
+                                                    </div>    
+                                                    
+                                                    <legend class="col-md-12"></legend> 
+                                                    <div class="form-group col-md-6">
+                                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                    </div>                                                      
+                                                </form>        
+                                            </div>      
+                                        </div>                                        
+                                        <div class="modal-footer">                                        
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>                       
+                           
+                            <!-- ========================= MODAL PARA ALTERAR O VALOR DO FRETE =========================  -->          
+                            <a id="modalEditarFrete" data-toggle="modal" data-target="#myModalEditarFrete"></a>                     
+                            <div class="modal fade" id="myModalEditarFrete" role="dialog">
+                                <div class="modal-dialog"  style="width: 55%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                            <h4 class="modal-title" align='center'>Editar Frete</h4>  
+                                        </div>
+                                        <div class="modal-body">
+                                            <form  method="POST">                                                    
+                                                <div class="col-md-12">
+                                                    <label>Valor do Frete <b style="color:red">*</b></label>
+                                                    <input type="text" class="form-control" ng-model="editarFrete.cadastroFrete"  mask-money>
+                                                </div>                                             
+                                                                                                
+                                            </form>                                   
+                                        </div>                                        
+                                        <div class="modal-footer"> 
+                                            <button class="btn buttonGeral" style="height: 60%" type="submit" ng-click="editarFreteAtacado()">Gravar</button> 
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div>  
+    
+    
+                            <!-- ========================= MODAL ENTREGA UPLOAD =========================  -->          
+                            <a id="modalEntrega" data-toggle="modal" data-target="#myModalEntrega"></a>                     
+                            <div class="modal fade" id="myModalEntrega" role="dialog">
+                                <div class="modal-dialog"  style="width: 50%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                            <h4 class="modal-title" align="center">Upload Planilha</h4>  
+                                        </div>
+                                        <div class="modal-body">
+                                                <form class="form-group col-md-12 col-sm-12 col-xs-12 col-lg-12" method="POST" ng-submit="entregueClienteAtacado()" name="formPlanilha" enctype="multipart/form-data">
+                            
+                                                    <div class="form-group col-md-4" style="margin-bottom: 10px">
+                                                        <p>Upload Planilha Padrão <b style="color:red">*</b></p>                                   
+                                                        <input  id="filePlanilha" ngf-select ng-model="filePlanilha" name="filePlanilha" type="file" accept=".xls" required>                                                                 
+                                                    </div>            
+                                                   
+                                                    <div class="form-group col-md-12" style="margin-bottom: 10px">
+                                                        <div ng-if="progressoProdutos > 0" class="progress"  style="width:100px;">
+                                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" ng-style="{'width':progressoProdutos}" aria-valuenow="{{progressoProdutos}}" aria-valuemin="0" aria-valuemax="100">
+                                                                {{progressoProdutos}} %
+                                                            </div>
+                                                        </div>
+                                                    </div>                                  
+                            
+                                                    <div class="form-group col-md-12" style="margin-top: 20px">                                          
+                                                        <button type="submit"class="btn btn-primary">Enviar</button>
+                                                    </div>
+                                                    <legend class="col-md-12"></legend> 
+                                                    <div class="form-group col-md-6">
+                                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                    </div>  
+                                                </form>
+                                                                                                                     
+                                        </div>                                        
+                                        <div class="modal-footer">                                       
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>  
+    
+                            <!-- ========================= MODAL OBSERVCAO =========================  -->          
+                            <a id="modalObservacao" data-toggle="modal" data-target="#myModalObservacao"></a>                     
+                            <div class="modal fade" id="myModalObservacao" role="dialog">
+                                <div class="modal-dialog"  style="width: 65%;  margin-top: 50px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                            <h4 class="modal-title" align="center">Observações</h4>  
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="col-md-12" ng-show="divObsVisualizar">
+                                                                                                                
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th ng-show="botaoAgendamento" class="width5"><button class="pull-right btn btn-success btn-xs" ng-click="modalCadastroObsNotaAtacado(infoObs.empresa, infoObs.numero, infoObs.serie,infoObs.cliente)">Cadastrar Observação</button></th>
+                                                            <th class="width10">Usuário</th>
+                                                            <th class="width10">Data De Cadastro</th>
+                                                            <th class="width10">Usuário Alteração</th>
+                                                            <th class="width10">Data De Alteração</th>
+                                                            <th>Observação</th>                                                                        
+                                                        </tr>
+                                                    </thead>  
+                                                    <tbody>
+                                                        <tr dir-paginate="i in infoObsAtacado.infoObsPesquisa.data | filter: pesquisaMarcaProduto  |itemsPerPage:contagemMarcaProduto" pagination-id="pesquisaMarcaProduto">
+                                                            <td ng-show="botaoAgendamento"><a href="" ng-click="pesquisaObsNotaAtacado(i.empresa, i.numero, i.serie,infoObs.cliente, i.id, 'S','N')"><button style="font-size: 10px;align-content: center" class="glyphicon glyphicon-pencil btn btn-warning btn-sm" title="Editar Observação" ></button></td> 
+                                                            <td>{{ i.usuario }}</td>
+                                                            <td>{{ i.dataCadastro }}</td>
+                                                            <td>{{ i.usuarioAlteracao }}</td>
+                                                            <td>{{ i.dataAlteracao }}</td>
+                                                            <td>{{ i.obs }}</td>                                                                          
+                                                        </tr>
+                                                    </tbody>         
+                                                </table>                                                        
+                                            </div>     
+    
+                                            <div class="col-md-12" style="margin-top: 10px" ng-show="divObsCadastrar">
+                                                <form  method="POST" ng-submit="cadastroObsNotaAtacado()">
+                                        
+                                                    <div class="form-group col-md-4">
+                                                        <label>Usuário</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoCadastroObs.nome }}" disabled>
+                                                    </div> 
+                                                    
+                                                    <div class="form-group col-md-8">
+                                                        <label>Cliente</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoCadastroObs.cliente }}"  disabled>
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-2">
+                                                        <label>Empresa</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoCadastroObs.empresa }}"  disabled>
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-2">
+                                                        <label>Número</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoCadastroObs.numero }}"  disabled>
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-2">
+                                                        <label>Série</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoCadastroObs.serie }}"  disabled>
+                                                    </div> 
+              
+                                                    <div class="form-group col-md-12">
+                                                        <label for="exampleFormControlTextarea1">Observação<b style="color:red">*</b></label>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="infoCadastroObs.observacao"  maxlength="300" rows="4" required></textarea>
+                                                    </div>
+    
+                                                    <div class="form-group col-md-12" style="margin-top: 20px">
+                                                        <button type="submit"class="btn btn-round btn-primary">Cadastrar</button>
+                                                        <button ng-show="divVolta" type="button" ng-click="menu(1)" class="btn btn-round btn-primary">Voltar</button>
+                                                    </div>    
+                                                    
+                                                    <legend class="col-md-12"></legend> 
+                                                    <div class="form-group col-md-12">
+                                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                    </div>                                                      
+                                                </form>        
+                                            </div>  
+                                            
+                                            <div class="col-md-12" style="margin-top: 10px" ng-show="divObsEditar">
+                                                <form  method="POST" ng-submit="editarObsNotaAtacado()">
+                                        
+                                                    <div class="form-group col-md-4">
+                                                        <label>Usuário</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoObsAtacadoEditar.infoObsPesquisa.usuario }}" disabled>
+                                                    </div> 
+                                                    
+                                                    <div class="form-group col-md-8">
+                                                        <label>Cliente</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoObs.cliente }}"  disabled>
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-2">
+                                                        <label>Empresa</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoObsAtacadoEditar.infoObsPesquisa.empresa }}"  disabled>
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-2">
+                                                        <label>Número</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoObsAtacadoEditar.infoObsPesquisa.numero }}"  disabled>
+                                                    </div> 
+    
+                                                    <div class="form-group col-md-2">
+                                                        <label>Série</label>
+                                                        <input type="text" class="form-control" placeholder="{{ infoObsAtacadoEditar.infoObsPesquisa.serie }}"  disabled>
+                                                    </div> 
+              
+                                                    <div class="form-group col-md-12">
+                                                        <label for="exampleFormControlTextarea1">Observação<b style="color:red">*</b></label>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="infoObsAtacadoEditar.infoObsPesquisa.obs"  maxlength="300" rows="4" required></textarea>
+                                                    </div>
+    
+                                                    <div class="form-group col-md-12" style="margin-top: 20px">
+                                                        <button type="submit"class="btn btn-round btn-primary">Editar</button>
+                                                        <button type="button" ng-click="menu(2)" class="btn btn-round btn-primary">Voltar</button>
+                                                    </div>    
+                                                    
+                                                    <legend class="col-md-12"></legend> 
+                                                    <div class="form-group col-md-12">
+                                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                    </div>                                                      
+                                                </form>        
+                                            </div>  
+    
+                                        </div>                                        
+                                        <div class="modal-footer">                                       
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>  
+    
+                        </div>  
+                        <!-- FIM CLASS ROW -->    
+                    </div> 
+                    <div class="clearfix"></div>
+                </div>   
+            </div>
+        </div>
+    </div>    
+    
+    

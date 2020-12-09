@@ -1,0 +1,195 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-controller="produtosLinhaController">
+    <div role="main">        
+      
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="dashboard_graph">
+                        <div class="row x_title">
+                            <div class="col-md-6">
+                                <h3>Produtos em Linha<small></small></h3>
+                            </div>    
+                        </div>       
+                        <div class="row"  style="margin-top: 20px">
+                            
+                            <!-- ========================= TELA DE VISUALIZAR FORNECEDOR ========================= --> 
+                            <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="divVisualizar">
+                                <div class="x_panel tile ">
+                                    <div class="x_title">
+                                        <h2><span class="count_top" style="color:#72879c">Produtos </span></h2>
+                                        <a class="pull-right" href=""> <button type="button" ng-click="menu(1)" class="btn btn-success">Cadastro</button></a>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                    <div class="x_content">  
+                                        <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                            <div class="table-responsive">                                        
+                                                <table id="produtosLinha" class="table display table-striped table-hover">
+                                                    <thead>                                  
+                                                    </thead> 
+                                                    <tfoot>                                                        
+                                                    </tfoot>                                                                                        
+                                                
+                                                </table>
+                                            </div>     
+                                        </div>                                     
+                                    </div>
+                                </div>
+                            </div>    
+
+                            <!-- ========================= TELA DE CADASTRAR FORNECEDOR -> PRODUTO ========================= -->  
+                            <div ng-show="divCadastroProduto" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="cabecalhoDiv col-md-12">
+                                        <span><h2 class="col-md-4" style="margin-top: 10px"><b>Cadastro Produto:</b></h2></span>  
+                                        <button ng-show="esconderBotao" class="pull-right fa fa-reply btn btn-danger"style="font-size:15px" ng-click="menu(2)" title="Voltar ao Inicio"></button>                           
+                                </div>
+                                <form style="margin-top: 20px" class="form-group col-md-12" method="POST" ng-submit="cadastroProdutosLinha()" name="formCadastroProd" enctype="multipart/form-data">
+                        
+                                    <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Produto</label>
+                                        <input type="text" class="form-control" maxlength="50" ng-model="produtoCadastro.produto" required>
+                                    </div> 
+                                
+                                    <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Fabricante</label>
+                                        <input type="text" class="form-control" maxlength="25" ng-model="produtoCadastro.fabricante" required>
+                                    </div> 
+                                    
+                                    <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>EAN</label>
+                                        <input type="number" class="form-control" maxlength="20" ng-model="produtoCadastro.ean" required>
+                                    </div> 
+
+                                    <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>ICMS %</label>
+                                        <input type="text" class="form-control" ng-model="produtoCadastro.icms" ui-percentage-mask required>
+                                    </div> 
+
+                                    <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Preço Ponta</label>
+                                        <input type="text" class="form-control" ng-model="produtoCadastro.precoPonta"  ui-number-mask required >
+                                    </div> 
+
+                                    <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Custo</label>
+                                        <input type="text" class="form-control" ng-model="produtoCadastro.custo" ui-number-mask required>
+                                    </div> 
+
+                                    <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Lançamento</label><br>
+                                        <input type="checkbox" ng-model="produtoCadastro.lancamento" ng-true-value="'S'" ng-false-value="'N'">
+                                    </div> 
+
+     
+                                    <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 20px">                                           
+                                        <button ng-show="esconderBotao == false" type="button"class="btn btn-primary" ng-click="menu(6,'','')">Voltar</button>
+                                        <button type="submit"class="btn btn-primary">Cadastrar</button>
+                                    </div>
+                                    <legend class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></legend> 
+                                    <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                    </div>  
+                                </form>
+                            </div>
+
+
+                            <!-- ========================= MODAL EDITAR - > PRODUTOS =========================  -->                   
+                            <a id="modalEditarProdutosLinha" data-toggle="modal" data-target="#myModalEditarProdutosLinha"></a>                     
+                            <div class="modal fade" id="myModalEditarProdutosLinha" role="dialog">
+                                <div class="modal-dialog" style="width: 60%;   margin-top: 50px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>   
+                                            <center><h4 class="modal-title">Edição Produtos em Linha</h4>  </center>                                                                  
+                                            <br>
+                                            <p><b>Produto: </b> {{ editarProdutosLinha.produto }}</p>      
+                                        </div>
+                                        <div class="modal-body" style="padding: 0px">                                                                   
+                                        <form  class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-submit="editarProdutoLinha()" method="POST" name="formEditar">
+                    
+                                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <label>Produto</label>
+                                                <input type="text" class="form-control" maxlength="50" ng-model="editarProdutosLinha.produto" required>
+                                            </div> 
+                                        
+                                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <label>Fabricante</label>
+                                                <input type="text" class="form-control" maxlength="25" ng-model="editarProdutosLinha.fabricante">
+                                            </div> 
+                                            
+                                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <label>EAN</label>
+                                                <input type="text" class="form-control" maxlength="20" ng-model="editarProdutosLinha.ean">
+                                            </div> 
+        
+                                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <label>ICMS %</label>
+                                                <input type="text" class="form-control" ng-model="editarProdutosLinha.icms" ui-number-mask>
+                                            </div> 
+        
+                                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <label>Preço Ponta</label>
+                                                <input type="text" class="form-control" ng-model="editarProdutosLinha.precoPonta" ui-number-mask>
+                                            </div> 
+        
+                                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <label>Custo</label>
+                                                <input type="text" class="form-control" ng-model="editarProdutosLinha.custo" ui-number-mask>
+                                            </div> 
+        
+                                            <div class="form-group col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                <label>Lançamento</label><br>
+                                                <input type="checkbox" ng-model="editarProdutosLinha.lancamento" ng-true-value="'S'" ng-false-value="'N'">
+                                            </div> 
+        
+                
+                                            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: 20px">                                          
+                                                
+                                                <button type="submit"class="btn btn-primary"> <i class="glyphicon glyphicon-edit" aria-hidden="true"> </i> Editar</button>
+                                            </div>
+                                            <legend class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></legend> 
+                                            <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                                <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                            </div>  
+                                        </form>         
+                                                
+                                        </div>
+                                        <div class="modal-footer">  
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= MODAL INATIVAR > PRODUTOS =========================  -->                 
+                            <a id="modalInativarProdutoLinha" data-toggle="modal" data-target="#myModalInativarProdutoLinha"></a>                     
+                            <div class="modal fade" id="myModalInativarProdutoLinha" role="dialog">
+                                <div class="modal-dialog" style="width: 25%;  margin-top: 300px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>                                    
+                                          
+                                            <div ng-if="inativar.inativo == 'N'" class="modal-title" style="font-size:15px">
+                                                Deseja inativar o Produto <b>{{inativar.produto}}</b>? 
+                                            </div> 
+                                            <div ng-if="inativar.inativo == 'S'" class="modal-title" style="font-size:15px">
+                                                Deseja ativar o Produto <b>{{inativar.produto}}</b>? 
+                                            </div>                                    
+                                        </div>                                      
+                                        <div class="modal-footer">  
+                                            <button type="button" ng-click="inativarProdutoLinha()" class="btn btn-warning">Sim</button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+                            
+
+                        </div> 
+                        <!-- FIM CLASS ROW -->    
+                    <div class="clearfix"></div>
+                </div>
+            </div>   
+        </div>
+        <br/>
+    </div> 
+</div>
+

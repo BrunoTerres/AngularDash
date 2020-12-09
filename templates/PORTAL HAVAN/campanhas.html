@@ -1,0 +1,192 @@
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-controller="campanhaControlleraPH">
+    <div role="main">        
+      
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="dashboard_graph">
+                        <div class="row x_title">
+                            <div class="col-md-6">
+                                <h3>Campanhas<small></small></h3>
+                            </div>  
+                            <div class="col-md-6">
+                                <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 2px"> 
+                                    <div class="pull-right"  style="margin: auto" >
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                        <button class="btn btn-round btn-default pull-right" type="button" ng-click="pesquisaCampanhaPortalHavan('','')" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>    
+                                    </div>                                                                   
+                                </div>
+                            </div>   
+                        </div>   
+
+                        <div class="container col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="divGeral">
+                            <div class="row">
+                                <div>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="x_content" >
+
+                                            <!-- ========================= TELA DE VISUALIZAR FORNECEDOR ========================= -->  
+                                            <div class="row" ng-show ="divVisualizar">                                             
+                                                <div class="">
+                                                    <div class="cabecalhoDiv">
+                                                        <span class="titulo">Campanhas Cadastradas</span>
+                                                        <button class="pull-right btn btn-success col-xs-2 col-sm-2 col-md-2 col-lg-2 hidden-xs"  ng-click="menu(1)"><small>Cadastrar Campanha</small></button> 
+                                                    </div>
+                                                    <div class="cabecalhoGeralDiv">                                                    
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>   
+                                                                    <th></th> 
+                                                                    <th>Comprador</th>
+                                                                    <th>Data</th>
+                                                                    <th>Campanha</th>
+                                                                    <th>Investimento</th>
+                                                                    <th>Início Campanha</th>
+                                                                    <th>Término Campanha</th>
+                                                                    <th>Fechamento</th>
+                                                                    <th>Fechamento($)</th>
+                                                                    <th>Nota de Débito</th>
+                                                                    <th>Status</th>                                                                                  
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat=" i in campanhas">                                                                    
+                                                                    <td><a href="" ng-click="pesquisaCampanhaPortalHavan(i.id,'E')"><button style="font-size: 8px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Campanha" ></button></td>    
+                                                                    <td>{{ i.comprador }}</td> 
+                                                                    <td>{{ i.data }}</td> 
+                                                                    <td>{{ i.campanha }}</td> 
+                                                                    <td>{{ i.investimento | currency: 'R$ '}}</td> 
+                                                                    <td>{{ i.inicioCampanha }}</td> 
+                                                                    <td>{{ i.terminoCampanha }}</td> 
+                                                                    <td>{{ i.fechamento }}</td> 
+                                                                    <td>{{ i.fechamentoFinanceiro | currency: 'R$ ' }}</td> 
+                                                                    <td>{{ i.notaDebito }}</td> 
+                                                                    <td><span  class="corError" ng-show="i.status == 'N'">A Vencer</span><span class="corSuccess" ng-show="i.status == 'P'">Pago</span></td>                                         
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>                                          
+                                                </div>   
+                                            </div>   
+
+                                            <!-- ========================= TELA DE CADASTRAR FORNECEDOR  ========================= -->   
+                                            <div class="row" ng-show="divFormulario" >
+                                                <div  class="col-xs-12 col-sm-12 col-md-12 col-lg-12">                                                                
+                                                    <span class="section"> Cadastro Campanha</span>
+                                                    
+                                                    <form class="form-horizontal" name="formCadastro" ng-submit="formCadastro.$valid && formularioDadosCampanhaPortalHavan()" novalidate="novalidate"> 
+                                                                                           
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Comprador <b class="corError">*</b></label>                                     
+                                                                <select  class="form-control" ng-model="formularioDados.comprador" name="comprador" required>
+                                                                    <option ng-selected="formularioDados.comprador" ng-value="''" value="''" required>SELECIONE COMPRADOR</option>
+                                                                    <option ng-repeat="i in compradoresHavan" ng-selected="formularioDados.comprador == i.id" ng-value="i.id" value="i.id">{{i.name}}</option>
+                                                                </select>  
+                                                                <small class="corError" ng-if="(formCadastro.comprador.$touched || formCadastro.$submitted) && formCadastro.comprador.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                       
+                                                        </div>                                                      
+                                                        
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Data <b class="corError">*</b></label>   
+                                                                <input type="date" class="form-control" name="data" ng-model="formularioDados.data" required="required">
+                                                                <small class="corError" ng-if="(formCadastro.data.$touched || formCadastro.$submitted) && formCadastro.data.$invalid" >Este campo é obrigatório</small>
+                                                            </div>                                                           
+                                                        </div>   
+                
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Campanha <b class="corError">*</b></label>
+                                                                <input type="text" class="form-control" name="campanha" ng-model="formularioDados.campanha" maxlength="50" required="required">
+                                                                <small class="corError" ng-if="(formCadastro.campanha.$touched || formCadastro.$submitted) && formCadastro.campanha.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                           
+                                                        </div> 
+                                                        
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Investimento Previsto <b class="corError">*</b></label>                                                           
+                                                                <input type="text" class="form-control" name="investimento" ng-model="formularioDados.investimento" data-thousands="." data-decimal="," id="investimentoMoney"  value=""  required="required">
+                                                                <small class="corError" ng-if="(formCadastro.investimento.$touched || formCadastro.$submitted) && formCadastro.investimento.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                            
+                                                        </div>  
+                
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Início Campanha <b class="corError">*</b></label>
+                                                                <input type="date" class="form-control" name="inicio" ng-model="formularioDados.inicioCampanha" required="required">
+                                                                <small class="corError" ng-if="(formCadastro.inicio.$touched || formCadastro.$submitted) && formCadastro.inicio.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                            
+                                                        </div> 
+                                                        
+                                                        <div class="form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Término Campanha <b class="corError">*</b></label>
+                                                                <input type="date" class="form-control" name="termino" ng-model="formularioDados.terminoCampanha" required="required">
+                                                                <small class="corError" ng-if="(formCadastro.termino.$touched || formCadastro.$submitted) && formCadastro.termino.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                           
+                                                        </div> 
+                
+                                                        <div class="form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Fechamento <b class="corError">*</b></label>
+                                                                <input type="date" class="form-control" name="fechamento" ng-model="formularioDados.fechamento" required="required">
+                                                                <small class="corError" ng-if="(formCadastro.fechamento.$touched || formCadastro.$submitted) && formCadastro.fechamento.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                          
+                                                        </div> 
+                
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Fechamento($) <b class="corError">*</b></label>
+                                                                <input type="text" class="form-control" name="fechamentoFinanceiro" ng-model="formularioDados.fechamentoFinanceiro" data-thousands="." data-decimal="," id="fechamentoMoney" required="required">
+                                                                <small class="corError" ng-if="(formCadastro.fechamentoFinanceiro.$touched || formCadastro.$submitted) && formCadastro.fechamentoFinanceiro.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                            
+                                                        </div> 
+                
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Nota de Débito <b class="corError">*</b></label>
+                                                                <input type="text" class="form-control" name="notaDebito" ng-model="formularioDados.notaDebito" required="required">
+                                                                <small class="corError" ng-if="(formCadastro.notaDebito.$touched || formCadastro.$submitted) && formCadastro.notaDebito.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                            
+                                                        </div> 
+                
+                                                        <div class="item form-group">
+                                                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                                                <label>Status <b class="corError">*</b></label>                                     
+                                                                <select  class="form-control" ng-model="formularioDados.status" name="status" required>
+                                                                    <option ng-selected="formularioDados.status" ng-value="''" value="''" required>SELECIONE O STATUS</option>
+                                                                    <option ng-repeat="i in statusCampanha" ng-selected="formularioDados.status == i.id" ng-value="i.id" value="i.id">{{i.name}}</option>
+                                                                </select>  
+                                                                <small class="corError" ng-if="(formCadastro.status.$touched || formCadastro.$submitted) && formCadastro.status.$invalid">Este campo é obrigatório</small>
+                                                            </div>                                                           
+                                                        </div> 
+                                                                                                        
+                                                        <div class="form-group col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px">
+                                                            <button ng-show="botaoVolta" type="button"class="btn btn-primary" ng-click="menu(2)">Voltar</button>
+                                                            <button type="submit"class="btn btn-primary"><span ng-if="buttonEditar == false">Cadastrar</span> <span ng-if="buttonEditar">Editar</span>  </button>
+                                                        </div>  
+                
+                                                        <legend class="col-md-12 col-sm-12 col-xs-12"></legend> 
+                                                        <div class="form-group col-md-6">
+                                                            <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                        </div>  
+                                                    </form>                                                    
+                                                </div>
+                                            </div> 
+
+                                        </div>                                        
+                                    </div>
+                                </div>                                                           
+                            </div> 
+                        </div>   
+                         
+                        <!-- FIM CLASS ROW -->    
+                    <div class="clearfix"></div>
+                </div>
+            </div>   
+        </div>
+        <br/>
+    </div> 
+</div>
+

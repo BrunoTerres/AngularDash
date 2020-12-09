@@ -1,0 +1,1764 @@
+﻿<div class="col-md-12 col-sm-12 col-xs-18 " ng-controller="lojasController">    
+    <div role="main">
+        <div class="row tile_count">
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Faturamento Total</span>
+                <div class="count"><h2 ng-cloack>{{ visLjfVisaoGeral.visaogeral.total | currency: 'R$ ' }}</h2></div>                
+                <span class="count_bottom"><i ng-cloack class="green">{{ visLjfVisaoGeral.visaogeral.quantidade }} </i> Produtos</span>
+                <p><span class="count_bottom"><i ng-cloack class="green">{{ visLjfVisaoGeral.visaogeral.markdown }} </i> Markdown</span></p>
+                <p ng-if="visLjfVisaoGeral.visaogeral.total"><a href="" ng-click="ljfPesquisaTicketMedioCategoria('999', 1)"><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visLjfVisaoGeral.visaogeral.total / visLjfVisaoGeral.visaogeral.quantidade | currency: 'R$ ' }} </i> Ticket M. Produto</span></a></p>    
+                <p ng-if="visLjfVisaoGeral.visaogeral.total"><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visLjfVisaoGeral.visaogeral.total / visLjfVisaoGeral.visaogeral.clientes | currency: 'R$ ' }} </i> Ticket M. Cliente</span></p>   
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visLjfVisaoGeral.visaogeral.clientes }} </i> Clientes</span></p>
+               
+            </div>              
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" ng-repeat="rEmp in visLjfVisaoGeral.visaogeralporloja" ng-show="rEmp.show">
+                <span ng-if="rEmp.empresa == '102'" class="count_top"><i class="fa fa-user"></i> Itajaí Quiosque </span>
+                <span ng-if="rEmp.empresa == '107'" class="count_top"><i class="fa fa-user"></i> Itajaí Loja </span>
+                <span ng-if="rEmp.empresa == '106'" class="count_top"><i class="fa fa-user"></i> Balneario </span>
+                <span ng-if="rEmp.empresa == '103'" class="count_top"><i class="fa fa-user"></i> Joinville </span>
+                <span ng-if="rEmp.empresa == '104'" class="count_top"><i class="fa fa-user"></i> Blumenau </span>
+                <span ng-if="rEmp.empresa == '105'" class="count_top"><i class="fa fa-user"></i> São José </span>
+                <span ng-if="rEmp.empresa == '201'" class="count_top"><i class="fa fa-user"></i> Curitiba - Palladium </span>  
+                <span ng-if="rEmp.empresa == '202'" class="count_top"><i class="fa fa-user"></i> Curitiba - Jockey Plaza </span>                 
+                <div class="count"><h2 ng-cloack>{{ rEmp.valor | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ rEmp.produto }} </i> Produtos</span>
+                <p><span class="count_bottom"><i ng-cloack class="green">{{ rEmp.markdown }} </i> Markdown</span></p>
+                <p><a href="" ng-click="ljfPesquisaTicketMedioCategoria(rEmp.empresa, 2)"><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rEmp.valor / rEmp.produto | currency: 'R$ ' }} </i> Ticket M. Produto</span></a></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rEmp.valor / rEmp.cliente | currency: 'R$ ' }} </i> Ticket M. Cliente</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rEmp.cliente }} </i> Clientes</span></p>
+            </div>                          
+        </div>
+                
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                      <div class="col-md-6">
+                        <h3>Analise das Vendas - Lojas Físicas <small></small></h3>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                            <button class="btn btn-round btn-default pull-right" type="button" ng-click="ljfVisaoGeral()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>   
+                        </div>
+                      </div>       
+                    </div><p/>  
+                    <div ng-show="divApresenta">
+                        <!-- ========================= VENDAS POR LOJA  =========================  -->
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                            <div id="hcVendasPorLoja" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR DATA  =========================  -->
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                            <div id="hcVendasPorData" ></div>
+                        </div>                 <p/>
+
+                        <!-- ========================= VENDAS POR TIPO  =========================  -->
+                        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                            <div id="hcVendasPorTipo" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR TIPO - 0006  =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo006 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorTipo006" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR TIPO - 107  =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo107 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorTipo107" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR TIPO - 106  =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo106 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorTipo106" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR TIPO - 007  =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo007!= ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorTipo007" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR TIPO - 104  =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo104 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorTipo104" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR TIPO - 105  =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo105 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorTipo105" ></div>
+                        </div>                       
+
+                        <!-- ========================= VENDAS POR TIPO - 201  col-xs-12 col-sm-12 col-md-12 col-lg-12 =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo201 != ''"ng-class="{'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil =='48', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '48' }">
+                            <div id="hcVendasPorTipo201" ></div>
+                        </div><p/> 
+                        
+                        <!-- ========================= VENDAS POR TIPO - 202  col-xs-12 col-sm-12 col-md-12 col-lg-12 =========================  -->
+                        <div ng-if="visLjfVisaoGeral.vendaportipo202 != ''" ng-class="{'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil =='48', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '48' }">
+                                <div id="hcVendasPorTipo202" ></div>
+                        </div><p/> 
+
+                        <hr ng-show="showTable" style="border-color: #aaa; box-sizing: border-box; width: 95%" /><p/>
+
+                        <!-- ========================= VENDAS POR FABRICANTE  =========================  -->
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                            <div id="hcVendasPorFabricante" ></div>
+                        </div><p/>
+
+                        <hr ng-show="showTable" style="border-color: #aaa; box-sizing: border-box; width: 95%" /> <p/>
+
+                        <!-- ========================= VENDAS POR VENDEDOR - ITJ Quiosque  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporvendedor_itj102" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorVendedorItj102" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR VENDEDOR - ITJ Loja  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporvendedor_itj107" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorVendedorItj107" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR VENDEDOR - Balneario  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporvendedor_itj106" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorVendedorItj106" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR VENDEDOR - JVL  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporvendedor_jvl" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorVendedorJvl" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR VENDEDOR - BLU  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporvendedor_blu" ng-class="{'col-xs-12 col-sm-12 col-md-12 col-lg-12': login.idperfil =='49', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '49' }" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorVendedorBlu" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>
+
+                         <!-- ========================= VENDAS POR VENDEDOR - SP  =========================  -->
+                         <div ng-show="visLjfVisaoGeral.vendaporvendedor_sp != ''"ng-class="{'col-xs-12 col-sm-12 col-md-12 col-lg-12': login.idperfil =='49', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '49' }" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorVendedorSP" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR VENDEDOR - CWB PALLADIUM  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporvendedor_ctb != ''" ng-class="{'col-xs-12 col-sm-12 col-md-12 col-lg-12': login.idperfil =='48', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '48' }">
+                            <div id="hcVendasPorVendedorCtb" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>  <p/>
+
+                        <!-- ========================= VENDAS POR VENDEDOR - CWB JOCKEY  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporvendedor_ctbJ != ''" ng-class="{'col-xs-12 col-sm-12 col-md-12 col-lg-12': login.idperfil =='48', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '48' }">
+                            <div id="hcVendasPorVendedorCtbJ" ng-click="ljfVisaoGeralVendedorGrupo()"></div>
+                        </div>  <p/>    
+
+                        <hr ng-show="showTable" style="border-color: #aaa; box-sizing: border-box; width: 95%" /><p/>
+
+                        <!-- ========================= MODAL VENDEDORES PESQUISA FORNECEDORES  =========================  -->                 
+                        <a id="modalVendedor" data-toggle="modal" data-target="#myModal"></a>                     
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog" style="width: 45%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>   
+
+                                        <div align="center">
+                                            <h4 ng-if="vendedorGrupo == true" class="modal-title"> Venda por Grupo</h4>
+                                            <h4 ng-if="vendedorFornecedor == true" class="modal-title"> Venda por Fornecedor</h4>
+                                            <h4 ng-if="vendedorProduto == true" class="modal-title"> Venda por Produto</h4>
+                                        </div>                                     
+                                        <br>
+                                        <b>VENDEDOR(A) :</b> {{ infoVendedor.nome }}   
+                                        <p ng-if="vendedorFornecedor == true"><b>GRUPO :</b> {{ infoGrupo.name }}</p>
+                                        <p ng-if="vendedorProduto == true"><b>GRUPO :</b> {{ infoGrupo.name }}</p>
+                                        <p ng-if="vendedorProduto == true"><b>FORNECEDOR(A) :</b> {{ infoFornecedor.name }}</p>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <div ng-if="vendedorGrupo == true" >
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>                                                
+                                                    </tr>                                            
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visLjfVendedorGrupo.ljfVendedorGrupo">
+                                                        <td><a href="" ng-click="ljfVisaoGeralVendedorFornecedor(i.codigoGrupo, i.name, i.y)" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td> {{ i.name }} </td>
+                                                        <td>{{ i.quantidade }}  </td>
+                                                        <td>{{ i.y | currency: 'R$ ' }}</td>                                                   
+                                                    </tr>                                            
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div ng-if="vendedorFornecedor == true">
+                                            <table class="table">
+                                               <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>                                                
+                                                    </tr>                                            
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visLjfVendedorFornecedor.ljfVendedorFornecedor">
+                                                        <td><a href="" ng-click="ljfVisaoGeralVendedorProduto(i.codigoFornecedor, i.name, i.y)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td> {{ i.name }} </td>
+                                                        <td>{{ i.quantidade }}  </td>
+                                                        <td>{{ i.y | currency: 'R$ ' }}</td>                                                   
+                                                    </tr>                                            
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        <div ng-if="vendedorProduto == true">
+                                            <table class="table">
+                                               <thead>
+                                                    <tr>   
+                                                        <th>Código</th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>                                                
+                                                    </tr>                                            
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visLjfVendedorProduto.ljfVendedorProduto">      
+                                                        <td>{{ i.codigoProduto }}</td>
+                                                        <td> {{ i.name }} </td>
+                                                        <td>{{ i.quantidade }}  </td>
+                                                        <td>{{ i.y | currency: 'R$ ' }}</td>                                                   
+                                                    </tr>                                            
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer">    
+                                        <div align="right">
+                                            <b ng-if="vendedorGrupo == true">TOTAL VENDIDO: {{ infoVendedor.y | currency: 'R$ ' }}</b>          
+                                            <b ng-if="vendedorFornecedor == true">TOTAL VENDIDO: {{ infoGrupo.y | currency: 'R$ ' }}</b>  
+                                            <b ng-if="vendedorProduto == true">TOTAL VENDIDO: {{ infoFornecedor.y | currency: 'R$ ' }}</b>  
+                                        </div>                                                      
+                                        <br>
+                                        <button class="btn buttonGeral" type="button" ng-if="vendedorFornecedor == true" ng-click="showButton()">Voltar</button>
+                                        <button class="btn buttonGeral" type="button" ng-if="vendedorProduto == true" ng-click="showButton()">Voltar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG  =========================  -->
+                        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                            <div id="hcVendasPorFpg"></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG - 006  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg006 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorFpg006" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG - 107 =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg107 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorFpg107" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG - 106  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg106 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorFpg106" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG - 007  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg007 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorFpg007" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG - 104  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg104 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorFpg104" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG - 105  =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg105 != ''" class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="login.idperfil != '48'">
+                            <div id="hcVendasPorFpg105" ></div>
+                        </div>
+
+                        <!-- ========================= VENDAS POR FPG - 201 col-xs-12 col-sm-12 col-md-12 col-lg-12 =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg201 != ''" ng-class="{'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil =='48', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '48' }">  
+                            <div id="hcVendasPorFpg201" ></div>
+                        </div><p/>
+
+                        <!-- ========================= VENDAS POR FPG - 202 col-xs-12 col-sm-12 col-md-12 col-lg-12 =========================  -->
+                        <div ng-show="visLjfVisaoGeral.vendaporfpg202 != ''" ng-class="{'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil =='48', 'col-xs-12 col-sm-12 col-md-5 col-lg-6': login.idperfil != '48' }">  
+                            <div id="hcVendasPorFpg202" ></div>
+                        </div><p/>
+
+                        <hr ng-show="showTable" style="border-color: #aaa; box-sizing: border-box; width: 95%" /><p/>  
+
+                        <nav ng-show="menu == true">
+                              <ul class="pager">                                             
+                                <li ><a ng-click="lucratividadeDiv(lucratividadeFornecedor = true, lucratividadeGrupo=false)" href="" >Lucratividade Fornecedor <i ng-class="{'fa fa-minus': lucratividadeFornecedor, 'fa fa-plus': !lucratividadeFornecedor  }"></i></a></li>
+                                <li ><a ng-click="lucratividadeDiv(lucratividadeFornecedor = false, lucratividadeGrupo=true)" href="" >Lucratividade Grupo <i ng-class="{'fa fa-minus': lucratividadeGrupo, 'fa fa-plus': !lucratividadeGrupo }"></i></a></li>
+                              </ul>
+                        </nav> 
+
+                        <div ng-if="lucratividadeFornecedor == true">
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - TELEFONIA ITAJAÍ Quiosque =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Telefonia</h2>  Itajaí Quiosque </center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_006">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'006',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn006Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn006Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn006Cl.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn006Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn006Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn006Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn006Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn006Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn006Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/>  
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - TELEFONIA ITAJAÍ Loja =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Telefonia</h2>  Itajaí Loja </center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_107">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'107',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn107Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn107Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn107Cl.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn107Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn107Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn107Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn107Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn107Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn107Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/> 
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - TELEFONIA Balneario =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Telefonia</h2>  Balneario </center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_107">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'106',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn106Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn106Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn106Cl.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn106Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn106Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn106Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn106Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn106Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn106Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/> 
+                            <!-- ========================= LUCRATIVIDADE POR FONECEDOR - TELEFONE JOINVILLE  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center>Joinville</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_007">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'007',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                 <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn007Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn007Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn007Cl.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn007Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn007Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/>
+
+                            <!-- ========================= LUCRATIVIDADE POR FONECEDOR - TELEFONE BLUMENAU  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center>Blumenau</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_104">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'104',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn104Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn104Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn104Cl.tot_produto_total }}</td>
+                                                    <td>{{ totalforn104Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn104Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn104Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn104Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn104Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn104Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/>
+
+                            <!-- ========================= LUCRATIVIDADE POR FONECEDOR - TELEFONE SÃO JOSE  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center>São José</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_105">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'105',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn105Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn105Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn105Cl.tot_produto_total }}</td>
+                                                    <td>{{ totalforn105Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn105Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn105Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn105Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn105Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn105Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/>
+
+                            <!-- ========================= LUCRATIVIDADE POR FONECEDOR - TELEFONE CURITIBA - PALLADIUM  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_forn_cl_201 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><div ng-show="login.idperfil == '49'"><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Telefonia</h2></div> Curitiba - Palladium</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th            >Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_201">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'201',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn201Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn201Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn201Cl.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn201Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn201Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>  
+                            
+                            <!-- ========================= LUCRATIVIDADE POR FONECEDOR - TELEFONE CURITIBA - JOCKEY PLAZA =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' &&  visLjfVisaoGeral.luc_forn_cl_202 != '' " class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><div ng-show="login.idperfil == '49'"><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Telefonia</h2></div> Curitiba - Jockey Plaza</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_cl_202">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'202',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'cl')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn202Cl.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn202Cl.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn202Cl.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn202Cl.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn202Cl.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn202Cl.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn202Cl.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn202Cl.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn202Cl.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>    
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS ITAJAÍ Quiosque =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Outros Produtos</h2>  Itajaí Quiosque</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th            >Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_006">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'006',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn006Ot.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn006Ot.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn006Ot.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn006Ot.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn006Ot.tot_custo_total }}</td>
+                                                    <td>{{ totalforn006Ot.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn006Ot.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn006Ot.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn006Ot.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/>  
+                        
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS ITAJAÍ Loja =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Outros Produtos</h2>  Itajaí Loja</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th            >Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_107">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'107',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn107Ot.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn107Ot.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn107Ot.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn107Ot.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn107Ot.tot_custo_total }}</td>
+                                                    <td>{{ totalforn107Ot.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn107Ot.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn107Ot.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn107Ot.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/> 
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS Balneario =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Outros Produtos</h2>  Balneario </center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th            >Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_106">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'106',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn106Ot.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn106Ot.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn106Ot.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn106Ot.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn106Ot.tot_custo_total }}</td>
+                                                    <td>{{ totalforn106Ot.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn106Ot.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn106Ot.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn106Ot.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/> 
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS JOINVILE  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center>Joinville</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_007">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'007',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn007Ot.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn007Ot.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn007Ot.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Ot.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn007Ot.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Ot.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Ot.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn007Ot.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn007Ot.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/> 
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS BLUMENAU  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center>Blumenau</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_104">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'104',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn104Ot.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn104Ot.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn104Ot.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn104Ot.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn104Ot.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn104Ot.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn104Ot.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn104Ot.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn104Ot.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/>
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS SÃO JOSÉ =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48'" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center>São José</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_105">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'105',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn105Ot.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn105Ot.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn105Ot.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn105Ot.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn105Ot.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn105Ot.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn105Ot.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn105Ot.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn105Ot.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p/> 
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS CURITIBA - PALLADIUM  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_forn_ot_201 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><div ng-show="login.idperfil == '49'"><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Outros Produtos</h2></div> Curitiba - Palladium</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Fornecedor</th>
+                                                <th width="100">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_201">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'201',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalforn201Ot.qtd_produto_total }}</td>
+                                                    <td>{{ totalforn201Ot.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn201Ot.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Ot.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn201Ot.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Ot.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Ot.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalforn201Ot.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalforn201Ot.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>  
+
+                            <!-- ========================= LUCRATIVIDADE POR FORNECEDOR - OUTROS PRODUTOS CURITIBA - JOCKEY PLAZA  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_forn_ot_202 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                    <div class="container">
+                                        <div class="row">
+                                            <center><div ng-show="login.idperfil == '49'"><h3><strong>Lucratividade Por Fornecedor</strong></h3><h2>Outros Produtos</h2></div> Curitiba - Jockey Plaza</center>
+                                        </div>
+                                    </div>
+                                    <div class="container">
+                                        <div class="row">
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead>
+                                                    <th>Fornecedor</th>
+                                                    <th width="100">Quantidade</th>
+                                                    <th width="100">% Quantidade</th>
+                                                    <th width="100">Valor</th>
+                                                    <th width="100">% Valor</th>
+                                                    <th width="100">Custo Negoc.</th>
+                                                    <th width="100">Lucro</th>
+                                                    <th width="100">% Lucro / Tot Lucro</th>
+                                                    <th width="100">Mark Down</th>
+                                                    <th width="100">Mark Up</th>
+                                                </thead>
+                                                <body>
+                                                    <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_forn_ot_202">
+                                                        <td align=left><a href="" ng-click="ljfVisaoGeralLucrFornecedorProduto(rLucr.codigo,'202',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro,'ot')">{{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                        <td align=right> {{rLucr.qtd_produto}} </td>
+                                                        <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                        <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                        <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                        <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                        <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                        <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                        <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                        <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                    </tr>
+                                                    <tr align='right'>
+                                                        <td ><b>TOTAL</b></td>
+                                                        <td>{{ totalforn202Ot.qtd_produto_total }}</td>
+                                                        <td>{{ totalforn202Ot.pct_produto_total | currency: ''}}%</td>
+                                                        <td>{{ totalforn202Ot.tot_produto_total | currency: ''}}</td>
+                                                        <td>{{ totalforn202Ot.pct_valor_total | currency: ''}}%</td>
+                                                        <td>{{ totalforn202Ot.tot_custo_total | currency: ''}}</td>
+                                                        <td>{{ totalforn202Ot.tot_lucro_total | currency: ''}}</td>
+                                                        <td>{{ totalforn202Ot.pct_lucro_total | currency: ''}}%</td>
+                                                        <td>{{ totalforn202Ot.markdown_total | currency: ''}}</td>
+                                                        <td>{{ totalforn202Ot.markup_total | currency: ''}}</td>                            
+                                                    </tr>
+                                                </body>
+                                            </table>
+                                        </div>
+                                    </div>
+                            </div>  
+
+                        </div>
+                        
+                        <div  ng-if="lucratividadeGrupo == true">
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - ITAJAÍ Quiosque =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_006 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                 <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Lucratividade Por Grupo</strong></h3> Itajaí Quiosque</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Grupo</th>
+                                                <th width="70">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_006">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'006',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)"> {{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalGrupo006.qtd_produto_total }}</td>
+                                                    <td>{{ totalGrupo006.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo006.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo006.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo006.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo006.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo006.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo006.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo006.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>  
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - ITAJAÍ Loja =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_107 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                   <div class="row">
+                                       <center><h3><strong>Lucratividade Por Grupo</strong></h3> Itajaí Loja</center>
+                                   </div>
+                               </div>
+                               <div class="container">
+                                   <div class="row">
+                                       <table class="table table-bordered table-striped table-hover">
+                                           <thead>
+                                               <th>Grupo</th>
+                                               <th width="70">Quantidade</th>
+                                               <th width="100">% Quantidade</th>
+                                               <th width="100">Valor</th>
+                                               <th width="100">% Valor</th>
+                                               <th width="100">Custo Negoc.</th>
+                                               <th width="100">Lucro</th>
+                                               <th width="100">% Lucro / Tot Lucro</th>
+                                               <th width="100">Mark Down</th>
+                                               <th width="100">Mark Up</th>
+                                           </thead>
+                                           <body>
+                                               <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_107">
+                                                   <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'107',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)"> {{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                   <td align=right> {{rLucr.qtd_produto}} </td>
+                                                   <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                               </tr>
+                                               <tr align='right'>
+                                                   <td ><b>TOTAL</b></td>
+                                                   <td>{{ totalGrupo107.qtd_produto_total }}</td>
+                                                   <td>{{ totalGrupo107.pct_produto_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo107.tot_produto_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo107.pct_valor_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo107.tot_custo_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo107.tot_lucro_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo107.pct_lucro_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo107.markdown_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo107.markup_total | currency: ''}}</td>                            
+                                               </tr>
+                                           </body>
+                                       </table>
+                                   </div>
+                               </div>
+                           </div>
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - Balneario =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_106 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                   <div class="row">
+                                       <center><h3><strong>Lucratividade Por Grupo</strong></h3> Itajaí Balneario</center>
+                                   </div>
+                               </div>
+                               <div class="container">
+                                   <div class="row">
+                                       <table class="table table-bordered table-striped table-hover">
+                                           <thead>
+                                               <th>Grupo</th>
+                                               <th width="70">Quantidade</th>
+                                               <th width="100">% Quantidade</th>
+                                               <th width="100">Valor</th>
+                                               <th width="100">% Valor</th>
+                                               <th width="100">Custo Negoc.</th>
+                                               <th width="100">Lucro</th>
+                                               <th width="100">% Lucro / Tot Lucro</th>
+                                               <th width="100">Mark Down</th>
+                                               <th width="100">Mark Up</th>
+                                           </thead>
+                                           <body>
+                                               <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_106">
+                                                   <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'106',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)"> {{rLucr.codigo}} - {{rLucr.nome}}</a></td>
+                                                   <td align=right> {{rLucr.qtd_produto}} </td>
+                                                   <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                               </tr>
+                                               <tr align='right'>
+                                                   <td ><b>TOTAL</b></td>
+                                                   <td>{{ totalGrupo106.qtd_produto_total }}</td>
+                                                   <td>{{ totalGrupo106.pct_produto_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo106.tot_produto_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo106.pct_valor_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo106.tot_custo_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo106.tot_lucro_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo106.pct_lucro_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo106.markdown_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo106.markup_total | currency: ''}}</td>                            
+                                               </tr>
+                                           </body>
+                                       </table>
+                                   </div>
+                               </div>
+                           </div>
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - JOINVILLE  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_007 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                 <div class="container">
+                                    <div class="row">
+                                        <center>Joinville</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Grupo</th>
+                                                <th width="70">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_007">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'007',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)">{{rLucr.codigo}} - {{rLucr.nome}}</a> </td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalGrupo007.qtd_produto_total }}</td>
+                                                    <td>{{ totalGrupo007.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo007.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo007.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo007.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo007.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo007.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo007.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo007.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - BLUMENAU  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_104 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                 <div class="container">
+                                    <div class="row">
+                                        <center>Blumenau</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Grupo</th>
+                                                <th width="70">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_104">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'104',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)"> {{rLucr.codigo}} - {{rLucr.nome}}</a> </td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalGrupo104.qtd_produto_total }}</td>
+                                                    <td>{{ totalGrupo104.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo104.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo104.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo104.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo104.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo104.pct_lucro_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo104.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo104.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - SÃO JOSÉ  =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_105 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div class="container">
+                                   <div class="row">
+                                       <center>São José</center>
+                                   </div>
+                               </div>
+                               <div class="container">
+                                   <div class="row">
+                                       <table class="table table-bordered table-striped table-hover">
+                                           <thead>
+                                               <th>Grupo</th>
+                                               <th width="70">Quantidade</th>
+                                               <th width="100">% Quantidade</th>
+                                               <th width="100">Valor</th>
+                                               <th width="100">% Valor</th>
+                                               <th width="100">Custo Negoc.</th>
+                                               <th width="100">Lucro</th>
+                                               <th width="100">% Lucro / Tot Lucro</th>
+                                               <th width="100">Mark Down</th>
+                                               <th width="100">Mark Up</th>
+                                           </thead>
+                                           <body>
+                                               <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_105">
+                                                   <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'105',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)"> {{rLucr.codigo}} - {{rLucr.nome}}</a> </td>
+                                                   <td align=right> {{rLucr.qtd_produto}} </td>
+                                                   <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                   <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                   <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                               </tr>
+                                               <tr align='right'>
+                                                   <td ><b>TOTAL</b></td>
+                                                   <td>{{ totalGrupo105.qtd_produto_total }}</td>
+                                                   <td>{{ totalGrupo105.pct_produto_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo105.tot_produto_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo105.pct_valor_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo105.tot_custo_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo105.tot_lucro_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo105.pct_lucro_total | currency: ''}}%</td>
+                                                   <td>{{ totalGrupo105.markdown_total | currency: ''}}</td>
+                                                   <td>{{ totalGrupo105.markup_total | currency: ''}}</td>                            
+                                               </tr>
+                                           </body>
+                                       </table>
+                                   </div>
+                               </div>
+                           </div> 
+
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - CURITIBA - PALLADIUM =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_201 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                 <div class="container">
+                                    <div class="row">
+                                        <center>Curitiba - Palladium</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Grupo</th>
+                                                <th width="70">Quantidade</th>
+                                                <th width="100">% Quantidade</th>
+                                                <th width="100">Valor</th>
+                                                <th width="100">% Valor</th>
+                                                <th width="100">Custo Negoc.</th>
+                                                <th width="100">Lucro</th>
+                                                <th width="100">% Lucro / Tot Lucro</th>
+                                                <th width="100">Mark Down</th>
+                                                <th width="100">Mark Up</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_201">
+                                                    <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'201',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)"> {{rLucr.codigo}} - {{rLucr.nome}} </a> </td>
+                                                    <td align=right> {{rLucr.qtd_produto}} </td>
+                                                    <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                    <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                    <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                </tr>
+                                                <tr align='right'>
+                                                    <td ><b>TOTAL</b></td>
+                                                    <td>{{ totalGrupo201.qtd_produto_total }}</td>
+                                                    <td>{{ totalGrupo201.pct_produto_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo201.tot_produto_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo201.pct_valor_total | currency: ''}}%</td>
+                                                    <td>{{ totalGrupo201.tot_custo_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo201.tot_lucro_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo201.pct_lucro_total | currency: '' }}%</td>
+                                                    <td>{{ totalGrupo201.markdown_total | currency: ''}}</td>
+                                                    <td>{{ totalGrupo201.markup_total | currency: ''}}</td>                            
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>  
+                            
+                            <!-- ========================= LUCRATIVIDADE POR GRUPO - CURITIBA - JOCKEY PLAZA =========================  -->
+                            <div ng-show="showTable && login.idperfil != '48' && visLjfVisaoGeral.luc_grupo_202 != ''" class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                    <div class="container">
+                                       <div class="row">
+                                           <center>Curitiba - Jockey Plaza</center>
+                                       </div>
+                                   </div>
+                                   <div class="container">
+                                       <div class="row">
+                                           <table class="table table-bordered table-striped table-hover">
+                                               <thead>
+                                                   <th>Grupo</th>
+                                                   <th width="70">Quantidade</th>
+                                                   <th width="100">% Quantidade</th>
+                                                   <th width="100">Valor</th>
+                                                   <th width="100">% Valor</th>
+                                                   <th width="100">Custo Negoc.</th>
+                                                   <th width="100">Lucro</th>
+                                                   <th width="100">% Lucro / Tot Lucro</th>
+                                                   <th width="100">Mark Down</th>
+                                                   <th width="100">Mark Up</th>
+                                               </thead>
+                                               <body>
+                                                   <tr ng-repeat="rLucr in visLjfVisaoGeral.luc_grupo_202">
+                                                       <td align=left><a href="" ng-click="ljfVisaoGeralLucrGrupoProduto(rLucr.codigo,'202',rLucr.nome,rLucr.qtd_produto,rLucr.tot_produto,rLucr.tot_lucro)"> {{rLucr.codigo}} - {{rLucr.nome}} </a> </td>
+                                                       <td align=right> {{rLucr.qtd_produto}} </td>
+                                                       <td align=right> {{rLucr.pct_produto | currency: ''}}% </td>
+                                                       <td align=right> {{rLucr.tot_produto | currency: ''}} </td>
+                                                       <td align=right> {{rLucr.pct_valor | currency: ''}}% </td>
+                                                       <td align=right> {{rLucr.tot_custo | currency: ''}} </td>
+                                                       <td align=right> {{rLucr.tot_lucro | currency: ''}} </td>
+                                                       <td align=right> {{rLucr.pct_lucto | currency: ''}}% </td>
+                                                       <td align=right> {{rLucr.markdown | currency: ''}} </td>
+                                                       <td align=right> {{rLucr.markup | currency: ''}} </td>
+                                                   </tr>
+                                                   <tr align='right'>
+                                                       <td ><b>TOTAL</b></td>
+                                                       <td>{{ totalGrupo202.qtd_produto_total }}</td>
+                                                       <td>{{ totalGrupo202.pct_produto_total | currency: ''}}%</td>
+                                                       <td>{{ totalGrupo202.tot_produto_total | currency: ''}}</td>
+                                                       <td>{{ totalGrupo202.pct_valor_total | currency: ''}}%</td>
+                                                       <td>{{ totalGrupo202.tot_custo_total | currency: ''}}</td>
+                                                       <td>{{ totalGrupo202.tot_lucro_total | currency: ''}}</td>
+                                                       <td>{{ totalGrupo202.pct_lucro_total | currency: '' }}%</td>
+                                                       <td>{{ totalGrupo202.markdown_total | currency: ''}}</td>
+                                                       <td>{{ totalGrupo202.markup_total | currency: ''}}</td>                            
+                                                   </tr>
+                                               </body>
+                                           </table>
+                                       </div>
+                                   </div>
+                            </div>  
+                        
+                        </div>
+                        
+                        <!-- ========================= MODAL LUCRATIVIDADE FORNECEDOR - > PRODUTO =========================  -->                 
+                        <a id="modalLucrFornProduto" data-toggle="modal" data-target="#myModalLucrFornecedorProduto"></a>                     
+                        <div class="modal fade" id="myModalLucrFornecedorProduto" role="dialog">
+                            <div class="modal-dialog" style="width: 75%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>                                     
+                                        <div align="center">
+                                            <h4 class="modal-title">Lucratividade por Produto</h4>                                       
+                                        </div>                                     
+                                        <br>
+                                        <b>FORNECEDOR(A) :</b> {{ infoLucrFornecedor.name }}
+                                        <p><b>LOJA: </b>{{ empresaNome }}</p>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Produto</th>
+                                                        <th width="75">Quantidade</th>
+                                                        <th width="100">% Quantidade</th>
+                                                        <th width="100">Valor</th>
+                                                        <th width="100">% Valor</th>
+                                                        <th width="100">Custo Negoc.</th>
+                                                        <th width="100">Lucro</th>
+                                                        <th width="100">% Lucro/Tot Lucro</th>
+                                                        <th width="100">Mark Down</th>
+                                                        <th width="100">Mark Up</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visLjfLucrFornecedorProduto.lucratividadeFornecedorPorProduto">
+                                                        <td align=left>{{ i.produtoCodigo }} - {{ i.name }}</td>                                                    
+                                                        <td align=right>{{ i.produtoQuantidade }}</td>
+                                                        <td align=right>{{ i.porcQuantidade | currency: ''}}%</td>
+                                                        <td align=right>{{ i.y | currency: ''}}</td>
+                                                        <td align=right>{{ i.porcTotalVenda | currency: ''}}%</td>
+                                                        <td align=right>{{ i.custoNegociado | currency: ''}}</td>
+                                                        <td align=right>{{ i.lucro | currency: ''}}</td>
+                                                        <td align=right>{{ i.porcLucro | currency: ''}}%</td>
+                                                        <td align=right>{{ i.markDown }}</td>
+                                                        <td align=right>{{ i.markUp }}</td>                                                 
+                                                    </tr>
+                                                    <tr align='right'>
+                                                        <td ><b>TOTAL</b></td>
+                                                        <td>{{ quantidadeTotal }}</td>
+                                                        <td>{{ quantidadeTotalPorc  }}%</td>
+                                                        <td>{{ totalProduto }}</td>
+                                                        <td>{{ totalProdutoPorc }}%</td>
+                                                        <td>{{ custoTotal }}</td>
+                                                        <td>{{ lucroTotal  }}</td>
+                                                        <td>{{ lucroTotalPorc }}%</td>
+                                                        <td>{{ markDown }}</td>
+                                                        <td>{{ markUp }}</td>                            
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">  
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div> 
+                        
+                        <!-- ========================= MODAL LUCRATIVIDADE GRUPO - > PRODUTO =========================  -->                 
+                        <a id="modalLucrGrupoProduto" data-toggle="modal" data-target="#myModalLucrGrupoProduto"></a>                     
+                        <div class="modal fade" id="myModalLucrGrupoProduto" role="dialog">
+                            <div class="modal-dialog" style="width: 80%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>                                     
+                                        <div align="center">
+                                            <h4 class="modal-title">Lucratividade por Produto</h4>                                       
+                                        </div>                                     
+                                        <br>
+                                        <b>GRUPO :</b> {{ infoLucrGrupo.name }} 
+                                        <p><b>LOJA: </b>{{ empresaNome }}</p>
+                                    </div>
+                                    <div class="modal-body">                                    
+
+                                        <div>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Produto</th>
+                                                        <th width="100">Quantidade</th>
+                                                        <th width="100">% Quantidade</th>
+                                                        <th width="100">Valor</th>
+                                                        <th width="100">% Valor</th>
+                                                        <th width="100">Custo Negoc.</th>
+                                                        <th width="100">Lucro</th>
+                                                        <th width="100">% Lucro/Tot Lucro</th>
+                                                        <th width="100">Mark Down</th>
+                                                        <th width="100">Mark Up</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visLjfLucrGrupoProduto.lucratividadeGrupoPorProduto">
+                                                        <td align=left>{{ i.produtoCodigo }} - {{ i.name }}</td>                                                    
+                                                        <td align=right>{{ i.produtoQuantidade }}</td>
+                                                        <td align=right>{{ i.porcQuantidade | currency: ''}}%</td>
+                                                        <td align=right>{{ i.y | currency: ''}}</td>
+                                                        <td align=right>{{ i.porcTotalVenda | currency: ''}}%</td>
+                                                        <td align=right>{{ i.custoNegociado | currency: ''}}</td>
+                                                        <td align=right>{{ i.lucro | currency: ''}}</td>
+                                                        <td align=right>{{ i.porcLucro | currency: ''}}%</td>
+                                                        <td align=right>{{ i.markDown }}</td>
+                                                        <td align=right>{{ i.markUp }}</td>                                                 
+                                                    </tr>
+                                                    <tr align='right'>
+                                                        <td ><b>TOTAL</b></td>
+                                                        <td>{{ quantidadeTotal }}</td>
+                                                        <td>{{ quantidadeTotalPorc  }}%</td>
+                                                        <td>{{ totalProduto }}</td>
+                                                        <td>{{ totalProdutoPorc }}%</td>
+                                                        <td>{{ custoTotal }}</td>
+                                                        <td>{{ lucroTotal  }}</td>
+                                                        <td>{{ lucroTotalPorc }}%</td>
+                                                        <td>{{ markDown }}</td>
+                                                        <td>{{ markUp }}</td>                            
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">  
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div>  
+
+                         <!-- ========================= MODAL LUCRATIVIDADE GRUPO - > PRODUTO =========================  -->                 
+                         <a id="modalCategoriaProduto" data-toggle="modal" data-target="#myModalCategoriaProduto"></a>                     
+                         <div class="modal fade" id="myModalCategoriaProduto" role="dialog">
+                             <div class="modal-dialog" style="width: 40%;  margin-top: 150px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                               <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>                                     
+                                        <div align="center">
+                                            <h4 class="modal-title">Ticket Médio Categoria - Produtos</h4>                                       
+                                        </div>                                   
+                                    </div>
+                                    <div class="modal-body">                                    
+                                        <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                            <div class="table-responsive">                                        
+                                                <table id="margemVendedor" class="table display table-striped table-hover">
+                                                    <thead>  
+                                                        <tr>
+                                                            <th>Categoria</th>
+                                                            <th>Ticket Médio</th>
+                                                        </tr>                                
+                                                    </thead> 
+                                                    <tbody ng-repeat="i in categoriaDados">
+                                                        <tr>
+                                                            <td>{{ i.nome }}</td>
+                                                            <td>{{ i.ticketMedio | currency: 'R$ ' }}</td>
+                                                        </tr>
+                                                    </tbody>                                                                                                                                    
+                                                </table>
+                                            </div>     
+                                        </div>       
+                                    </div>
+                                    <div class="modal-footer">  
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                               </div>
+                             </div>
+                         </div>  
+
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        <br/>
+    </div>     
+</div>

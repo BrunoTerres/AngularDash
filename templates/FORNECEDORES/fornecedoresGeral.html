@@ -1,0 +1,466 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="fornecedorGeral">
+
+    <div role="main">
+              
+        <div class="row">
+                <div class="col-md-12 col-sm-20 col-xs-12">                   
+                    <div class="dashboard_graph">
+                        <div class="row x_title">
+                                <div class="col-md-6">
+                                    <h3>Analise de Fornecedores <small></small></h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 2px">                                         
+                                        
+                                        <div class="pull-right"  style="margin: auto" >
+                                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                            <button ng-if="divApresenta == false" class="btn btn-round btn-default pull-right" type="button" ng-click="listarFornecedor()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button> 
+                                            <button ng-show="divApresenta" class="btn btn-default" type="button" style="height:35px;font-size: 13px; border-radius: 2px"  ng-click="return()">Retornar Ao Menu</button>
+                                        </div>                                
+                                    </div>
+                                </div>       
+                        </div><p/>      
+                        
+                        <div class="row"  style="margin-top: 20px">
+                            
+                            <div ng-show="divApresentaFornecedor">
+                                <div  class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                                    <h3 align="center">Fornecedores</h3>
+                                    <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                        <select
+                                            style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                            class="form-control pull-left"
+                                            name="mySelect"
+                                            id="mySelect1"
+                                            ng-options="option.name for option in selecaoFornecedor.availableOptions track by option.id"
+                                            ng-change="filterFornecedor(selecaoFornecedor.selectedOption)"
+                                            ng-model="selecaoFornecedor.selectedOption">
+                                        </select>                                        
+                                        <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaFornecedor" class="form-control fonte-size-input">   
+                                    </div> 
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Código</th>  
+                                                <th>Fornecedor</th>
+                                                <th>Inscrição</th>
+                                                <th>Endereço</th>
+                                                <th>Número</th>
+                                                <th>CEP</th>
+                                                <th>Complemento</th>
+                                                <th>Bairro</th>
+                                                <th>Cidade</th>
+                                                <th>Estado</th>
+                                                <th>Telefone</th>                                            
+                                            </tr>                                                
+                                        </thead>
+                                        <tbody>
+                                            <tr dir-paginate="i in fornecedorListagem | filter: pesquisaFornecedor   |itemsPerPage:contagemFornecedor" pagination-id="pesquisaFornecedor">
+                                                <td><a href="" ng-click="infoFornecedor(i.codigo, i.nome)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td>{{ i.codigo }}</td>
+                                                <td>{{ i.nome }}</td>
+                                                <td>{{ i.inscricao }}</td>
+                                                <td>{{ i.endereco }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.cep }}</td>
+                                                <td>{{ i.complemento }}</td>
+                                                <td>{{ i.bairro }}</td>
+                                                <td>{{ i.cidade }}</td>
+                                                <td>{{ i.estado }}</td>
+                                                <td>{{ i.telefone }}</td>
+                                            </tr>                                      
+                                        </tbody>                                            
+                                    </table>
+                                    <dir-pagination-controls max-size="5"  pagination-id="pesquisaFornecedor" boundary-links="true"></dir-pagination-controls>
+                                </div>
+                            </div>
+                            
+                            <div ng-show="divApresenta">
+                                <!-- ========================= ESTOQUE, LIMITE, APAGAR E SALDO  =========================  -->
+                                <div class="animated flipInY col-md-12 col-sm-20 col-xs-12"> 
+                                    
+                                    <!-- ========================= ESTOQUE TOTAL  =========================  -->
+                                    <center>
+                                        <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                            <div class="tile-stats">
+                                                <div class="icon"><i class="fa fa-cubes"></i></div>
+                                                <div class="count"><center>Total Estoque</center></div>                         
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Empresa</th>
+                                                            <th>Estoque</th>
+                                                            <th>Custo</th>
+                                                            <th>Ticket Médio</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="i in fornecedorInfo.estoque.data">
+                                                            <td><a href="" ng-click="pesquisaEstoqueFornecedor(i.validador, i.empresa)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                            <td>{{ i.empresa }}</td>
+                                                            <td>{{ i.estoque }}</td>
+                                                            <td>{{ i.custo  | currency: 'R$ ' }}</td>    
+                                                            <td>{{ i.ticketMedio  | currency: 'R$ ' }}</td>  
+                                                        </tr>
+                                                        <tr style="background-color: #F0F0F0">
+                                                            <td align='right' colspan="2"> <b>TOTAL:</b></td>
+                                                            <td>{{  fornecedorInfo.estoque.totalEstoque }}</td>
+                                                            <td>{{  fornecedorInfo.estoque.totalCusto | currency: 'R$ ' }}</td>    
+                                                            <td>{{  fornecedorInfo.estoque.totalTicketMedio | currency: 'R$ ' }}</td>  
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </center>
+                                    
+                                    <!-- ========================= LIMITE, APAGAR E SALDO  =========================  -->
+                                    <center>
+                                        <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                            <div class="tile-stats">
+                                                <div class="icon"><i class="fa fa-credit-card"></i></div>
+                                                <div class="count"><center>Financeiro</center></div>                         
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>                                                        
+                                                            <th>Limite</th>
+                                                            <th>Apagar</th>
+                                                            <th>Saldo</th>                                                      
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="i in fornecedorInfo.financeiroFornecedor.data">                                                        
+                                                            <td>{{ i.limite | currency: 'R$ ' }}</td>
+                                                            <td><a href="" ng-click="infoApagar()">{{ i.apagar | currency: 'R$ ' }}</a></td>
+                                                            <td>{{ i.saldo  | currency: 'R$ ' }}</td>
+                                                        </tr>                                                   
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>   
+                                    </center>  
+                                    
+                                </div>
+                                
+                                <!-- ========================= ULTIMA ENTRADA  =========================  -->
+                                <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                                    <center>
+                                        <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                                            <div class="tile-stats">
+                                                <div class="icon"><i class="fa fa-calendar"></i></div>
+                                                <div class="count"><center>Últimas Entradas</center></div>                         
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Entrada</th>
+                                                            <th>Empresa</th>
+                                                            <th>Nota</th>
+                                                            <th>Série</th>
+                                                            <th>Quantidade</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="i in fornecedorInfo.ultimaEntrada.data">  
+                                                            <td><a href="" ng-click="ultimaEntrada(i.entrada,i.empresa)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                            <td>{{ i.entrada }}</td>
+                                                            <td>{{ i.empresa }}</td>  
+                                                            <td>{{ i.numero  }}</td>
+                                                            <td>{{ i.serie  }}</td>
+                                                            <td>{{ i.quantidade }}</td> 
+                                                            <td>{{ i.total | currency: 'R$ ' }}</td>
+                                                        </tr>
+                                                        <tr style="background-color: #F0F0F0">
+                                                            <td align='right' colspan="5"> <b>TOTAL:</b></td>                                                        
+                                                            <td>{{  fornecedorInfo.ultimaEntrada.qtdeTotal  }}</td>    
+                                                            <td>{{  fornecedorInfo.ultimaEntrada.valorTotal | currency: 'R$ ' }}</td>  
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>  
+                                    </center>  
+                                </div>
+                                
+                                <!-- ========================= TOP 20 - PRODUTOS =========================  -->
+                                <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                                    
+                                    <!-- ========================= TOP 20 - PRODUTOS MAIS VENDIDOS  =========================  -->
+                                    <center><div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                        <div class="tile-stats">                            
+                                            <div class="count"><center>Top 20 - Produtos Mais Vendidos</center></div>                             
+                                            <table class="table" style="font-size: 12px">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Código</th>
+                                                        <th>Produto</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in fornecedorInfo.top20Produtos.top20MaisVendidos.data">
+                                                        <td>{{ i.i }}</td>
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.descricao }}</td>  
+                                                        <td>{{ i.quantidade }}</td>  
+                                                        <td>{{ i.total | currency: 'R$ ' }}</td>  
+                                                        <td>{{ i.tktMedio | currency: 'R$ ' }}</td>  
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td align='right' colspan="3"> <b>TOTAL:</b></td>
+                                                        <td>{{  fornecedorInfo.top20Produtos.top20MaisVendidos.quantidade }}</td>
+                                                        <td>{{  fornecedorInfo.top20Produtos.top20MaisVendidos.total | currency: 'R$ ' }}</td> 
+                                                        <td>{{  fornecedorInfo.top20Produtos.top20MaisVendidos.tktMedio | currency: 'R$ ' }}</td>  
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div></center> 
+                                    
+                                    <!-- ========================= TOP 20 PRODUTOS MENUS VENDIDOS =========================  -->
+                                    <center><div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                        <div class="tile-stats">                            
+                                            <div class="count"><center>Top 20 - Produtos Menos Vendidos</center></div>                             
+                                            <table class="table" style="font-size: 12px">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Código</th>
+                                                        <th>Produto</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in fornecedorInfo.top20Produtos.top20MenosVendidos.data">
+                                                        <td>{{ i.i }}</td>
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.descricao }}</td>  
+                                                        <td>{{ i.quantidade }}</td>  
+                                                        <td>{{ i.total | currency: 'R$ ' }}</td>  
+                                                        <td>{{ i.tktMedio | currency: 'R$ ' }}</td>  
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td align='right' colspan="3"> <b>TOTAL:</b></td>
+                                                        <td>{{  fornecedorInfo.top20Produtos.top20MenosVendidos.quantidade }}</td>
+                                                        <td>{{  fornecedorInfo.top20Produtos.top20MenosVendidos.total | currency: 'R$ ' }}</td> 
+                                                        <td>{{  fornecedorInfo.top20Produtos.top20MenosVendidos.tktMedio | currency: 'R$ ' }}</td>  
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div></center> 
+                                </div>
+                                
+                                <!-- =========================  QUANTIDADE E TOTAL  ANO PASSADO X ANO ATUAL =========================  -->
+                                <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                                    <!-- =========================  QUANTIDADE ANO PASSADO X ANO ATUAL =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                        <div >
+                                            <div id="hcQtdeAnoPassadoxAtual"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- =========================  TOTAL ANO PASSADO X ANO ATUAL =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                        <div >
+                                            <div id="hcTotalAnoPassadoxAtual"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- =========================  TICKET MÉDIO ANO PASSADO X ANO ATUAL  =========================  -->                               
+                                <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">                            
+                                    <div>
+                                        <div id="hcTktMedioAnoPassadoxAtual" ></div>
+                                    </div>
+                                </div>                            
+                             
+                                <!-- ========================= MODAL ESTOQUE - > PRODUTOS =========================  -->                 
+                                <a id="modalEstoque" data-toggle="modal" data-target="#myModalEstoque"></a>                     
+                                <div class="modal fade" id="myModalEstoque" role="dialog">
+                                    <div class="modal-dialog" style="width: 50%;  margin-top: 100px;  margin-right: auto; margin-left: auto">                        
+                                      <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>                                     
+                                                <div align="center">
+                                                    <h4 class="modal-title">Estoque Produtos</h4>                                       
+                                                </div>                                     
+                                                <br>
+                                                <b>EMPRESA :</b> {{ estoqueFornecedor.empresa }}                                       
+                                            </div>
+                                            <div class="modal-body">  
+                                                <div>
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Código</th>
+                                                                <th>Produto</th>
+                                                                <th>Estoque</th>
+                                                                <th>Custo</th>
+                                                                <th>Ticket Médio</th>                                                    
+                                                            </tr>                                                
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="i in infoEstoque.estoqueFornecedor.data">
+                                                                <td>{{ i.codigo }}</td>
+                                                                <td>{{ i.produto }}</td>
+                                                                <td>{{ i.estoque }}</td>
+                                                                <td>{{ i.custo | currency: 'R$ ' }}</td>
+                                                                <td>{{ i.ticktMedio | currency: 'R$ ' }}</td>
+                                                            </tr>
+                                                            <tr style="background-color: #F0F0F0">
+                                                                <td align='right' colspan="2"> <b>TOTAL:</b></td>
+                                                                <td>{{  infoEstoque.estoqueFornecedor.estoqueTotal }}</td>
+                                                                <td>{{  infoEstoque.estoqueFornecedor.totalCusto | currency: 'R$ ' }}</td>    
+                                                                <td>{{  infoEstoque.estoqueFornecedor.ticketMedio | currency: 'R$ ' }}</td>  
+                                                            </tr>
+                                                        </tbody>                                            
+                                                    </table>                                        
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">  
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                            </div>
+                                      </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- ========================= MODAL ULTIMA ENTRADA - > PRODUTOS =========================  -->                 
+                                <a id="modalEntrada" data-toggle="modal" data-target="#myModalEntrada"></a>                     
+                                <div class="modal fade" id="myModalEntrada" role="dialog">
+                                    <div class="modal-dialog" style="width: 55%;  margin-top: 100px;  margin-right: auto; margin-left: auto">                        
+                                      <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>                                     
+                                                <div align="center">
+                                                    <h4 class="modal-title">Últimas Entradas de Produtos</h4>                                       
+                                                </div>                                     
+                                                <br>
+                                                <b>EMPRESA :</b> {{ infoEntrada.empresa }}    
+                                                <p><b>DATA :</b>{{ infoEntrada.data }} </p> 
+                                            </div>
+                                            <div class="modal-body">  
+                                                <div>
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Empresa</th>
+                                                                <th>Nota</th>
+                                                                <th>Série</th>
+                                                                <th>Código</th>
+                                                                <th>Produto</th> 
+                                                                <th>Quantidade</th>
+                                                                <th>Total</th>
+                                                                <th>Ticket Médio</th>
+                                                            </tr>                                                
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="i in infoProdututoEntrada.entradaProdutos.data">
+                                                                <td>{{ i.empresa }}</td>
+                                                                <td>{{ i.numero }}</td>
+                                                                <td>{{ i.serie }}</td>
+                                                                <td>{{ i.codigoProduto }}</td>
+                                                                <td>{{ i.produto }}</td>
+                                                                <td>{{ i.quantidade }}</td>
+                                                                <td>{{ i.total | currency: 'R$ ' }}</td>
+                                                                <td>{{ i.ticketMedio | currency: 'R$ ' }}</td>
+                                                            </tr>
+                                                            <tr style="background-color: #F0F0F0">
+                                                                <td align='right' colspan="5"> <b>TOTAL:</b></td>                                                     
+                                                                <td>{{  infoProdututoEntrada.entradaProdutos.qtdeTotal }}</td>    
+                                                                <td>{{  infoProdututoEntrada.entradaProdutos.total | currency: 'R$ ' }}</td>  
+                                                                <td>{{  infoProdututoEntrada.entradaProdutos.ticketMedio | currency: 'R$ ' }}</td> 
+                                                            </tr>
+                                                        </tbody>                                            
+                                                    </table>                                        
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">  
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                            </div>
+                                      </div>
+                                    </div>
+                                </div> 
+                                
+                                <!-- ========================= MODAL LIMITE - > TÍTULOS =========================  -->                 
+                                <a id="modalApagar" data-toggle="modal" data-target="#myModalApagar"></a>                     
+                                <div class="modal fade" id="myModalApagar" role="dialog">
+                                    <div class="modal-dialog" style="width: 50%;  margin-top: 100px; margin-right: auto; margin-left: auto">                        
+                                      <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>                                     
+                                                <div align="center">
+                                                    <h4 class="modal-title">Títulos Apagar</h4>                                       
+                                                </div>                                     
+                                                <br>                                       
+                                            </div>
+                                            <div class="modal-body">  
+                                                <div>
+                                                    <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                                        <select
+                                                            style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                                            class="form-control pull-left"
+                                                            name="mySelect"
+                                                            id="mySelect1"
+                                                            ng-options="option.name for option in selecaoEntrada.availableOptions track by option.id"
+                                                            ng-change="filterEntrada(selecaoEntrada.selectedOption)"
+                                                            ng-model="selecaoEntrada.selectedOption">
+                                                        </select>                                        
+                                                        <input type="text" style="border-radius: 4px; width: 89%" placeholder="Pesquisar" ng-model="pesquisaEntrada" class="form-control fonte-size-input">   
+                                                    </div> 
+                                                    <table class="table table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Número</th>
+                                                                <th>Série</th>
+                                                                <th>Sequência</th>
+                                                                <th>Emissão</th>
+                                                                <th>Vencimento</th> 
+                                                                <th>Apagar</th>                                                     
+                                                            </tr>                                                
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr dir-paginate="i in apagarInfo.infoApagar.data | filter: pesquisaEntrada  |itemsPerPage:contagemEntrada" pagination-id="pesquisaEntrada">
+                                                                <td>{{ i.numero }}</td>
+                                                                <td>{{ i.serie }}</td>
+                                                                <td>{{ i.sequencia }}</td>
+                                                                <td>{{ i.emissao }}</td>
+                                                                <td>{{ i.vencimento }}</td>                                                     
+                                                                <td>{{ i.apagar | currency: 'R$ ' }}</td>
+                                                            </tr>
+                                                            <tr style="background-color: #F0F0F0">
+                                                                <td align='right' colspan="5"> <b>TOTAL:</b></td>                                                     
+                                                                <td>{{  apagarInfo.infoApagar.valorTotal | currency: 'R$ ' }}</td>
+                                                            </tr>
+                                                        </tbody>                                            
+                                                    </table>
+                                                    <dir-pagination-controls max-size="5"  pagination-id="pesquisaEntrada" boundary-links="true"></dir-pagination-controls>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">  
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                            </div>
+                                      </div>
+                                    </div>
+                                </div>  
+                                
+                            </div>   
+                        </div>   
+                        <!-- FIM CLASS ROW -->           
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+        </div>
+    </div>
+</div>
+    
+

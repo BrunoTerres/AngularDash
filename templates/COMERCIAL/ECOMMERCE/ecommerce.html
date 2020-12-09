@@ -1,0 +1,1226 @@
+<div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-controller="ecommerceController">
+    <div role="main">
+        <div class="row tile_count">
+                
+            <div  ng-repeat="rDado in visEcmVisaoGeral.visaogeral" class="col-xs-6 col-sm-4 col-md-4  col-lg-3">
+                <div class="x_panel tile ">
+                    <div class="x_title">
+                        <h2><span class="count_top" style="color:#72879c">Faturamento</span></h2>
+                    
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">  
+                            <span class="count_top fontSize17px"><i class="fa fa-user"></i> {{rDado.tipo}} <code style="font-size: 14px">{{ visEcmVisaoGeral.ano.anoAtual }}</code></span>                                        
+                            <div class="count"><h2 ng-cloack>{{ rDado.valor | currency: 'R$ ' }}<small ng-show="selectTodos && rDado.tipo != 'Total' && canalMenu.id =='01'" class="green smallEcommerceGeral" ng-show="rDado.percentualFaturamento">{{ rDado.percentualFaturamento | currency: ' ' }}%</small></h2></div> 
+                            <span class="count_bottom"><i ng-cloack class="green">{{ rDado.quantidade }} </i> Produtos<small ng-show="selectTodos && rDado.tipo != 'Total' && canalMenu.id =='01'"  class="green smallEcommerceGeral" ng-show="rDado.percentualProduto">{{ rDado.percentualProduto | currency: ' ' }}% </small></span><br>
+                            <span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rDado.valor / rDado.quantidade | currency: 'R$ ' }} </i> Ticket Médio</span>
+                            <p><span class="count_bottom"><i ng-cloack class="green">{{ rDado.markdown | currency: ' '}} </i> Markdown</span></p>
+                            <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rDado.clientes }} </i> Clientes<small ng-show="selectTodos && rDado.tipo != 'Total' && canalMenu.id =='01'"  class="green smallEcommerceGeral" ng-show="rDado.percentualCliente">{{ rDado.percentualCliente | currency: ' ' }}% </small></span></p>
+                    </div>
+                </div>
+            </div>           
+            <div  class="col-xs-12 col-sm-12 col-md-12  col-lg-12"></div>
+            <div ng-show="divAnoPassado"  ng-repeat="rDado in visEcmVisaoGeral.visaogeralpassado" class="col-xs-6 col-sm-4 col-md-4  col-lg-3">
+                <div class="x_panel tile ">
+                    <div class="x_title">
+                        <h2><span class="count_top" style="color:#72879c">Faturamento </span>   </h2>
+                    
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content"> 
+                            <span class="count_top fontSize17px"><i class="fa fa-user"></i> {{rDado.tipo}} <code style="font-size: 14px">{{ visEcmVisaoGeral.ano.anoPassado }}</code></span>                                                                    
+                            <div class="count"><h2 ng-cloack>{{ rDado.valor | currency: 'R$ ' }}<small ng-show="selectTodos && rDado.tipo != 'Total' && canalMenu.id =='01'"  class="green smallEcommerceGeral" ng-show="rDado.percentualFaturamento">{{ rDado.percentualFaturamento | currency: ' ' }}%</small></h2></div>
+                            <span class="count_bottom"><i ng-cloack class="green">{{ rDado.quantidade }} </i> Produtos<small ng-show="selectTodos && rDado.tipo != 'Total' && canalMenu.id =='01'"  class="green smallEcommerceGeral" ng-show="rDado.percentualProduto">{{ rDado.percentualProduto | currency: ' ' }}% </small></span><br>
+                            <span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rDado.valor / rDado.quantidade | currency: 'R$ ' }} </i> Ticket Médio</span>
+                            <p><span class="count_bottom"><i ng-cloack class="green">{{ rDado.markdown | currency: ' '}} </i> Markdown</span></p>
+                            <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rDado.clientes }} </i> Clientes<small ng-show="selectTodos && rDado.tipo != 'Total' && canalMenu.id =='01'"  class="green smallEcommerceGeral" ng-show="rDado.percentualCliente">{{ rDado.percentualCliente | currency: ' ' }}% </small></span></p>            
+                    </div>
+                </div>
+            </div>           
+             
+        </div>     
+        
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="dashboard_graph  marginBottom50">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Analise das Vendas - E-Commerce <small></small></h3>
+                        </div>
+                        
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc"> 
+
+                                <div  class="pull-left"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;"  >
+
+                                    <div ng-show="selectTodos" class="pull-left"  ng-init="canalMenu.id">
+                                        <select class="form-control form-line focused show-tick" ng-model="canalMenu.id">
+                                            <option ng-selected="canalMenu.id == '01' " ng-value="'01'" value="'01'">GERAL</option> 
+                                            <option ng-repeat="b in menuEcommerce.canal" ng-value="b.id" value="{{b.canal}}" ng-selected="canalMenu.id == b.id">{{b.canal}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div ng-if="selectUnico" class="pull-left"  ng-init="canalMenu.id">
+                                        <select class="form-control form-line focused show-tick" ng-model="canalMenu.id">
+                                            <option ng-selected="canalMenu.id == '{{menuEcommerce.canal[0].id}}' " ng-value="'{{menuEcommerce.canal[0].id}}'" value="'{{menuEcommerce.canal[0].id}}'">{{menuEcommerce.canal[0].canal}}</option> 
+                                        </select>
+                                    </div>
+                                       
+                                    <div class="pull-right marginLeft10" ng-init="filtroMenu.id = '01'">
+                                        <select class="form-control form-line focused show-tick marginLeft5" ng-model="filtroMenu.id">
+                                            <option ng-selected="filtroMenu.id == '01'" ng-value="'01'" value="'01'">GERAL</option> 
+                                            <option ng-repeat="b in menuEcommerce.filtros" ng-value="b.id" value="{{b.filtro}}" ng-selected="filtroMenu.id == b.id">{{b.filtro}}</option>
+                                        </select>
+                                    </div>       
+                                    
+                                </div> 
+                                <div class="pull-right"  style="margin: auto">
+                                    <input type="date" style="font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                    <input type="date" style="font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                    <button class="btn btn-round btn-default pull-right" type="button" ng-click="ecmVisaoGeral()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>
+                                </div>                                
+                            </div>
+                        </div>              
+                    </div> 
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 marginTop20"></div>
+
+                    <!-- ========================= META - GERAL =========================  -->
+                    <div class="col-xs-12 col-sm-8 col-md-4 col-lg-4" ng-show="cardMetas" ng-if="filtro.canalMenu == '01'">
+                        <div class="x_panel tile ">
+                          
+                            <div class="x_content">                                  
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div id="hcMetaGeral" class="design"></div>
+                                </div>
+                                                    
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================= META - SITE =========================  -->
+                    <div class="col-xs-12 col-sm-8 col-md-4 col-lg-4" ng-show="cardMetas" ng-if="filtro.canalMenu == '01' || filtro.canalMenu == '02'" >
+                        <div class="x_panel tile ">                            
+                            <div class="x_content">                                  
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div id="hcMetaSite" class="design"></div>
+                                </div>                                                    
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- ========================= META - MKT  =========================  -->
+                    <div class="col-xs-12 col-sm-8 col-md-4 col-lg-4" ng-show="cardMetas" ng-if="filtro.canalMenu == '01' || filtro.canalMenu == '03'" >
+                        <div class="x_panel tile ">                            
+                            <div class="x_content">                                  
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div id="hcMetaMkt" class="design"></div>
+                                </div>                                                    
+                            </div>
+                        </div>
+                    </div>                 
+
+                    <!-- ========================= METAS E VENDAS POR DATA  =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="cardMetas" ng-if="filtro.canalMenu == '01' || filtro.canalMenu == '02' || filtro.canalMenu == '03'" >
+                        <div class="x_panel tile ">                            
+                            <div class="x_content">                                  
+                                <div>
+                                    <div id="hcMetaseVendas" ></div>
+                                </div>                                                    
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- ========================= PROJEÇÃO FATURAMENTO  =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-show="cardMetas">
+                        <div class="x_panel tile ">                            
+                            <div class="x_content">                                  
+                                <div>
+                                    <div id="hcProjecaoFaturamento" ></div>
+                                </div>                                                    
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================= RECLAME AQUI - COMPREI E MEU =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardReclameAqui">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Reclame Aqui - Comprei e Meu</span> </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div class="txtAlign">
+                                    <div class="col-xs-4 col-sm-4 col-md-4  col-lg-4">
+                                        <img class="width150px" ng-src="{{imgComprei}}" ng-click="dadosReclameAqui(1,compreieMeu)" alt="imagem">     
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6  col-lg-6">
+                                        <b class="col-xs-12 col-sm-12 col-md-12  col-lg-12 fontSize30px">{{compreieMeu.status}} </b>  
+                                        <b class="col-xs-12 col-sm-12 col-md-12  col-lg-12 fontSize25px"><span>{{compreieMeu.finalScore}}</span>/10</b> 
+                                        <b class="col-xs-12 col-sm-12 col-md-12  col-lg-12 fontSize20px">{{ dataInicialComprei | date: 'dd-MM-yyyy'}} até {{ dataFinalComprei | date: 'dd-MM-yyyy'}}</b>     
+                                    </div>
+                                    
+                                   
+                                </div>                                           
+                            </div>
+                        </div>
+                    </div>   
+
+                    <!-- ========================= RECLAME AQUI - ELETRUM =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardReclameAqui">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Reclame Aqui - Eletrum</span> </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div class="txtAlign">
+                                    <div class="col-xs-4 col-sm-4 col-md-4  col-lg-4">
+                                        <img class="width150px" ng-src="{{imgEletrun}}" ng-click="dadosReclameAqui(1,eletrumR)" alt="imagem">     
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6  col-lg-6">
+                                        <b class="col-xs-12 col-sm-12 col-md-12  col-lg-12 fontSize30px">{{eletrumR.status}} </b>  
+                                        <b class="col-xs-12 col-sm-12 col-md-12  col-lg-12 fontSize25px"><span>{{eletrumR.finalScore}}</span>/10</b> 
+                                        <b class="col-xs-12 col-sm-12 col-md-12  col-lg-12 fontSize20px">{{ dataInicialEletrum | date: 'dd-MM-yyyy'}} até {{ dataFinalEletrum | date: 'dd-MM-yyyy'}}</b>     
+                                    </div>  
+                                </div>                                           
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- =========================  EBIT =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardReclameAqui">
+                            <div class="x_panel tile ">
+                                <div class="x_title">
+                                    <h2><span class="count_top" style="color:#72879c">Selo Ebit</span> </h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">  
+                                    <div class="txtAlign">
+                                        <a id="seloEbit" href="http://www.ebit.com.br/eletrum/selo" target="_blank" data-noop="redir(this.href);" >
+                                            <img src="https://newimgebit-a.akamaihd.net/ebitBR/selo/img_74542.png" style="border: 0px;">
+                                        </a>                                       
+                                    </div>                                           
+                                </div>
+                            </div>
+                    </div>  
+  
+                    <!-- =========================  LOJA CONFIÁVEL =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardReclameAqui">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Loja Confiável</span> </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div class="txtAlign">
+                                        <a class="ts-footerstamp" href="https://www.lojaconfiavel.com/eletrum" data-lcname="eletrum" target="_blank">
+                                            <img src="//service.yourviews.com.br/Image/8ea7baa3-231d-4049-873e-ad5afd085ca4/Footer.jpg" title="Loja Confiável" 
+                                            alt="Loja Confiável" style="width: 88px; height: 91px;">
+                                        </a>                                     
+                                </div>                                           
+                            </div>
+                        </div>
+                    </div>   
+
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-" ng-show="cardReclameAqui"></div>                    
+
+                    <!-- ========================= FILA FATURAMENTO  =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardLogistico">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Fila de Faturamento </span> </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table id="filaFaturamento" class="table display table-striped table-hover" style="width: 100%" >
+                                            <thead>                                  
+                                            </thead> 
+                                            <tfoot>
+                                                <tr class="colorCinzaRodaPeTable">
+                                                    <th>TOTAL:</th> 
+                                                    <th></th>
+                                                    <th></th>                                                                                                 
+                                                </tr>
+                                            </tfoot>                                                                                        
+                                            
+                                        </table>
+                                    </div>     
+                                </div>                                          
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    
+                    <!-- ========================= ESTOQUE TOTAL  =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardLogistico">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Total de Estoque </span> </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table id="estoqueEcommerce" class="table display table-striped table-hover" style="width: 100%" >
+                                            <thead>                                  
+                                            </thead> 
+                                            <tfoot>
+                                                <tr class="colorCinzaRodaPeTable">
+                                                    <th class="txtAlignRight">TOTAL:</th> 
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>                                                                                                 
+                                                </tr>
+                                            </tfoot>                                                                                        
+                                            
+                                        </table>
+                                    </div>     
+                                </div>                                          
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- ========================= NOTAS X CHECKOUT - SC =========================  -->   
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardLogistico">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Notas x Checkout x Sem Etiquetas - Santa Catarina</span> </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table class="table display table-striped table-hover" style="width: 100%">
+                                            <thead>
+                                                <tr>                                       
+                                                    <th>Data</th>
+                                                    <th>Notas</th>
+                                                    <th style="width: 8%;"></th>
+                                                    <th style="width: 8%;">Checkout</th>
+                                                    <th style="width: 8%;"></th>
+                                                    <th>Sem Etiqueta</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in visEcmVisaoGeral.emissaodeetiquetas.sc.data">                                      
+                                                    <td>{{ i.data }}</td>
+                                                    <td>{{ i.notas }}</td>
+                                                    <td ng-if="i.checkout > 0" ><a href="" ng-click="pesquisaNFCheckout(i.data,i.empresa,i.checkout)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td ng-if="i.checkout ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                    <td>{{ i.checkout }}</td>
+                                                    <td ng-if="i.semEtiqueta > 0" ><a href="" ng-click="nfSemEtiquetaEcommerce(i.data,i.empresa,i.semEtiqueta)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td ng-if="i.semEtiqueta ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                    <td>{{ i.semEtiqueta }}</td>
+                                                </tr>
+                                                <tr style="background-color: #F0F0F0">
+                                                    <td> <b>TOTAL:</b></td>
+                                                    <td>{{  visEcmVisaoGeral.emissaodeetiquetas.sc.totalNota }}</td>
+                                                    <td></td>
+                                                    <td>{{  visEcmVisaoGeral.emissaodeetiquetas.sc.totalCheckout }}</td>
+                                                    <td></td>
+                                                    <td>{{  visEcmVisaoGeral.emissaodeetiquetas.sc.totalSemEtiqueta }}</td>  
+                                                </tr>
+                                            </tbody>
+                                        </table>     
+                                    </div>     
+                                </div>                                            
+                            </div>
+                        </div>
+                    </div>  
+
+                    <!-- ========================= NOTAS X CHECKOUT - ES =========================  -->    
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardLogistico">
+                            <div class="x_panel tile ">
+                                <div class="x_title">
+                                    <h2><span class="count_top" style="color:#72879c">Notas x Checkout x Sem Etiquetas - Espírito Santo</span> </h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">  
+                                    <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                        <div class="table-responsive">                                        
+                                            <table class="table display table-striped table-hover" style="width: 100%">
+                                                <thead>
+                                                    <tr>                                      
+                                                        <th>Data</th>
+                                                        <th>Notas</th>
+                                                        <th style="width: 8%"></th>
+                                                        <th style="width: 8%">Checkout</th>
+                                                        <th style="width: 8%"></th>
+                                                        <th>Sem Etiqueta</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visEcmVisaoGeral.emissaodeetiquetas.es.data">                                       
+                                                        <td>{{ i.data }}</td>
+                                                        <td>{{ i.notas }}</td>
+                                                        <td ng-if="i.checkout > 0" ><a href="" ng-click="pesquisaNFCheckout(i.data,i.empresa,i.checkout )"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td ng-if="i.checkout ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                        <td>{{ i.checkout }}</td>
+                                                        <td ng-if="i.semEtiqueta > 0" ng-click="nfSemEtiquetaEcommerce(i.data,i.empresa,i.semEtiqueta)"><a href=""><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td ng-if="i.semEtiqueta ==  0"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></td>
+                                                        <td>{{ i.semEtiqueta }}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td> <b>TOTAL:</b></td>
+                                                        <td>{{  visEcmVisaoGeral.emissaodeetiquetas.es.totalNota }}</td>
+                                                        <td></td>
+                                                        <td>{{  visEcmVisaoGeral.emissaodeetiquetas.es.totalCheckout }}</td>
+                                                        <td></td>
+                                                        <td>{{  visEcmVisaoGeral.emissaodeetiquetas.es.totalSemEtiqueta }}</td> 
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>     
+                                    </div>                                            
+                                </div>
+                            </div>
+                    </div>  
+                    
+                    <!-- ========================= PRODUÇÃO CHECKOU X ETIQUETA - SC  =========================  -->  
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardLogistico">
+                            <div class="x_panel tile ">
+                                <div class="x_title">
+                                    <h2><span class="count_top" style="color:#72879c">Produção Checkout x Etiqueta - Santa Catarina</span> </h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="x_content">  
+                                    <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                        <div class="table-responsive">                                        
+                                            <table class="table display table-striped table-hover" style="width: 100%">
+                                                <thead>
+                                                    <tr>                                                                            
+                                                        <th>Data</th>
+                                                        <th style="width: 8%"></th>
+                                                        <th>Total Checkout</th>
+                                                        <th style="width: 8%"></th>
+                                                        <th>Total Etiquetas</th>                               
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visEcmVisaoGeral.producaoCI.sc.data">                          
+                                                        <td>{{ i.data }}</td>
+                                                        <td><a href="" ng-click="producaoCIProdutoEcommerce(i.data,i.empresa,i.checkout, 1)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>   
+                                                        <td>{{ i.checkout }}</td> 
+                                                        <td><a href="" ng-click="producaoCIProdutoEcommerce(i.data,i.empresa, i.impressao, 2)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>                                         
+                                                        <td>{{ i.impressao }}</td>                                    
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td><b>TOTAL:</b></td>
+                                                        <td></td>
+                                                        <td>{{  visEcmVisaoGeral.producaoCI.sc.totalCheckout }}</td>   
+                                                        <td></td>                                   
+                                                        <td>{{  visEcmVisaoGeral.producaoCI.sc.totalImpressao }}</td>                                       
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>     
+                                    </div>                                            
+                                </div>
+                            </div>
+                    </div>  
+
+                    <!-- ========================= PRODUÇÃO CHECKOU X ETIQUETA - ES  =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-6  col-lg-6" ng-show="cardLogistico">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Produção Checkout x Etiqueta - Espírito Santo</span> </h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table class="table display table-striped table-hover" style="width: 100%">
+                                            <thead>
+                                                <tr>                                                                            
+                                                    <th>Data</th>
+                                                    <th style="width: 8%"></th>
+                                                    <th>Total Checkout</th>
+                                                    <th style="width: 8%"></th>
+                                                    <th>Total Etiquetas</th>                               
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in visEcmVisaoGeral.producaoCI.es.data">                          
+                                                    <td>{{ i.data }}</td>
+                                                    <td><a href="" ng-click="producaoCIProdutoEcommerce(i.data,i.empresa,i.checkout, 1)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>   
+                                                    <td>{{ i.checkout }}</td> 
+                                                    <td><a href="" ng-click="producaoCIProdutoEcommerce(i.data,i.empresa, i.impressao, 2)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>                                         
+                                                    <td>{{ i.impressao }}</td>                                    
+                                                </tr>
+                                                <tr style="background-color: #F0F0F0">
+                                                    <td><b>TOTAL:</b></td>
+                                                    <td></td>
+                                                    <td>{{  visEcmVisaoGeral.producaoCI.es.totalCheckout }}</td>   
+                                                    <td></td>                                   
+                                                    <td>{{  visEcmVisaoGeral.producaoCI.es.totalImpressao }}</td>                                       
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>     
+                                </div>                                            
+                            </div>
+                        </div>
+                    </div>  
+                
+                   
+                    <!-- ========================= MARGEM DE VENDA POR VENDEDOR =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="cardMargens">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Margem de Venda - Vendedor </span>   </h2>
+                                <a class="pull-right" href="/{{visEcmVisaoGeral.margemPorVendedor.url}}" download="margemVendedor.xls"> <button type="button" class="btn btn-success">Excel</button></a>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table id="margemVendedor" class="table display table-striped table-hover">
+                                            <thead>                                  
+                                            </thead> 
+                                            <tfoot>
+                                                <tr class="colorCinzaRodaPeTable">
+                                                    <th colspan="2" class="txtAlignRight">TOTAL:</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>{{visEcmVisaoGeral.margemPorVendedor.totalMarkDown | currency: ' '}}</th>
+                                                    <th>{{visEcmVisaoGeral.margemPorVendedor.totalMarkUp | currency: ' '}}</th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>                                                                                        
+                                         
+                                        </table>
+                                    </div>     
+                                </div>                                     
+                            </div>
+                        </div>
+                    </div>   
+                               
+                    <!-- ========================= MARGEM DE VENDA POR GRUPO =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="cardMargens">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Margem De Venda - Grupo </span>   </h2>
+                                <a class="pull-right" href="/{{visEcmVisaoGeral.margemPorGrupo.url}}" download="margemGrupo.xls"> <button type="button" class="btn btn-success">Excel</button></a>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table id="margemGrupo" class="table display table-striped table-hover">
+                                            <thead>                                  
+                                            </thead> 
+                                            <tfoot>
+                                                <tr class="colorCinzaRodaPeTable">
+                                                    <th colspan="2" class="txtAlignRight">TOTAL:</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>{{visEcmVisaoGeral.margemPorGrupo.totalMarkDown | currency: ' '}}</th>
+                                                    <th>{{visEcmVisaoGeral.margemPorGrupo.totalMarkUp | currency: ' '}}</th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>                                                                                        
+                                            
+                                        </table>
+                                    </div>     
+                                </div>                                     
+                            </div>
+                        </div>
+                    </div>   
+                   
+                    <!-- ========================= MARGEM DE VENDA POR MARCA =========================  -->  
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="cardMargens">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Margem De Venda - Marca </span>   </h2>
+                                <a class="pull-right" href="/{{visEcmVisaoGeral.margemPorMarca.url}}" download="margemMarca.xls"> <button type="button" class="btn btn-success">Excel</button></a>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table id="margemMarca" class="table display table-striped table-hover">
+                                            <thead>                                  
+                                            </thead> 
+                                            <tfoot>                                                
+                                                <tr class="colorCinzaRodaPeTable">
+                                                    <th class="txtAlignRight">TOTAL:</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th>{{visEcmVisaoGeral.margemPorMarca.totalMarkDown | currency: ' '}}</th>
+                                                    <th>{{visEcmVisaoGeral.margemPorMarca.totalMarkUp | currency: ' '}}</th>   
+                                                    <th></th>                                                         
+                                                </tr>                                                      
+                                            </tfoot>                                                                                        
+                                            
+                                        </table>
+                                    </div>     
+                                </div>                                     
+                            </div>
+                        </div>
+                    </div>   
+  
+                    <!-- ========================= CAMPANHAS =========================  -->  
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="cardCampanhas">
+                        <div class="x_panel tile ">
+                            <div class="x_title">
+                                <h2><span class="count_top" style="color:#72879c">Campanhas</span>   </h2>                               
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">  
+                                <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                    <div class="table-responsive">                                        
+                                        <table id="campanhas" class="table display table-striped table-hover">
+                                            <thead>                                  
+                                            </thead> 
+                                            <tfoot>                                                                                            
+                                            </tfoot>                                                                                        
+                                            
+                                        </table>
+                                    </div>     
+                                </div>                                     
+                            </div>
+                        </div>
+                    </div>  
+
+                    <!-- ========================= VENDAS POR ANO  =========================  -->      
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="cardVendasAno">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorAno"></div>                  
+                            </div>
+                        </div>
+                    </div>  
+                    
+                    <!-- ========================= VENDAS POR DATA ALL  =========================  -->   
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="cardVendas">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorDataAll" ></div>               
+                            </div>
+                        </div>
+                    </div>  
+
+                    <!-- ========================= VENDAS POR VENDEDOR  =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" ng-show="cardVendasOut">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorVendedor" ></div>                                   
+                            </div>
+                        </div>
+                    </div>   
+
+                    <!-- ========================= VENDAS POR FABRICANTE  =========================  -->   
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="cardVendas">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorFabricante" ></div>                                  
+                            </div>
+                        </div>
+                    </div>   
+
+                    <!-- ========================= VENDAS POR GRUPO  =========================  --> 
+                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="cardVendas">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorGrupo" ></div>                                
+                            </div>
+                        </div>
+                    </div>   
+
+                    <!-- ========================= VENDAS POR FABRICANTE - SITE  =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-5  col-lg-6" ng-show="cardVendasOut">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorFabricanteSite"></div>                            
+                            </div>
+                        </div>
+                    </div>   
+
+                    <!-- ========================= VENDAS POR GRUPO -  SITE  =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-5  col-lg-6" ng-show="cardVendasOut">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorGrupoSite" ></div>                        
+                            </div>
+                        </div>
+                    </div>  
+                    
+                    <!-- ========================= VENDAS POR FABRICANTE -  MKT  =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-5  col-lg-6" ng-show="cardVendasOut">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorFabricanteMkt" ></div>                     
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- ========================= VENDAS POR GRUPO -  MKT  =========================  -->
+                    <div class="col-xs-12 col-sm-12 col-md-5  col-lg-6" ng-show="cardVendasOut">
+                        <div class="x_panel tile">
+                            <div class="x_content">  
+                                <div id="hcVendasPorGrupoMkt"></div>                   
+                            </div>
+                        </div>
+                    </div>   
+                                   
+                    <!-- ========================= MODAL MARGENS =========================  -->          
+                    <a id="modalVendGrupo" data-toggle="modal" data-target="#myModalVendGrupo"></a>                     
+                    <div class="modal fade" id="myModalVendGrupo" role="dialog">
+                        <div class="modal-dialog"  style="width: 65%;  margin-top: 30px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <div align="center">
+                                        <h4 class="modal-title" ng-show="divVendGrupo && divVendedor"> Margem de Venda - Grupo </h4>
+                                        <h4 class="modal-title" ng-show="divGrupoMarca"> Margem de Venda - Marca</h4>   
+                                        <h4 class="modal-title" ng-show="divMarcaProduto"> Margem de Venda - Produto</h4>                                        
+                                    </div>   
+                                    <p ng-show="divVendedor"><b>VENDEDOR(A): </b> {{ infoVendedorM.codigo  }} - {{ infoVendedorM.nome  }}</p>
+                                    <p ng-show="divGrupoMarca && infoMarcaGrupo.codigo"><b>GRUPO: </b> {{ infoMarcaGrupo.codigo  }} - {{ infoMarcaGrupo.nome  }}</p>   
+                                    <p ng-show="divMarcaProduto && infoMarcaGrupo.codigo"><b>GRUPO: </b> {{ infoMarcaGrupo.codigo  }} - {{ infoMarcaGrupo.nome  }}</p>   
+                                    <p ng-show="divMarcaProduto"><b>MARCA: </b> {{ infoProdutoMarca.marca  }}</p>                                 
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <div ng-show="divVendGrupo">
+                                        <div style="margin-top: 10px;" class="col-xs-12 col-sm-12 col-md-12  col-lg-12">  
+                                            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                                <div class="table-responsive">                                        
+                                                    <table id="margemVendedorG" class="table display table-striped table-hover" style="width: 100%">
+                                                        <thead>                                  
+                                                        </thead> 
+                                                        <tfoot>
+                                                            <tr class="colorCinzaRodaPeTable">
+                                                                <th colspan="2" class="txtAlignRight">TOTAL:</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th>{{infoVendedorGrupo.margemVendedorGrupo.totalMarkDown | currency: ' '}}</th>
+                                                                <th>{{infoVendedorGrupo.margemVendedorGrupo.totalMarkUp | currency: ' '}}</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot>                                                                                        
+                                                        
+                                                    </table>
+                                                </div>     
+                                            </div> 
+                                            
+                                        </div>  
+                                    </div>                                    
+                                    
+                                    <div ng-show="divGrupoMarca">
+                                        <div style="margin-top: 10px;" class="col-xs-12 col-sm-12 col-md-12  col-lg-12">  
+                                            <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                                <div class="table-responsive">                                        
+                                                    <table id="margemVendedorGM" class="table display table-striped table-hover" style="width: 100%">
+                                                        <thead>                                  
+                                                        </thead> 
+                                                        <tfoot>
+                                                            <tr class="colorCinzaRodaPeTable">
+                                                                <th class="txtAlignRight">TOTAL:</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>  
+                                                                <th></th>                                                                 
+                                                                <th>{{grupoMarca.margemVendedorGrupoMarca.totalMarkDown | currency: ' '}}</th>
+                                                                <th>{{grupoMarca.margemVendedorGrupoMarca.totalMarkUp | currency: ' '}}</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot>                                                                                        
+                                                        
+                                                    </table>
+                                                </div>     
+                                            </div>  
+                                        </div>  
+                                    </div>     
+
+                                    <div ng-show="divMarcaProduto">
+                                        <div style="margin-top: 10px;" class="col-xs-12 col-sm-12 col-md-12  col-lg-12">  
+                                            <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                                <div class="table-responsive">                                        
+                                                    <table id="margemVendedorGMP" class="table display table-striped table-hover" style="width: 100%">
+                                                        <thead>                                  
+                                                        </thead> 
+                                                        <tfoot>
+                                                            <tr class="colorCinzaRodaPeTable">
+                                                                <th colspan="2" class="txtAlignRight">TOTAL:</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th>{{marcaProduto.margemMarcaProduto.totalMarkDown | currency: ' '}}</th>
+                                                                <th>{{marcaProduto.margemMarcaProduto.totalMarkUp | currency: ' '}}</th>                                                            
+                                                            </tr>
+                                                        </tfoot>                                                                                        
+                                                        
+                                                    </table>
+                                                </div>     
+                                            </div>  
+                                        </div> 
+                                    </div>
+
+                                </div>                                
+                                <div class="modal-footer">
+                                    <!-- BUTTON DOWNLOAD GRUPOS -->
+                                    <a ng-if="divGrupoMarca == false &&  divMarcaProduto == false" href="/{{infoVendedorGrupo.margemVendedorGrupo.url}}" download="margemVendedorGrupo.xls"> <button type="button" class="btn btn-success">Excel</button></a> 
+                                    <!-- BUTTON DOWNLOAD MARCA -->
+                                    <a ng-show="divGrupoMarca" href="/{{grupoMarca.margemVendedorGrupoMarca.url}}" download="margemVendedorMarca.xls"> <button type="button" class="btn btn-success">Excel</button></a>
+                                    <button class="btn buttonGeral" type="button" ng-show="divGrupoMarca && divVendedor" ng-click="tableGrupo()" >Voltar</button>
+                                    <!-- BUTTON DOWNLOAD PRODUTO -->
+                                    <a ng-show="divMarcaProduto" href="/{{marcaProduto.margemMarcaProduto.url}}" download="margemVendedorProduto.xls"> <button type="button" class="btn btn-success">Excel</button></a>
+                                    <button class="btn buttonGeral" type="button" ng-show="divMarcaProduto && infoMarcaGrupo.codigo" ng-click="tableGrupo()" >Voltar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                    
+                    <!-- ========================= MODAL FORNECEDORES PESQUISA GRUPO -> FORNECEDORES -> PRODUTOS -> VENDEDORES  =========================  -->          
+                    <a id="modalProduto" data-toggle="modal" data-target="#myModalProduto"></a>                     
+                    <div class="modal fade" id="myModalProduto" role="dialog">
+                        <div class="modal-dialog"  style="width: 60%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                    
+                                    <div align="center">
+                                        <h4 class="modal-title" > Faturamento por Produto </h4>
+                                        
+                                    </div>   
+                                    <p ng-if="filtro.canalMenu == '01'" style="margin-top: 20px"><b>CANAL :</b> GERAL </p>                                 
+                                    <p ng-if="filtro.canalMenu == '02'" style="margin-top: 20px"><b>CANAL :</b> SITE </p>  
+                                    <p ng-if="filtro.canalMenu == '03'" style="margin-top: 20px"><b>CANAL :</b> MARKETPLACE </p>  
+                                </div>
+                                <div class="modal-body">
+                                    <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                        <div class="table-responsive">                                        
+                                            <table id="faturamentoDiaProduto" class="table display table-striped table-hover" style="width: 100%">
+                                                <thead>                                  
+                                                </thead> 
+                                                <tfoot>
+                                                    <tr class="colorCinzaRodaPeTable">
+                                                        <th colspan="2" class="txtAlignRight">TOTAL:</th>
+                                                        <th></th>
+                                                        <th></th>                                                        
+                                                    </tr>
+                                                </tfoot>                                                                                        
+                                                
+                                            </table>
+                                        </div>     
+                                    </div>                               
+                                </div>                                
+                                <div class="modal-footer">                                                                 
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" >Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>  
+                    
+                    <!-- ========================= MODAL PESQUISA CHECKOUT -> NOTAS/PRODUTOS  =========================  -->          
+                    <a id="modalCheckout" data-toggle="modal" data-target="#myModalCheckout"></a>                     
+                    <div class="modal fade" id="myModalCheckout" role="dialog">
+                        <div class="modal-dialog"  style="width: 65%;  margin-top: 50px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>   
+                                    
+                                    <div align="center">
+                                        <h4 class="modal-title">Checkout - Informação Produto / NF</h4>
+                                        
+                                    </div>   
+                                    <p style="margin-top: 20px"><b>Data :</b> {{ infoCheckout.data }}</p>                                 
+                                    <p style="margin-top: 2px"><b>Empresa :</b> {{ infoCheckout.empresa }}</p> 
+                                    <p style="margin-top: 2px"><b>Total Para Checkout :</b> {{ infoCheckout.checkout }}</p> 
+                                </div>
+                                <div class="modal-body">
+                                    <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                        <div class="table-responsive">                                        
+                                            <table id="checkout" class="table display table-striped table-hover" style="width: 100%">
+                                                <thead>                                  
+                                                </thead> 
+                                                <tfoot>
+                                                    <tr class="colorCinzaRodaPeTable">
+                                                        <th colspan="5" class="txtAlignRight">TOTAL:</th>
+                                                        <th></th>
+                                                        <th></th>                                                       
+                                                    </tr>
+                                                </tfoot>                                                                                        
+                                                
+                                            </table>
+                                        </div>     
+                                    </div>                          
+                                </div>                                
+                                <div class="modal-footer">                                                                  
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>                     
+                 
+
+                    <!-- ========================= MODAL PESQUISA SEM ETIQUETA -> NOTAS / PRODUTOS   =========================  -->          
+                    <a id="modalSemEtiqueta" data-toggle="modal" data-target="#myModalSemEtiqueta"></a>                     
+                    <div class="modal fade" id="myModalSemEtiqueta" role="dialog">
+                        <div class="modal-dialog"  style="width: 65%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                    
+                                    <div align="center">
+                                        <h4 class="modal-title">Sem Etiqueta - Produto / NF</h4>
+                                        
+                                    </div>   
+                                    <p style="margin-top: 20px"><b>Data :</b> {{ infoSemEtiqueta.data }}</p>                                 
+                                    <p style="margin-top: 2px"><b>Empresa :</b> {{ infoSemEtiqueta.empresa }}</p> 
+                                    <p style="margin-top: 2px"><b>Total Sem Etiqueta :</b> {{ infoSemEtiqueta.semEtiqueta }}</p> 
+                                </div>
+                                <div class="modal-body">
+                                    <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                        <div class="table-responsive">                                        
+                                            <table id="semEtiqueta" class="table display table-striped table-hover" style="width: 100%">
+                                                <thead>                                  
+                                                </thead> 
+                                                <tfoot>
+                                                    <tr class="colorCinzaRodaPeTable">
+                                                        <th colspan="5" class="txtAlignRight">TOTAL:</th>
+                                                        <th></th>
+                                                        <th></th>                                                       
+                                                    </tr>
+                                                </tfoot>                                                                                        
+                                                
+                                            </table>
+                                        </div>     
+                                    </div>                             
+                                </div>                                
+                                <div class="modal-footer">                                                                  
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>  
+
+                    <!-- ========================= MODAL PESQUISA PRODUCAO CHECKOUT X ETIQUETA =========================  -->          
+                    <a id="modalProdProducao" data-toggle="modal" data-target="#myModalProdProducao"></a>                     
+                    <div class="modal fade" id="myModalProdProducao" role="dialog">
+                        <div class="modal-dialog" ng-style="{ 'width' : tamanhoModal, 'margin-top': marginTop, 'margin-bottom': marginBot, 'margin-right': auto, 'margin-left': auto }">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                    
+                                    <div align="center">
+                                        <h4 class="modal-title">Produção Produto 
+                                            <span ng-if="(infoProducao.empresa == '005')">Santa Catarina</span>
+                                            <span ng-if="(infoProducao.empresa == '008')">Espírito Santo</span>                                        
+                                        </h4>                                        
+                                    </div>   
+                                    <p style="margin-top: 20px"><b>Data Checkout :</b> {{ data }}</p>
+                                    <p ng-show="divSegunda"><b>Dia Pesquisado :</b> {{ infoProducao.data }}</p>                                 
+                                    <p style="margin-top: 2px">
+                                        <b ng-if="valor == 1">Total Checkout: </b> 
+                                        <b ng-if="valor == 2">Total Etiqueta: </b>                                      
+                                        {{ total }}                                    
+                                    </p> 
+                                    <p ng-show="divSegunda" style="margin-top: 2px">
+                                        <b>Total Dia: </b>{{ infoProducao.total }}                                    
+                                    </p> 
+                                    <p style="margin-top: 2px"><b>Empresa :</b> {{ infoProducao.empresa }}</p> 
+                                </div>
+                                <div class="modal-body">
+                                    <div ng-show="divPrimeira">
+                                        <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                            <div class="table-responsive">                                        
+                                                <table id="producao" class="table display table-striped table-hover" style="width: 100%">
+                                                    <thead>                                  
+                                                    </thead> 
+                                                    <tfoot>
+                                                        <tr class="colorCinzaRodaPeTable">
+                                                            <th colspan="1" class="txtAlignRight">TOTAL:</th>
+                                                            <th></th>
+                                                            <th></th>                                                       
+                                                        </tr>
+                                                    </tfoot>                                                                                        
+                                                    
+                                                </table>
+                                            </div>     
+                                        </div>                                     
+                                    </div>   
+                                    
+                                    <div ng-show="divSegunda">
+                                        <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                            <div class="table-responsive">                                        
+                                                <table id="producaoProdutos" class="table display table-striped table-hover" style="width: 100%">
+                                                    <thead>                                  
+                                                    </thead> 
+                                                    <tfoot>
+                                                        <tr class="colorCinzaRodaPeTable">
+                                                            <th colspan="3" class="txtAlignRight">TOTAL:</th>
+                                                            <th></th>
+                                                            <th></th>                                                       
+                                                        </tr>
+                                                    </tfoot>                                                                                        
+                                                    
+                                                </table>
+                                            </div>     
+                                        </div>
+                                    </div>
+
+                                </div>                                
+                                <div class="modal-footer">   
+                                    <button ng-show="divSegunda" type="button" ng-click="menu(1)" class="btn btn-warning" >Voltar</button>                                                               
+                                    <button type="button" class="btn btn-danger" ng-click="menu(2)" data-dismiss="modal">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>  
+
+                    <!-- ========================= MODAL CAMPANHA =========================  -->          
+                    <a id="modalProdutosDaCampanha" data-toggle="modal" data-target="#myModalProdutosDaCampanha"></a>                     
+                    <div class="modal fade" id="myModalProdutosDaCampanha" role="dialog">
+                        <div class="modal-dialog" style="width: 60%;  margin-top: 25px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                    
+                                    <div align="center">
+                                        <h4 class="modal-title">Produtos da Campanha</h4>                                        
+                                    </div>   
+                                    <p style="margin-top: 20px"><b>Campanha:</b> {{ infoCampanha.nome }}</p>
+                                    <p><b>Canal:</b> {{ infoCampanha.canal }}</p>
+                                    <p><b>Inicio da Campanha:</b> {{ infoCampanha.inicio }}</p>
+                                    <p><b>Fim da Campanha:</b> {{ infoCampanha.fim }}</p>                                 
+                                </div>
+                                <div class="modal-body">
+                                    <div> 
+                                        <div  class="dataTables_wrapper form-inline dt-bootstrap">
+                                            <div class="table-responsive">    
+                                                <input type="text" style="margin-left: 4px; border-radius: 4px;width: 40%" placeholder="Pesquisar" ng-model="pesquisaProdutoCampanha" class="form-control fonte-size-input">                                     
+                                                <table class="table display table-striped table-hover">
+                                                    <thead>
+                                                        <tr>                                               
+                                                            <th>S.K.U</th>
+                                                            <th>Produto</th>
+                                                            <th>Marca</th>
+                                                            <th>Grupo</th>  
+                                                            <th>Subgrupo</th>                                                                                                                                                  
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody ng-repeat="i in produtoCampanha | filter: pesquisaProdutoCampanha">
+                                                            <tr data-toggle="collapse" data-target="#{{ i.id }}" class="clickable" style="font-weight: bolder;color: #777575;">                                                    
+                                                                <td>{{ i.codigo }}</td>
+                                                                <td>{{ i.descricao }}</td>
+                                                                <td>{{ i.marca }}</td>
+                                                                <td>{{ i.grupo }}</td>
+                                                                <td>{{ i.subGrupo }}</td>                                                
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="100%" style="padding: 0px">
+                                                                    <div id="{{  i.id }}" class="collapse">
+                                                                        <table>
+                                                                                <table class="table table-hover" style="background-color: #e9eef3">
+                                                                                <thead>
+                                                                                    <tr>                                                                            
+                                                                                        <th style="width: 15%">Porcentagem Redução</th>
+                                                                                        <th style="width: 9%">Preço Praticado</th>
+                                                                                        <th style="width: 9%">Custo SC</th>
+                                                                                        <th style="width: 9%">Custo ES</th>
+                                                                                        <th>Observação</th>                                                                            
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>                                                                               
+                                                                                        <td>{{ i.porcReducao | currency: '' }}% </td>
+                                                                                        <td>{{ i.precoPraticado | currency: 'R$ '}}</td>
+                                                                                        <td>{{ i.custoSC | currency: 'R$ ' }}</td>
+                                                                                        <td>{{ i.custoES | currency: 'R$ ' }}</td>
+                                                                                        <td>{{ i.observacao }}</td>
+                                                                                    </tr>                                                                   
+                                                                                </tbody>
+                                                                            </table>  
+                                                                            
+                                                                        </table>                                                        
+                                                                    </div>                                                        
+                                                                </td>
+                                                            </tr> 
+                                                    </tbody>                                                                                           
+                                                </table>
+                                            </div>     
+                                        </div>                                                                                                                       
+                                         
+                                        <table class="table table-hover">
+                                              
+                                        </table>
+                                        <div class="clearfix"></div>
+                                        <button type="button" class="btn btn-danger pull-right" data-dismiss="modal">Close</button>     
+                                    </div>     
+                                </div>                               
+                            </div>
+                       
+                        </div>
+                    </div> 
+
+                    <!-- ========================= MODAL ESTOQUE =========================  -->          
+                    <a id="modalEstoquePesquisa" data-toggle="modal" data-target="#myModalEstoquePesquisa"></a>                     
+                    <div class="modal fade" id="myModalEstoquePesquisa" role="dialog">
+                        <div class="modal-dialog" style="width: 65%;  margin-top: 20px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                
+                                <div align="center">
+                                <h4 ng-show="showDivGrupo" class="modal-title">Estoque Grupos</h4>       
+                                <h4  ng-show="showDivMarca" class="modal-title">Estoque Marcas</h4>  
+                                <h4  ng-show="showDivProduto" class="modal-title">Estoque Produtos</h4> 
+                                </div>   
+                                <p style="margin-top: 20px"><b>Empresa:</b> {{ empresa.empresa }}</p>
+                                <p ng-show="showDivMarca"><b>Grupo:</b> {{ empresa.nomeGrupo  }}</p>
+                                <p ng-show="showDivProduto"><b>Marca:</b> {{ empresa.marca  }}</p>
+                                                        
+                                </div>
+                                <div class="modal-body">
+
+                                    <div ng-show="showDivGrupo">
+                                        <div style="margin-top: 10px;" class="col-xs-12 col-sm-12 col-md-12  col-lg-12">  
+                                            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                                <div class="table-responsive">                                        
+                                                    <table id="estoqueGrupo" class="table display table-striped table-hover" style="width: 100%">
+                                                        <thead>                                  
+                                                        </thead> 
+                                                        <tfoot>
+                                                            <tr class="colorCinzaRodaPeTable">
+                                                                <th colspan="2" class="txtAlignRight">TOTAL:</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot>                                                                                        
+                                                        
+                                                    </table>
+                                                </div>     
+                                            </div>
+                                        </div>  
+                                    </div> 
+
+                                    <div ng-show="showDivMarca">
+                                        <div style="margin-top: 10px;" class="col-xs-12 col-sm-12 col-md-12  col-lg-12">  
+                                            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                                <div class="table-responsive">                                        
+                                                    <table id="estoqueMarca" class="table display table-striped table-hover" style="width: 100%">
+                                                        <thead>                                  
+                                                        </thead> 
+                                                        <tfoot>
+                                                            <tr class="colorCinzaRodaPeTable">
+                                                                <th class="txtAlignRight">TOTAL:</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot>                                                                                        
+                                                        
+                                                    </table>
+                                                </div>     
+                                            </div>
+                                        </div>  
+                                    </div> 
+
+                                    <div ng-show="showDivProduto">
+                                        <div style="margin-top: 10px;" class="col-xs-12 col-sm-12 col-md-12  col-lg-12">  
+                                            <div class="dataTables_wrapper form-inline dt-bootstrap">
+                                                <div class="table-responsive">                                        
+                                                    <table id="estoqueProdutos" class="table display table-striped table-hover" style="width: 100%">
+                                                        <thead>                                  
+                                                        </thead> 
+                                                        <tfoot>
+                                                            <tr class="colorCinzaRodaPeTable">
+                                                                <th class="txtAlignRight">TOTAL:</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot>                                                                                        
+                                                        
+                                                    </table>
+                                                </div>     
+                                            </div>
+                                        </div>  
+                                    </div> 
+
+                                </div> 
+                                <div class="modal-footer">   
+                                <button ng-if="showDivMarca" type="button" ng-click="menu(3)" class="btn btn-warning" >Voltar</button>    
+                                <button ng-show="showDivProduto" type="button" ng-click="menu(4)" class="btn btn-warning" >Voltar</button>                                                            
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>                              
+                            </div>
+                        </div>
+                    </div> 
+
+                    <!-- ========================= MODAL RECLAME AQUI =========================  --> 
+                    <a id="modalReclameAqui" data-toggle="modal" data-target="#myModalReclameAqui"></a>                     
+                    <div class="modal fade" id="myModalReclameAqui" role="dialog">
+                        <div class="modal-dialog" style="width: 40%;  margin-top: 20px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>                                     
+                                    <div align="center">
+                                        <h4 class="modal-title">Reclame Aqui - {{reclameAquiNome}}</h4>                                       
+                                    </div>                                                              
+                                </div>
+                                <div class="modal-body">
+                                        <div class="col-xs-12 col-sm-12 col-md-12  col-lg-12" style="margin-top: 100px">
+                                            <div class="row">
+                                                <div class="outer col">
+                                                    <div id="hcReclameAquiRR" class="chart-container"></div>  
+                                                    <div id="hcReclameAquiVFN" class="chart-container"></div>                            
+                                                </div>                                      
+                                            </div>
+                                            <div class="row">
+                                                <div class="outer col">
+                                                    <div id="hcReclameAquiIS" class="chart-container"></div>  
+                                                    <div id="hcReclameAquiNC" class="chart-container"></div>                            
+                                                </div>                                
+                                            </div>                                                     
+                                            
+                                            <div class="outer">
+                                                <div class="outer col">
+                                                    <div class="col-md-3"> 
+                                                        <p class="divParagrafoReclameAqui">Reclamações</p>
+                                                        <p><i class="fa fa-bullhorn col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{reclameAquiReclamacoes}}</b> </p>
+                                                    </div> 
+                                                    <div class="col-md-3"> 
+                                                        <p class="divParagrafoReclameAqui">Respondidas</p>
+                                                        <p><i class="fa fa-reply-all col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{reclameAquiRespondidas}}</b> </p>
+                                                    </div> 
+                                                    <div class="col-md-3"> 
+                                                        <p class="divParagrafoReclameAqui">Não Respondidas</p>
+                                                        <p><i class="fa fa-frown-o col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{reclameAquiNaoRespondidas}}</b> </p>
+                                                    </div>
+                                                    <div class="col-md-3"> 
+                                                        <p class="divParagrafoReclameAqui">Avaliadas</p>
+                                                        <p><i class="fa fa-star col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{reclameAquiAvaliadas}}</b> </p>
+                                                    </div>                
+                                                </div>                           
+                                            </div>
+                                    </div>  
+                                </div>
+                                <div class="modal-footer">  
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>   
+
+                </div>  
+            </div>            
+        </div>         
+    </div>     
+</div>
+<script id="getSelo" type="text/javascript" src="https://imgs.ebit.com.br/ebitBR/selo-ebit/js/getSelo.js?74542"></script>

@@ -1,0 +1,259 @@
+<div class="col-md-12 col-sm-12 col-xs-18 " ng-controller="monitorAtacadoController">  
+    <div role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h1>Monitor Atacado<small></small></h1>
+                        </div>                      
+                    
+                    </div>
+                     <div class="row">                   
+                                              
+                         <div class="col-md-6" style="margin-right: 10px">
+                            <div>                             
+                                <a href="" ng-click="somarShowPainel(1)"><span style="font-size: 25px" class="glyphicon glyphicon-backward" aria-hidden="true"></span></a>
+                               
+                                <a ng-click="temporizador = !temporizador" href="" ><i style="font-size: 25px" ng-class="{'glyphicon glyphicon-play': temporizador, 'glyphicon glyphicon-pause': !temporizador  }"></i></a>
+                                <a href="" ng-click="somarShowPainel(2)"><span style="font-size: 25px" class="glyphicon glyphicon-forward" aria-hidden="true"></span></a>
+                            </div>
+                        </div>  <br><br>                         
+                         
+                        <!-- ========================= FATURAMENTO POR CD JV =========================  -->
+                        <div ng-show="showPainel==1" class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px">
+                            <div class="tile-stats">
+                                <div class="icon"  style="margin: 5px" ><i class="fa fa-cubes"></i></div>
+                                <center><h3 style="font-size: 80px">CD:  {{monitorDados.monitorfaturamentoporcd[0].empresa}}</h3></center>
+                                <div class="count" style="font-size: 80px" ><center><b>Estoque: </b>{{ monitorDados.monitorfaturamentoporcd[0].estoque }}</center></div>
+                                <div class="count" style="font-size: 80px" ><center><b>Quantidade Faturada: </b>{{ monitorDados.monitorfaturamentoporcd[0].quantidade }}</center></div>
+                                <!--<div class="count" style="font-size: 80px" ><center><b>Total Faturamento: </b>{{ monitorDados.monitorfaturamentoporcd[0].total | currency:'R$ ' }}</center></div>-->
+                            </div>
+                        </div> 
+                         
+                        <!-- ========================= FATURAMENTO POR CD ES =========================  -->
+                        <div ng-show="showPainel==2" class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px">
+                            <div class="tile-stats">
+                                <div class="icon" style="margin: 5px" ><i class="fa fa-cubes"></i></div>
+                                <center><h3 style="font-size: 80px">CD:  {{monitorDados.monitorfaturamentoporcd[1].empresa}}</h3></center>
+                                <div class="count" style="font-size: 80px" ><center><b>Estoque: </b>{{ monitorDados.monitorfaturamentoporcd[1].estoque }}</center></div>
+                                <div class="count" style="font-size: 80px" ><center><b>Quantidade Faturada: </b>{{ monitorDados.monitorfaturamentoporcd[1].quantidade }}</center></div>
+                                <!--<div class="count" style="font-size: 80px" ><center><b>Total Faturamento: </b>{{ monitorDados.monitorfaturamentoporcd[1].total | currency:'R$ ' }}</center></div>-->
+                            </div>
+                        </div> 
+                         
+                        <!-- ========================= NOTAS SEM VINCULO JV =========================  --> 
+                        <div ng-show="showPainel==3" class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px">
+                            <div class="tile-stats">
+                                <div class="icon" style="margin: 5px" ><i class="fa fa-barcode"></i></div>
+                                <center><h3 style="font-size: 80px">Notas Sem Vínculo IMEI</h3></center>
+                                 <center><h3 style="font-size: 80px">CD: Joinville</h3></center>
+                                <div class="count" style="font-size: 80px" ><center><b>Total: </b>{{ monitorDados.monitorsemvinculodeimeiCD.totalJV }}</center></div>
+                                <br>
+                                <div>
+                                    <table class="table table-hover " style="margin-left: 8px; width: 99%">
+                                        <thead>
+                                            <tr>
+                                                <th>Cliente</th>
+                                                <th>Produto</th>
+                                                <th>Número</th>
+                                                <th>Série</th>
+                                                <th>Emissão</th>
+                                                <th>Quantidade</th>
+                                                <th>Data De Agendamento</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in monitorDados.monitorsemvinculodeimeiCD.joinville">
+                                                <td>{{ i.cliente }}</td>
+                                                <td>{{ i.produto }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.serie }}</td>
+                                                <td>{{ i.emissao }}</td>
+                                                <td>{{ i.quantidade }}</td>
+                                                <td>{{i.dt_entrega}}</td>
+                                                <td><button class="btn buttonGeral" type="button" ng-click="AgendamentoDeEntrega(i.empresa,i.serie, i.numero, i.cliente,i.emissao, i.produto, i.quantidade)">Agendar</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> 
+                         
+                        <!-- ========================= NOTAS SEM VINCULO ES =========================  -->  
+                        <div ng-show="showPainel==4" class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px">
+                            <div class="tile-stats">
+                                <div class="icon" style="margin: 5px" ><i class="fa fa-barcode"></i></div>
+                                <center><h3 style="font-size: 80px">Notas Sem Vínculo IMEI</h3></center>
+                                 <center><h3 style="font-size: 80px">CD: Espírito Santo</h3></center>
+                                <div class="count" style="font-size: 80px" ><center><b>Total: </b>{{ monitorDados.monitorsemvinculodeimeiCD.totalES }}</center></div>
+                                <br>
+                                <div>
+                                    <table class="table table-hover" style="margin-left: 8px; width: 99%">
+                                        <thead>
+                                            <tr>
+                                                <th>Cliente</th>
+                                                <th>Produto</th>
+                                                <th>Número</th>
+                                                <th>Série</th>
+                                                <th>Emissão</th>
+                                                <th>Quantidade</th>
+                                                 <th>Data De Agendamento</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in monitorDados.monitorsemvinculodeimeiCD.espiritosanto">
+                                                <td>{{ i.cliente }}</td>
+                                                <td>{{ i.produto }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.serie }}</td>
+                                                <td>{{ i.emissao }}</td>
+                                                <td>{{ i.quantidade }}</td>
+                                                <td>{{i.dt_entrega}}</td>
+                                                <td><button class="btn buttonGeral" type="button" ng-click="AgendamentoDeEntrega(i.empresa,i.serie, i.numero, i.cliente,i.emissao, i.produto, i.quantidade)">Agendar</button>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                         
+                        <!-- ========================= CÓDIGO DE RASTREIO PARA EMISSÃO JV =========================  --> 
+                        <div ng-show="showPainel==5" class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px">
+                            <div class="tile-stats">
+                                <div class="icon" style="margin: 5px" ><i class="fa fa-cube"></i></div>
+                                <center><h3 style="font-size: 80px">Código de Rastreio Para Emissão</h3></center>
+                                <center><h3 style="font-size: 80px">CD: Joinville</h3></center>
+                                <div class="count" style="font-size: 80px" ><center><b>Total: </b>{{ monitorDados.monitorsemcodigorastreioCD.totalJV }}</center></div>
+                                <br>
+                                <div>
+                                    <table class="table table-bordered" style="margin-left: 8px; width: 99%">
+                                        <thead>
+                                            <tr>
+                                                <th>Cliente</th>
+                                                <th>Transportadora</th>
+                                                <th>Número</th>
+                                                <th>Série</th>
+                                                <th>Emissão</th>
+                                                <th>Quantidade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in monitorDados.monitorsemcodigorastreioCD.joinville">
+                                                <td>{{ i.cliente }}</td>
+                                                <td>{{ i.transportador }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.serie }}</td>
+                                                <td>{{ i.emissao }}</td>
+                                                <td>{{ i.quantidade }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> 
+                         
+                        <!-- ========================= CÓDIGO DE RASTREIO PARA EMISSÃO ES =========================  -->  
+                        <div ng-show="showPainel==6" class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 20px">
+                            <div class="tile-stats">
+                                <div class="icon" style="margin: 5px" ><i class="fa fa-cube"></i></div>
+                                <center><h3 style="font-size: 80px">Código de Rastreio Para Emissão</h3></center>
+                                <center><h3 style="font-size: 80px">CD: Espírito Santo</h3></center>
+                                <div class="count" style="font-size: 80px" ><center><b>Total: </b>{{ monitorDados.monitorsemcodigorastreioCD.totalES }}</center></div>
+                                <br>
+                                <div>
+                                    <table class="table table-bordered" style="margin-left: 8px; width: 99%">
+                                        <thead>
+                                            <tr>
+                                                <th>Cliente</th>
+                                                <th>Transportadora</th>
+                                                <th>Número</th>
+                                                <th>Série</th>
+                                                <th>Emissão</th>
+                                                <th>Quantidade</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in monitorDados.monitorsemcodigorastreioCD.espiritosanto">
+                                                <td>{{ i.cliente }}</td>
+                                                <td>{{ i.transportador }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.serie }}</td>
+                                                <td>{{ i.emissao }}</td>
+                                                <td>{{ i.quantidade }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div> 
+                          
+                        <!-- ========================= CONTROLE DE FATURAMENTO POR QUANTIDADE JV =========================  -->
+                        <div ng-show="showPainel==7"  style="margin-top: 20px; width: 100%">
+                            <div id="hcControleDeDatasJV" ></div>
+                        </div> 
+                         
+                        <!-- ========================= CONTROLE DE FATURAMENTO POR QUANTIDADE JV =========================  -->
+                        <div ng-show="showPainel==8"  style="margin-top: 20px;width: 100%">
+                            <div id="hcControleDeDatasES" ></div>
+                        </div>       
+                         
+                        <!-- ========================= MODAL ATACADO VENDEDORES - VENDEDOR -> PESQUISA NF -> PRODUTO  =========================  -->          
+                        <a id="modalAgendamento" data-toggle="modal" data-target="#myModalAgendamento"></a>                     
+                        <div class="modal fade" id="myModalAgendamento" role="dialog">
+                            <div class="modal-dialog"  style="width: 80%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                        <h4 class="modal-title" align='center'>Agendamento de Entrega</h4>  
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Usuário</th>
+                                                    <th>Cliente</th>
+                                                    <th>Produto</th>
+                                                    <th>Empresa</th>
+                                                    <th>Nota</th>
+                                                    <th>Serie</th>
+                                                    <th>Emissão</th>
+                                                    <th>Quantidade</th>
+                                                    <th>Data Para Agendamento</th>                                                                                                       
+                                                </tr>                                               
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ infoAgendamento.usuario }}</td>
+                                                    <td>{{ infoAgendamento.nomeCliente }}</td>
+                                                    <td>{{ infoAgendamento.produto }}</td>
+                                                    <td>{{ infoAgendamento.empresa }}</td>
+                                                    <td>{{ infoAgendamento.nota }}</td>
+                                                    <td>{{ infoAgendamento.serie }}</td>
+                                                    <td>{{ infoAgendamento.emissao }}</td>
+                                                    <td>{{ infoAgendamento.quantidade }}</td>
+                                                    <td><input  type="date" style="border-radius: 4px" ng-model="infoAgendamento.data"  width="50%"></td>                
+                                                </tr>
+                                            </tbody>
+                                        </table>                                       
+                                        <b>Justificativa</b> 
+                                        <br>
+                                        <textarea  rows="5" style="width: 100%; border-radius: 4px" ng-model="infoAgendamento.justificativa" maxlength="1000"></textarea><br><br>                                        
+                                    </div>                                        
+                                    <div class="modal-footer"> 
+                                        <button class="btn buttonGeral" style="height: 60%" type="submit"  ng-click="agendamentoModal()">Gravar</button> 
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div>  
+                         
+                    </div> 
+                    <div class="clearfix"></div>
+                </div>
+            </div>           
+        </div>        
+    </div>
+</div>

@@ -1,0 +1,290 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="comprasGeralController">
+
+    <div role="main">
+              
+        <div class="row">
+                <div class="col-md-12 col-sm-20 col-xs-12">                   
+                    <div class="dashboard_graph">
+                        <div class="row x_title">
+                                <div class="col-md-6">
+                                    <h3>Analise de Compras <small></small></h3>
+                                </div>
+                                <div class="col-md-6">
+
+
+                                    <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc"> 
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                        <button class="btn btn-round btn-default pull-right" type="button" ng-click="comprasGeral()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>                                   
+                                         
+                                    </div>
+                                </div>       
+                        </div><p/>      
+                        
+                        <div class="row"  ng-show="apresenta" >  
+                            
+                            <!-- ========================= COMPRAS POR QUANTIDADE CD  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" >
+                                <div id="hcQtdePorCD" ></div>
+                            </div>
+                            
+                            <!-- ========================= COMPRAS TOTAL CD  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" >
+                                <div id="hcTotalPorCD" ></div>
+                            </div>
+                            
+                            <!-- ========================= COMPRAS QUANTIDADE POR GRUPO =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" >
+                                <div id="hcQtdePorGrupo" ></div>
+                            </div>
+                            
+                            <!-- ========================= COMPRAS TOTAL POR GRUPO =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" >
+                                <div id="hcTotalPorGrupo" ></div>
+                            </div>
+                            
+                            <!-- ========================= COMPRA POR FORNECEDOR =========================  -->
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <center> <h3>Compra por Fornecedor</h3></center>
+                                <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                    <select
+                                        style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                        class="form-control pull-left"
+                                        name="mySelect"
+                                        id="mySelect1"
+                                        ng-options="option.name for option in selecaoFornecedor.availableOptions track by option.id"
+                                        ng-change="filterFornecedor(selecaoFornecedor.selectedOption)"
+                                        ng-model="selecaoFornecedor.selectedOption">
+                                    </select>                                        
+                                    <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaFornecedor" class="form-control fonte-size-input">   
+                                </div>     
+                                <table class="table table-hover" style="font-size: 12px; margin-top: 10px">
+                                    <thead>                                     
+                                        <tr>
+                                            <th></th>
+                                            <th>Código</th>
+                                            <th>Nome</th>
+                                            <th>Quantidade</th>
+                                            <th>Total</th>                                            
+                                        </tr>                                    
+                                    </thead>
+                                    <tbody>
+                                    
+                                        <tr dir-paginate="i in geralCompras.comprasGeralForn.data | filter: pesquisaFornecedor  |itemsPerPage:contagemFornecedor" pagination-id="pesquisaFornecedor">
+                                            <td style="width: 1%"><a href="" ng-click="comprasFornProduto(i.codigo,i.nome,i.y)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                            <td>{{ i.codigo }}</td>
+                                            <td>{{ i.nome }}</td>
+                                            <td>{{ i.quantidade }}</td>
+                                            <td>{{ i.y | currency: 'R$ ' }}</td>
+                                        </tr>
+                                    </tbody>                                
+                                </table> 
+                                <dir-pagination-controls max-size="5"  pagination-id="pesquisaFornecedor" boundary-links="true"></dir-pagination-controls>
+                            </div> 
+                            
+                            <!-- ========================= COMPRA POR PRODUTO =========================  -->
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                               <center> <h3>Compra por Produto</h3></center>                                
+                                <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                         <select
+                                            style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                            class="form-control pull-left"
+                                            name="mySelect"
+                                            id="mySelect1"
+                                            ng-options="option.name for option in selecaoProduto.availableOptions track by option.id"
+                                            ng-change="filterProduto(selecaoProduto.selectedOption)"
+                                            ng-model="selecaoProduto.selectedOption">
+                                        </select>                                        
+                                        <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaProduto" class="form-control fonte-size-input">   
+                                </div>                                 
+                                <table class="table table-bordered table-hover" style="font-size: 12px; margin-top: 10px">
+                                    <thead>                                       
+                                        <tr>
+                                             <!--<th></th>-->
+                                            <th>Código</th>
+                                            <th>nome</th>
+                                            <th>Origem</th>
+                                            <th>Grupo</th>
+                                            <th>Peso Líquido</th>
+                                            <th>Peso Bruto</th>
+                                            <th>Codigo de Barras</th>
+                                            <th>Dimensão</th>
+                                            <th>Quantidade</th>
+                                            <th>Total</th>                                               
+                                        </tr>                                    
+                                    </thead>
+                                    <tbody>
+                                        <tr dir-paginate="i in geralCompras.compraporproduto | filter: pesquisaProduto  |itemsPerPage:contagemProduto" pagination-id="pesquisaProduto">
+                                            <!-- <td><a href="" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>-->
+                                            <td style="width: 8%">{{ i.codigo }}</td>
+                                            <td>{{ i.descricao }}</td>
+                                            <td style="width: 8%">{{ i.origem }}</td>
+                                            <td style="width: 8%">{{ i.grupo }}</td>
+                                            <td>{{ i.pesoliquido }}</td>
+                                            <td>{{ i.pesobruto }}</td>
+                                            <td>{{ i.codigobarras }}</td>
+                                            <td>{{ i.dimensao }}</td>
+                                            <td>{{ i.quantidade }}</td>
+                                            <td>{{ i.y | currency: 'R$ ' }}</td>
+                                        </tr>
+                                    </tbody>                                
+                                </table> 
+                               <dir-pagination-controls max-size="5"  pagination-id="pesquisaProduto" boundary-links="true"></dir-pagination-controls>
+                            </div> 
+                            
+                            <!-- ========================= PROGRAMAÇÃO PAGAMENTO POR SEMANA =========================  -->
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">                                
+                                <center><h3>Programação Semanal de Pagamento Por Fornecedor</h3></center>
+                                <div style="margin-top: 20px; margin-bottom: 5px">                                        
+                                         <select
+                                            style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                            class="form-control pull-left"
+                                            name="mySelect"
+                                            id="mySelect1"
+                                            ng-options="option.name for option in selecaoSemana.availableOptions track by option.id"
+                                            ng-change="filterSemana(selecaoSemana.selectedOption)"
+                                            ng-model="selecaoSemana.selectedOption">
+                                        </select>                                        
+                                        <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaSemana" class="form-control fonte-size-input">   
+                                </div>  
+                                <table class="table table-hover table-bordered" style="font-size: 12px">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center">Semana</th>
+                                            <th>Código</th>
+                                            <th>Fornecedor</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr dir-paginate="i in  geralCompras.pagamentoporsemana | filter: pesquisaSemana  |itemsPerPage:contagemSemana" pagination-id="pesquisaSemana">
+                                            <td align="center">{{ i.semana }}</td>
+                                            <td>{{ i.codigo }}</td>
+                                            <td>{{ i.nome }}</td>
+                                            <td>{{ i.y | currency: 'R$ '}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <dir-pagination-controls max-size="5"  pagination-id="pesquisaSemana" boundary-links="true"></dir-pagination-controls>
+                            
+                            </div> 
+                            
+                            <!-- ========================= AGENDAMENTO DE PAGAMENTO =========================  -->
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">   
+                                <div class="calendar" ui-calendar="uiConfig.calendar" ng-model="events">  </div> 
+                            </div>
+                          
+                            <!-- ========================= MODAL COMPRAS - FORNECEDOR -> PRODUTO  =========================  -->          
+                            <a id="modalFornProduto" data-toggle="modal" data-target="#myModalFornProduto"></a>                     
+                            <div class="modal fade" id="myModalFornProduto" role="dialog">
+                                <div class="modal-dialog"  style="width: 80%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>     
+
+                                            <div align="center">
+                                                <h4 class="modal-title">Informações Produtos</h4>                                      
+                                            </div>   
+                                            <p><b>FORNECEDOR(A) :</b> {{ infoFornecedor.nome  }}</p>                           
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Código</th>
+                                                        <th>Descrição</th>
+                                                        <th>Origem</th>
+                                                        <th>Grupo</th>
+                                                        <th>Peso Líquido</th>
+                                                        <th>Peso Bruto</th>
+                                                        <th>Codigo de Barras</th>
+                                                        <th>Dimensão</th>
+                                                        <th>Empresa</th>                                                        
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>                                           
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in produtoFornCompras.produtosFornCompra">
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.descricao }}</td>
+                                                        <td>{{ i.origem }}</td>
+                                                        <td>{{ i.grupo }}</td>
+                                                        <td style="text-align: center">{{ i.pesoliquido }}</td>
+                                                        <td style="text-align: center">{{ i.pesobruto }}</td>
+                                                        <td>{{ i.codigobarras }}</td>
+                                                        <td>{{ i.dimensao }}</td>
+                                                        <td style="text-align: center">{{ i.empresa }}</td>                                                        
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.y | currency: 'R$ ' }}</td>
+                                                    </tr>
+                                                </tbody>                                            
+                                            </table>   
+                                        </div>                                
+                                        <div class="modal-footer"> 
+                                            <div align="right">                                        
+                                                <p><b>TOTAL: </b> {{ infoFornecedor.y | currency: 'R$ '  }}</p>
+                                            </div>
+                                            <br>                        
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>   
+                            
+                            <!-- ========================= MODAL INFORMAÇÕES PRODUTOS AGENDAMENTO  =========================  -->          
+                            <a id="modalAgendamento" data-toggle="modal" data-target="#myModalAgendamento"></a>                     
+                            <div class="modal fade" id="myModalAgendamento" role="dialog">
+                                <div class="modal-dialog"  style="width: 60%; margin-top: 20px; margin-bottom: 50px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>     
+
+                                            <div align="center">
+                                                <h4 class="modal-title">Informações Agendamento - {{ infoAgendamento.dataAgendamento  | date:"dd/MM/yyyy" }} </h4>                                      
+                                            </div> 
+                                            <br>
+                                            <p><b>Código :</b> {{ infoAgendamento.codigo  }}</p>  
+                                            <p><b>Fornecedor(a) :</b> {{ infoAgendamento.nomeFornecedor }}</p> 
+                                            <p><b>CNPJ :</b> {{ infoAgendamento.CNPJ }}</p> 
+                                            <p><b>Empresa :</b> {{ infoAgendamento.empresa  }}</p>   
+                                        </div>
+                                        <div class="modal-body">
+                                            <center><h3>Produtos</h3></center>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Código</th>
+                                                        <th>Produto</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>                                                      
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in diaAgendamento">
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.descricao }}</td>
+                                                        <td>{{ i.quantidade }}</td>                                                        
+                                                        <td>{{ i.y | currency: 'R$ ' }}</td> 
+                                                    </tr>
+                                                </tbody>                                            
+                                            </table>   
+                                        </div>                                
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div>   
+                            
+                            
+                        </div>   
+                        <!-- FIM CLASS ROW -->    
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+        </div>
+    </div>
+</div>
+    
+

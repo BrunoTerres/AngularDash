@@ -1,0 +1,409 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="campanhaController">
+    
+    <div role="main">
+        <div class="row">
+              
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">                  
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Campanha<small></small></h3>
+                        </div>
+                        <div class="col-md-12 col-sm-20 col-xs-12"> 
+                            <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">  
+                                <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                <button class="btn btn-round btn-default pull-right" type="button" ng-click="pesquisaCampanhaEcommerce('N')" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>                                   
+                            </div>  
+                        </div>  
+                    </div>                  
+                    <div class="row">
+                        <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">                       
+                            <div class="container">
+                                <div class="col-md-12 col-sm-20 col-xs-12" style="margin-top: 20px">
+
+                                    <!-- ========================= VISUALIZAÇÃO DAS CAMPANHAS ========================= -->
+                                    <div ng-show ="divVisualizarCampanha">
+                                        <div class="col-md-12 campanhaBordas">
+                                            <span><h2 class="col-md-4" style="margin-top: 10px">Campanhas Cadastradas</h2></span>
+                                            <button class="pull-right btn btn-success col-md-2"style="margin-top: 10px" ng-click="menus(1)">Cadastrar Campanha</button> 
+                                        </div>                           
+    
+                                        <div class="campanhaBordas">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr> 
+                                                            <th colspan="3" style="width: 1%"></th>                                                                                               
+                                                            <th>Nome da Campanha</th>
+                                                            <th>Canal</th>
+                                                            <th>Inicio da Campanha</th>
+                                                            <th>Fim da Campanha</th>
+                                                            <th>Observação</th>                                                
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat=" i in infoCampanha.pesquisaCampanha.data">  
+                                                            <td><a href="" ng-click="pesquisaCampanhaProdEcommerce('',i.id,i.nomeCampanha,'')"><button style="font-size: 10px" class="glyphicon glyphicon-search btn btn-success" title="Visualizar Campanha"></button></a></td>   
+                                                            <td><a href="" ng-click="pesquisaCampanhaEcommerce(i.id,i.nomeCampanha)"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Campanha" ></button></td>                                                
+                                                            <td><a href="" ng-click="pesquisaCampanhaProdEcommerce('',i.id,i.nomeCampanha,'N')"><button style="font-size: 10px" class="glyphicon glyphicon-plus btn btn-primary" title="Cadastrar Produto" ></button></td>                                                 
+                                                            <td>{{ i.nomeCampanha }}</td>
+                                                            <td>{{ i.canal }}</td>
+                                                            <td>{{ i.inicioCampanha }}</td>
+                                                            <td>{{ i.fimCampanha }}</td>
+                                                            <td>{{ i.observacao }}</td>                                                
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                        </div>          
+                                    </div> 
+
+                                    <!-- ========================= FORMULÁRIO DE CADASTRO DA CAMPANHA ========================= -->
+                                    <div ng-show="divCadastroCampanha">
+                                        <legend>Cadastro de Campanha</legend> 
+                                        <form  method="POST" ng-submit="cadastrarCampanhaEcommerce()" name="etapaUm">
+                                                    
+                                            <div class="form-group col-md-4">
+                                                <label>Nome da Campanha <b style="color:red">*</b></label>
+                                                <input type="text" class="form-control" ng-model="cadastroCampanha.nomeCampanha" required>
+                                            </div> 
+                                            
+                                            <div class="form-group col-md-4">
+                                                <label>Canal <b style="color:red">*</b></label>
+                                                <select 
+                                                    class="form-control" 
+                                                    name="mySelect" id="mySelect" 
+                                                    ng-options="option.name for option in listaCanal.availableOptions track by option.id" 
+                                                    ng-change="filtroCanal(listaCanal.selectedOption.name)"
+                                                    ng-model="listaCanal.selectedOption" 
+                                                    required
+                                                >
+                                                </select>
+                                            </div> 
+        
+                                            <div class="form-group col-md-2">
+                                                <label>Início da Campanha <b style="color:red">*</b></label>
+                                                <input type="date" class="form-control" ng-model="cadastroCampanha.dataInicial" required>
+                                            </div>                                          
+        
+                                            <div class="form-group col-md-2">
+                                                <label>Fim da Campanha <b style="color:red">*</b></label>
+                                                <input type="date" class="form-control" ng-model="cadastroCampanha.dataFim" required>  
+                                            </div>     
+                                            
+                                            <div class="form-group col-md-12">
+                                                <label for="exampleFormControlTextarea1">Observação</label>
+                                                <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="cadastroCampanha.observacao" maxlength="200" rows="4"></textarea>
+                                            </div>
+        
+                                            <div class="form-group col-md-12" style="margin-top: 20px">
+                                                <button type="submit"class="btn btn btn-primary">Cadastrar</button>
+                                                <button type="submit"class="btn btn btn-primary" ng-show="divVoltarVisualizar" ng-click="menus(2)">Voltar</button>
+                                            </div>
+                                            
+        
+                                            <legend class="col-md-12"></legend> 
+                                            <div class="form-group col-md-6">
+                                                <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                            </div>            
+                                        </form>
+                                    </div> 
+
+                                    <!-- ========================= VISUALIZAÇÃO DOS PRODUTOS DA CAMPANHA ========================= -->
+                                    <div ng-show="divVisualizarCampanhaProd" style="margin-top: 20px">
+                                        <span><h2 class="col-md-4">Produto da Campanha - {{ idCampanha.nome }}</h2></span>
+                                        <div class="campanhaBordas">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>S.K.U</th>
+                                                        <th>Produto</th>
+                                                        <th>Marca</th>
+                                                        <th>Grupo</th>  
+                                                        <th>Subgrupo</th>                                                                                                                                                  
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="i in infoCampanhaProduto.produtosCampanha.data">
+                                                    <tr data-toggle="collapse" data-target="#{{ i.id }}" class="clickable" style="font-weight: bolder;color: #777575;">
+                                                        <td><a href="" ng-click="pesquisaCampanhaProdEcommerce(i.id,i.idCampanha,i.descricao,'S')"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Campanha" ></button></td>     
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.descricao }}</td>
+                                                        <td>{{ i.marca }}</td>
+                                                        <td>{{ i.grupo }}</td>
+                                                        <td>{{ i.subGrupo }}</td>                                                
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="100%">
+                                                            <div id="{{  i.id }}" class="collapse">
+                                                                <table>
+                                                                        <table class="table table-hover" style="background-color: #e9eef3">
+                                                                        <thead>
+                                                                            <tr>                                                                            
+                                                                                <th style="width: 15%">Porcentagem Redução</th>
+                                                                                <th style="width: 9%">Preço Praticado</th>
+                                                                                <th style="width: 9%">Custo SC</th>
+                                                                                <th style="width: 9%">Custo ES</th>
+                                                                                <th>Observação</th>                                                                            
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>                                                                               
+                                                                                <td>{{ i.porcReducao | currency: '' }}% </td>
+                                                                                <td>{{ i.precoPraticado | currency: 'R$ '}}</td>
+                                                                                <td>{{ i.custoSC | currency: 'R$ ' }}</td>
+                                                                                <td>{{ i.custoES | currency: 'R$ ' }}</td>
+                                                                                <td>{{ i.observacao }}</td>
+                                                                            </tr>                                                                   
+                                                                        </tbody>
+                                                                    </table>  
+                                                                    
+                                                                </table>                                                        
+                                                            </div>                                                        
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                </tbody>        
+                                            </table>
+                                        </div>                                  
+                                        
+                                    </div>
+
+                                    <!-- ========================= FORMULÁRIO DE PRODUTOS DA CAMPANHA ========================= -->
+                                    <div ng-show="divCadastroCampanhaProd"  class="col-md-12 col-sm-20 col-xs-12"style="margin-top: 20px">                                   
+                                        <div class="col-md-12 campanhaBordas"> 
+                                                <span><h2 class="col-md-12">Cadastro de Produto da Campanha - {{ idCampanha.nome }}</h2></span>                                 
+                                            <div class="col-md-4"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;">
+                                                <input type="text" style="border-radius: 4px;" placeholder="Digite S.K.U" ng-model="codigoProduto" class="form-control fonte-size-input">    
+                                            </div> 
+                                            <div class="col-md-2"  style="margin: auto">
+                                                <button class="btn btn-default" type="button" style="height:35px;font-size: 13px" ng-click="produtoCampanhaEcommerce()">Pesquisar</button>  
+                                            </div>                                
+                                        </div>
+                                        <div class="col-md-12 campanhaBordas"  ng-show="divFormCampanhaCadastro" >
+                                            <form  method="POST" ng-submit="cadastroProdCampanhaEcommerce()">
+                                                    
+                                                <div class="form-group col-md-4">
+                                                    <label>S.K.U Produto</label>
+                                                    <input type="text" class="form-control" placeholder="{{ produtoCampanha.pesquisaProduto.data.codigo }}" disabled>
+                                                </div> 
+                                                <div class="form-group col-md-8">
+                                                    <label>Produto</label>
+                                                    <input type="text" class="form-control" placeholder="{{ produtoCampanha.pesquisaProduto.data.descricao }}"  disabled>
+                                                </div> 
+                                            
+                                                <div class="form-group col-md-4">
+                                                    <label>Marca</label>
+                                                    <input type="text" class="form-control" placeholder="{{ produtoCampanha.pesquisaProduto.data.marca }}" disabled>
+                                                </div> 
+                                                
+                                                <div class="form-group col-md-4">
+                                                    <label>Grupo</label>
+                                                    <input type="text" class="form-control" placeholder="{{ produtoCampanha.pesquisaProduto.data.grupo }}" disabled>
+                                                </div> 
+
+                                                <div class="form-group col-md-4">
+                                                    <label>Subgrupo <b style="color:red">*</b></label>
+                                                    <input type="text" class="form-control" ng-model="cadastrarProdCampanha.subgrupo" required>
+                                                </div>                                          
+                                            
+
+                                                <div class="form-group col-md-6">
+                                                    <label>Porcentagem da Redução <b style="color:red">*</b></label>
+                                                    <input type="text" class="form-control" ng-model="cadastrarProdCampanha.porcReducao"  mask-money>
+                                                </div> 
+                
+                                                <div class="form-group col-md-6">
+                                                    <label>Preço Praticado <b style="color:red">*</b></label>
+                                                    <input type="text" class="form-control" ng-model="cadastrarProdCampanha.precoPraticado"  mask-money>
+                                                </div> 
+
+                                                <div class="form-group col-md-4">
+                                                    <label>Custo Santa Catarina </label>
+                                                    <input type="text" class="form-control" placeholder="{{ produtoCampanha.pesquisaProduto.data.custoSC }}" disabled>
+                                                </div> 
+                                
+                                                <div class="form-group col-md-4">
+                                                    <label>Custo Espirito Santo</label>
+                                                    <input type="text" class="form-control"  placeholder="{{ produtoCampanha.pesquisaProduto.data.custoES }}" disabled>
+                                                </div> 
+
+                                                <div class="form-group col-md-12">
+                                                        <label for="exampleFormControlTextarea1">Observação</label>
+                                                        <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="cadastrarProdCampanha.observacao"  maxlength="200" rows="4"></textarea>
+                                                </div>
+
+                                                <div class="form-group col-md-12" style="margin-top: 20px">
+                                                    <button type="submit"class="btn btn-round btn-primary">Cadastrar</button>
+                                                </div>
+
+                                                
+                                                <legend class="col-md-12"></legend> 
+                                                <div class="form-group col-md-6">
+                                                    <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                </div>                                                      
+                                            </form>
+                                        </div>
+                                    </div>
+                                
+                                </div>
+
+                                <!-- ========================= MODAL PESQUISA PRODUCAO CHECKOU X ETIQUETA =========================  -->          
+                                <a id="modalEditar" data-toggle="modal" data-target="#myModalEditar"></a>                     
+                                <div class="modal fade" id="myModalEditar" role="dialog">
+                                    <div class="modal-dialog"  style="width: 60%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <div align="center">                                        
+                                                    <h4 class="modal-title">Alterar Campanha - {{filtro.nome}}</h4>                                        
+                                            </div>   
+                                        </div>
+                                        <div class="modal-body">                                       
+                                            <form  method="POST" ng-submit="editarCampanhaEcommerce()">   
+
+                                                <div class="form-group col-md-4">
+                                                    <label>Nome da Campanha</label>
+                                                    <input type="text" class="form-control" ng-model="editarCampanha.nomeCampanha" required>
+                                                </div> 
+
+                                                <div class="form-group col-md-4">
+                                                    <label>Canal <b style="color:red">*</b></label>
+                                                    <select 
+                                                        class="form-control" 
+                                                        name="mySelect" id="mySelect" 
+                                                        ng-options="option.name for option in listaCanal.availableOptions track by option.id" 
+                                                        ng-change="filtroCanal(listaCanal.selectedOption.name)"
+                                                        ng-model="listaCanal.selectedOption" 
+                                                        required
+                                                    >
+                                                    </select>
+                                                </div> 
+            
+                                                <div class="form-group col-md-2">
+                                                    <label>Início da Campanha</label>
+                                                    <input type="date" class="form-control" ng-model="editarCampanha.dataInicial" required>
+                                                </div> 
+            
+                                                <div class="form-group col-md-2">
+                                                    <label>Fim da Campanha</label>
+                                                    <input type="date" class="form-control" ng-model="editarCampanha.dataFim" required>  
+                                                </div>     
+                                                
+                                                <div class="form-group col-md-12">
+                                                    <label for="exampleFormControlTextarea1">Observação<b style="color:red">*</b></label>
+                                                    <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="editarCampanha.observacao"  minlength="15" maxlength="200"  rows="4" required></textarea>
+                                                </div>       
+                                                                                    
+                                                <legend class="col-md-12"></legend> 
+                                                <div class="form-group col-md-12">
+                                                    <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>      
+                                                    <button type="submit"  class="btn buttonGeral pull-right" >Alterar</button>                                                     
+                                                </div>                       
+                                            </form>                       
+                                        </div>     
+                                        <!--                       
+                                        <div class="modal-footer">   
+                                                                                                                                                    
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                        -->    
+                                    </div>
+                                    </div>
+                                </div> 
+
+                                <!-- ========================= MODAL PESQUISA PRODUCAO CHECKOU X ETIQUETA =========================  -->          
+                                <a id="modalEditarProduto" data-toggle="modal" data-target="#myModalEditarProduto"></a>                     
+                                <div class="modal fade" id="myModalEditarProduto" role="dialog">
+                                    <div class="modal-dialog"  style="width: 50%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <div align="center">                                        
+                                                <h4 class="modal-title">Alterar Produto Da Campanha- {{nomeCampanha}}</h4>                                        
+                                            </div>                                         
+                                        </div>
+                                        <div class="modal-body">
+                                                <div class="col-md-12" style="margin-top: 20px" >
+                                                    <form  method="POST" ng-submit="editarProdCampanhaEcommerce()">
+                                                            
+                                                        <div class="form-group col-md-4">
+                                                            <label>S.K.U Produto</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.codigo" disabled>
+                                                        </div> 
+                                                        <div class="form-group col-md-8">
+                                                            <label>Produto</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.descricao"   disabled>
+                                                        </div> 
+                                                    
+                                                        <div class="form-group col-md-4">
+                                                            <label>Marca</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.marca"  disabled>
+                                                        </div> 
+                                                        
+                                                        <div class="form-group col-md-4">
+                                                            <label>Grupo</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.grupo"  disabled>
+                                                        </div> 
+            
+                                                        <div class="form-group col-md-4">
+                                                            <label>Subgrupo</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.subGrupo">
+                                                        </div>                                          
+                                                    
+                                                        <div class="form-group col-md-4">
+                                                            <label>Porcentagem da Redução</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.porcReducao"  mask-money>
+                                                        </div> 
+                        
+                                                        <div class="form-group col-md-4">
+                                                            <label>Preço Praticado</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.precoPraticado"   mask-money>
+                                                        </div> 
+            
+                                                        <div class="form-group col-md-4">
+                                                            <label>Custo Santa Catarina </label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.custoSC"  disabled>
+                                                        </div> 
+                                        
+                                                        <div class="form-group col-md-4">
+                                                            <label>Custo Espirito Santo</label>
+                                                            <input type="text" class="form-control" ng-model="infoProdutoCampanha.produtosCampanha.data.custoES"  disabled>
+                                                        </div> 
+            
+                                                        <div class="form-group col-md-12">
+                                                            <label for="exampleFormControlTextarea1">Observação <b style="color:red">*</b></label>
+                                                            <textarea class="form-control" id="exampleFormControlTextarea1" ng-model="infoProdutoCampanha.produtosCampanha.data.observacao" minlength="15" maxlength="200" rows="4" required></textarea>
+                                                        </div>
+            
+                                                        <div class="form-group col-md-12" style="margin-top: 20px">
+                                                            <button type="submit"class="btn btn-round btn-primary">Alterar</button>
+                                                        </div>        
+                                                        
+                                                        <legend class="col-md-12"></legend> 
+                                                        <div class="form-group col-md-6">
+                                                            <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                        </div>  
+
+                                                    </form>
+                                                </div>                   
+                                        </div>     
+                                        <!--                       
+                                        <div class="modal-footer">   
+                                                                                                                                                    
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                        -->    
+                                    </div>
+                                    </div>
+                                </div> 
+
+                            </div>
+                        </div>
+                    </div>                    
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>        
+    </div>   
+</div>    
+

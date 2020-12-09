@@ -1,0 +1,163 @@
+<div class="col-md-12 col-sm-12 col-xs-18 " ng-controller="monitorEcommerceController">  
+    <div role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h1>Monitor Ecommerce<small></small></h1>
+                        </div>                      
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>             
+            <div class="row">
+                <div class="animated flipInY col-md-12 col-sm-20 col-xs-12" ng-show="divGeral" >
+                     <!-- ========== META GERAL ==========  -->
+                     <div ng-show="showPainel == 1 || showPainel == 2 || showPainel == 3" class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                        <div class="tile-stats espacamentoTVEcommerceGeral">
+                                <h3 style="font-size: 100px;text-align: center!important;">Meta - {{ canal }}</h3>
+                           <div>                         
+                                <div class="icon"><i class="fa fa-line-chart"></i></div>                          
+                                <div class="espacamentoTVEcommerceDentro">
+                                    <div class="col-md-12"><p style="font-size: 80px; color: rgb(64, 190, 165);">Mensal</p></div>  
+                                    
+                                        <div>
+                                            <progress-bar cur-val='{{metaMensal}}' max-val='100'></progress-bar>
+                                        </div>
+        
+                                        <div class="col-md-12"><p style="font-size: 80px; color: rgb(64, 190, 165);">Diária</p></div>   
+                                                                        
+                                        <div>
+                                            <progress-bar cur-val='{{metaDiaria}}' max-val='100'></progress-bar>
+                                        </div>
+
+                                    </div>                          
+                                </div>  
+                        </div>
+                    </div>                        
+
+                    <!-- ========== RECLAME AQUI ELETRUM ========== -->
+                    <div ng-show="showPainel == 4" class="animated flipInY col-md-12 col-sm-20 col-xs-12" >
+                        <div class="tile-stats" style="height: 850px">
+                            <div class="icon"><i class="fa fa-users"></i></div>                          
+                            <center><h3 style="font-size: 100px">Reclame Aqui - Eletrum</h3></center>
+                            
+                            <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top: 100px">
+                                    
+                                <center>
+                                    <img ng-src="{{img}}" alt="imagem">                                   
+                                    <b class="col-md-12" style="font-size: 30px">{{seisMeses.status}} </b>  
+                                    <b class="col-md-12" style="font-size: 25px"><span style="color: red">{{seisMeses.finalScore}}</span>/10</b> 
+                                    <b class="col-sm-12" style="font-size: 20px">{{ dataInicialReclameAqui | date: 'dd-MM-yyyy'}} até {{ dataFinalReclameAqui | date: 'dd-MM-yyyy'}}</b>
+                                </center> 
+
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12" style="margin-top: 100px">
+                                    <div class="row">
+                                        <div class="outer col">
+                                            <div id="hcReclameAquiEletrumRP" class="chart-container"></div>  
+                                            <div id="hcReclameAquiEletrumVN" class="chart-container"></div>                            
+                                        </div>                                      
+                                    </div>
+                                    <div class="row">
+                                        <div class="outer col">
+                                            <div id="hcReclameAquiEletrumIS" class="chart-container"></div>  
+                                            <div id="hcReclameAquiEletrumNC" class="chart-container"></div>                            
+                                        </div>                                
+                                    </div>                                                     
+                                    
+                                    <div class="outer">
+                                        <div class="outer col">
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Reclamações</p>
+                                                <p><i class="fa fa-bullhorn col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMeses.totalComplains}}</b> </p>
+                                            </div> 
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Respondidas</p>
+                                                <p><i class="fa fa-reply-all col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMeses.totalAnswered}}</b> </p>
+                                            </div> 
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Não Respondidas</p>
+                                                <p><i class="fa fa-frown-o col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMeses.totalNotAnswered}}</b> </p>
+                                            </div>
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Avaliadas</p>
+                                                <p><i class="fa fa-star col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMeses.totalEvaluated}}</b> </p>
+                                            </div>                
+                                        </div>                           
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========== RECLAME AQUI COMPREI E MEU ========== 
+                    <div ng-show="showPainel == 5" class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                        <div class="tile-stats">
+                            <div class="icon"><i class="fa fa-users"></i></div>                          
+                            <center><h3 style="font-size: 100px">Reclame Aqui - Comprei e Meu</h3></center>
+                            
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                    
+                                <center>
+                                    <img ng-src="{{imgCM}}" alt="imagem">                                   
+                                    <b class="col-md-12" style="font-size: 30px">{{seisMesesCM.status}} </b> 
+                                    <b class="col-md-12" style="font-size: 25px"><span style="color: red">{{seisMesesCM.finalScore}}</span>/10</b> 
+                                    <b class="col-sm-12" style="font-size: 20px">{{ dataInicialCM | date: 'dd-MM-yyyy'}} até {{ dataFinalCM | date: 'dd-MM-yyyy'}}</b>
+                                </center> 
+
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                    <div class="row">
+                                        <div class="outer col">
+                                            <div id="hcReclameAquiCompreiRP" class="chart-container"></div>  
+                                            <div id="hcReclameAquiCompreiVN" class="chart-container"></div>                            
+                                        </div>                                      
+                                    </div>
+                                    <div class="row">
+                                        <div class="outer col">
+                                            <div id="hcReclameAquiCompreiIS" class="chart-container"></div>  
+                                            <div id="hcReclameAquiCompreiNC" class="chart-container"></div>                            
+                                        </div>                                
+                                    </div>                                                     
+                                    
+                                    <div class="outer">
+                                        <div class="outer col">
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Reclamações</p>
+                                                <p><i class="fa fa-bullhorn col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMesesCM.totalComplains}}</b> </p>
+                                            </div> 
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Respondidas</p>
+                                                <p><i class="fa fa-reply-all col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMesesCM.totalAnswered}}</b> </p>
+                                            </div> 
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Não Respondidas</p>
+                                                <p><i class="fa fa-frown-o col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMesesCM.totalNotAnswered}}</b> </p>
+                                            </div>
+                                            <div class="col-md-3"> 
+                                                <p class="divParagrafoReclameAqui">Avaliadas</p>
+                                                <p><i class="fa fa-star col-md-1 divIConReclameAqui"></i><b class="divTextoReclameAqui">{{seisMesesCM.totalEvaluated}}</b> </p>
+                                            </div>                
+                                        </div>                           
+                                    </div>
+                            </div>
+                        </div>
+                    </div>-->
+                      
+                    <!-- ========== LOGOS EBIT E LOJA CONFIAVEL ========== 
+                    <div ng-show="showPainel == 4" class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+                        <div class="tile-stats">                                          
+                            <center>
+                                <img  src="//service.yourviews.com.br/Image/8ea7baa3-231d-4049-873e-ad5afd085ca4/Footer.jpg" title="Loja Confiável" alt="Loja Confiável">
+                                <img  src="https://newimgebit-a.akamaihd.net/ebitBR/selo/img_74542.png" style="border: 0px;"></center>
+                            </center>                                                                                                   
+                        </div>                     
+                    </div>-->
+
+                </div>          
+            </div>   
+        </div>        
+    </div>
+</div>
+

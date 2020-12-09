@@ -1,0 +1,146 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="analiseMovimentoController">
+    
+    <div role="main">
+        <div class="row">
+              
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                  
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Analise de Movimento - E-Commerce <small></small></h3>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                                <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                <button class="btn btn-round btn-default pull-right" type="button" ng-click="ecmAnaliseMovimento()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>  
+                            </div>
+                        </div>       
+                    </div>
+                  
+                <div class="row">
+                    <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                        <div class="container">
+                            <!--<div class="row">
+                                <center><h3><strong>Movimento</strong></h3><h2>Produtos</h2>  E-Commerce</center>
+                            </div>-->
+                        </div>
+                        <div class="container">
+                            <div class="row" ng-show="divGeral">
+                                <table id="tabela" width="100%" class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th><input type="text" placeholder="Código" ng-model="codigo" class="form-control fonte-size-input" id="txtColuna1"></th>
+                                            <th><input type="text" placeholder="Descrição" ng-model="name" class="form-control fonte-size-input" id="txtColuna2"></th>
+                                            <th><input type="text" placeholder="Marca" ng-model="origem" class="form-control fonte-size-input" id="txtColuna3"></th>
+                                            <th><input type="text" placeholder="Origem" class="form-control fonte-size-input" id="txtColuna4"></th>
+                                            <th colspan="3">
+                                                <select
+                                                    class="form-control"
+                                                    name="mySelect"
+                                                    id="mySelect"
+                                                    ng-options="option.name for option in data.availableOptions track by option.id"
+                                                    ng-model="data.selectedOption"
+                                                    ng-change="dataSelect()"
+                                                >
+                                                </select>
+                                            </th>
+                                            <th colspan="3">
+                                                <select
+                                                    class="form-control"
+                                                    name="mySelect"
+                                                    id="mySelect"
+                                                    ng-options="option.name for option in dataDiaEstoque.availableOptions track by option.id"
+                                                    ng-model="dataDiaEstoque.selectedOption"
+                                                    ng-change="dataSelect()"
+                                                >
+                                                </select>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th ng-click="sortBy('codigo')">
+                                                Código
+                                                <span class="sortorder" ng-show="propertyName === 'codigo'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('produto')">
+                                                Descrição
+                                                <span class="sortorder" ng-show="propertyName === 'produto'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('marca')">
+                                                Marca
+                                                <span class="sortorder" ng-show="propertyName === 'marca'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('origem')">
+                                                Origem
+                                                <span class="sortorder" ng-show="propertyName === 'origem'" ng-class="{reverse: reverse}"></span>
+                                            </th>                                            
+                                            <th ng-click="sortBy('estoque')">
+                                                Estoque
+                                                <span class="sortorder" ng-show="propertyName === 'estoque'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('quantidade')">
+                                                Vendas
+                                                <span class="sortorder" ng-show="propertyName === 'quantidade'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('vmd')">
+                                                Média Diaria
+                                                <span class="sortorder" ng-show="propertyName === 'vmd'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('dias_estoque')">
+                                                Dias Estoque
+                                                <span class="sortorder" ng-show="propertyName === 'dias_estoque'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('custo_negociado')">
+                                                Custo
+                                                <span class="sortorder" ng-show="propertyName === 'custo_negociado'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('unitario')">
+                                                Unitario
+                                                <span class="sortorder" ng-show="propertyName === 'unitario'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('margem')">
+                                                Margem
+                                                <span class="sortorder" ng-show="propertyName === 'margem'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('total')">
+                                                Fat Real
+                                                <span class="sortorder" ng-show="propertyName === 'total'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                            <th ng-click="sortBy('fat_prev')">
+                                                Fat Estimado
+                                                <span class="sortorder" ng-show="propertyName === 'fat_prev'" ng-class="{reverse: reverse}"></span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="rMov in VisEcmAnaliseMovimento.analise_movimento | orderBy:propertyName:reverse | filter:codigo | filter:name | filter:marca | filter:origem " ng-show="(data.selectedOption.id == 'X' || rMov.semaforo == data.selectedOption.id) && (dataDiaEstoque.selectedOption.id == 'X' || rMov.semaforo_est == dataDiaEstoque.selectedOption.id)">
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.codigo}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.produto}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.marca}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.origem}} </td>                                           
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.estoque}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.quantidade}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.vmd | currency: ''}} </td>
+                                            <td ng-class="{'rmov-est-dark': rMov.semaforo_est == 'D', 'rmov-est-red': rMov.semaforo_est == 'R', 'rmov-est-yellow': rMov.semaforo_est == 'Y', 'rmov-est-green': rMov.semaforo_est == 'G', 'rmov-est-blue': rMov.semaforo_est == 'A'}"> {{rMov.dias_estoque | currency: ''}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.custo_negociado | currency: ''}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.unitario | currency: ''}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.margem | currency: ''}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.total | currency: ''}} </td>
+                                            <td ng-class="{'rmov-red': rMov.semaforo == 'R', 'rmov-yellow': rMov.semaforo == 'Y', 'rmov-green': rMov.semaforo == 'G', 'rmov-blue': rMov.semaforo == 'B'}"> {{rMov.fat_prev | currency: ''}} </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        </div>
+          <br/>
+    </div>   
+</div>    
+

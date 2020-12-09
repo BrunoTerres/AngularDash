@@ -1,0 +1,255 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="analiseProdutoController">    
+    <div role="main">
+        <div class="row">
+                
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Analise de Produto</h3>
+                        </div>
+                        <div class="col-md-6">                          
+                            <div class="pull-right"  style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 3px">
+                                <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                <input type="date"  style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                <button class="btn btn-round btn-default pull-right"  ng-if="divApresenta == false" type="button" ng-click="getProduto()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button> 
+                                <button ng-show="divApresenta" class="btn btn-default" type="button" style="height:35px;font-size: 13px; border-radius: 3px"  ng-click="close()">Retornar Ao Menu</button>
+                            </div>  
+                        </div>       
+                    </div>                
+                    
+                    <div class="row">
+                        <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                          
+                            <div class="container ">                             
+                                <div class="row">
+                                    
+                                    <!-- ========================= TODOS PRODUTOS MOVIMENTANDOS DA DATA SOLICITADA =========================  --> 
+                                    <div ng-if="tableProdutos == true" class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                        <h3 align="center">Produtos</h3>
+                                        <div style="margin-top: 20px; margin-bottom: 5px">                                        
+                                             <select
+                                                style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                                class="form-control pull-left"
+                                                name="mySelect"
+                                                id="mySelect1"
+                                                ng-options="option.name for option in selecaoProduto.availableOptions track by option.id"
+                                                ng-change="filterProduto(selecaoProduto.selectedOption)"
+                                                ng-model="selecaoProduto.selectedOption">
+                                            </select>                                        
+                                            <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaProduto" class="form-control fonte-size-input">   
+                                        </div> 
+                                        <table class="table table-responsive" align="center">
+                                            <thead>                                             
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Código</th>
+                                                    <th>Produto</th>
+                                                    <th>Fornecedor</th>
+                                                    <th>Grupo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                 <tr dir-paginate="i in produtoGet.getProdutos | filter: pesquisaProduto  |itemsPerPage:contagemProduto" pagination-id="pesquisaProduto">                                      
+                                                    <td><a href="" ng-click="analiseProduto(i.codigo,i.nameProduto)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.nameProduto }}</td>
+                                                    <td>{{ i.nameFornecedor }}</td>
+                                                    <td>{{ i.nameGrupo }}</td>
+                                                </tr>                                         
+                                            </tbody>                                                
+                                        </table> 
+                                        <dir-pagination-controls max-size="5"  pagination-id="pesquisaProduto" boundary-links="true"></dir-pagination-controls>
+                                    </div>
+                                    
+                                    <!-- ========================= ANALISE DO PRODUTO PESQUISADO =========================  --> 
+                                    <div ng-if="tableAnaliseProdutos == true">   
+                                       
+                                        <br>
+                                        <!-- ========================= CARACTERISTICA DO PRODUTO  =========================  -->
+                                        <div class="animated flipInY col-lg-4 col-md-4 col-sm-8 col-xs-12">                                           
+                                            <div  style="min-width: 310px; max-width: 400px; height: 300px; margin: 0 auto">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i style="width: 90%" class="fa fa-cubes"></i></div>
+                                                    <center><h3 style="font-size: 25px; margin-top:10px" align="left">Produto</h3></center><br>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Codigo: </b> {{ analiseProduct.analiseProdutos[0].codigoProduto  }} </p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Produto: </b> {{ analiseProduct.analiseProdutos[0].nameProduto  }}</p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Origem: </b> {{ analiseProduct.analiseProdutos[0].origem  }} </p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Peso Bruto: </b> {{ analiseProduct.analiseProdutos[0].pesoBruto  }} </p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Peso Líquido: </b> {{ analiseProduct.analiseProdutos[0].pesoLiquido  }} </p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Dimensão: </b> {{ analiseProduct.analiseProdutos[0].dimensao  }} </p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Código de Barras: </b> {{ analiseProduct.analiseProdutos[0].codigoBarras  }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- ========================= CARACTERISTICA DO PRODUTO - FORNECEDOR  =========================  -->
+                                        <div class="animated flipInY col-lg-4 col-md-4 col-sm-8 col-xs-12">
+                                            <div  style="min-width: 310px; max-width: 420px; height: 300px; margin: 0 auto">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa-user"></i></div>
+                                                    <center><h3 style="font-size: 25px; margin-top:10px" align="left">Fornecedor</h3></center><br>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Codigo: </b> {{ analiseProduct.analiseProdutos[0].codigoFornecedor  }} </p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Fornecedor: </b> {{ analiseProduct.analiseProdutos[0].nameFornecedor  }}</p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Marca: </b>  {{ analiseProduct.analiseProdutos[0].marca }}</p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Grupo: </b> {{ analiseProduct.analiseProdutos[0].grupo  }} </p>  
+                                                </div>                                          
+                                            </div>
+                                        </div>
+                                        <!-- ========================= CARACTERISTICA DO PRODUTO - ULTIMA ENTRADA DO PRODUTO =========================  -->
+                                        <div class="animated flipInY col-lg-4 col-md-4 col-sm-8 col-xs-12">
+                                            <div  style="min-width: 310px; max-width: 420px; height: 300px; margin: 0 auto">
+                                                <div class="tile-stats">
+                                                    <div class="icon"><i class="fa fa-calendar"></i></div>
+                                                    <center><h3 style="font-size: 25px; margin-top:10px" align="left">Última Entrada</h3></center><br>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Data: </b>{{ analiseProduct.analiseProdutos[0].ultimaEntrada  }} </p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade: </b>{{ analiseProduct.analiseProdutos[0].quantidadeEntrada  }}</p>
+                                                    <p style="font-size: 15px; margin-left: 5px" align="left"><b>Empresa: </b>{{ analiseProduct.analiseProdutos[0].empresa  }} </p>   
+                                                </div>                                          
+                                            </div>
+                                        </div> 
+                                        
+                                        <!-- ========================= PRODUTO POR CD E VENDA POR CANAL =========================  -->
+                                        <div class="animated flipInY col-xs-12 col-sm-12 col-md-12 col-lg-16">                                           
+                                            <!-- ========================= PRODUTO POR CD  =========================  -->
+                                            <h3 align="center">Produto por CD</h3>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>CD</th>
+                                                        <th>Custo Negociado</th>
+                                                        <th>Estoque</th>
+                                                        <th>Quantidade Vendidas</th>                                                      
+                                                        <th>Total de Vendas</th> 
+                                                        <th>Lucro</th>
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in analiseProduct.infoprodutoporcd.data">
+                                                        <td>{{ i.empresa }}</td>
+                                                        <td>{{ i.custo_negociado | currency: 'R$ '}}</td>
+                                                        <td>{{ i.estoque }}</td>
+                                                        <td>{{ i.quantidade }}</td>       
+                                                        <td>{{ i.total | currency: 'R$ ' }}</td>
+                                                        <td>{{ i.lucro | currency: 'R$ ' }}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td colspan="1" align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{  analiseProduct.infoprodutoporcd.totalCustoNegociado | currency: 'R$ ' }}</td>
+                                                        <td>{{  analiseProduct.infoprodutoporcd.totalEstoque }}</td>
+                                                        <td>{{  analiseProduct.infoprodutoporcd.totalQuantidade }}</td>
+                                                        <td>{{  analiseProduct.infoprodutoporcd.totalVenda | currency: 'R$ ' }}</td>
+                                                        <td>{{  analiseProduct.infoprodutoporcd.totaLucro | currency: 'R$ ' }}</td>
+                                                    </tr>
+                                                </tbody>                                           
+                                            </table> 
+                                            <br>                                          
+                                            <!-- ========================= VENDA POR CANAL  =========================  -->
+                                            <h3 align="center">Venda por Canal</h3>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Canal</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Ticket Médio</th>
+                                                        <th>Total</th>                                                    
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in analiseProduct.vendaporcanal.data">
+                                                        <td>{{ i.name }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.ticket_medio  | currency: 'R$ '}}</td>
+                                                        <td>{{ i.total | currency: 'R$ ' }}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{  analiseProduct.vendaporcanal.totalQuantidade }}</td>
+                                                         <td>{{  analiseProduct.vendaporcanal.totalTicketMedio | currency: 'R$ ' }}</td>
+                                                        <td>{{  analiseProduct.vendaporcanal.totalVenda | currency: 'R$ ' }}</td>
+                                                    </tr>
+                                                </tbody>                                            
+                                            
+                                            </table> 
+                                            
+                                        </div>  
+                                    </div>
+                                    
+                                    <!-- ========================= VMD =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="tableAnaliseProdutos" >
+                                       <div id="hcVMD"></div>
+                                    </div>
+                                    
+                                    <!-- ========================= TICKECT MÉDIO POR CANAL  =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                       <div id="hcTicketMedioCanal" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div> 
+                                    
+                                    <!-- ========================= QUANTIDADE POR CANAL  =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                       <div id="hcQuantidadeCanal" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div><br><br>
+                                
+                                    <!-- ========================= TICKECT MÉDIO POR DIA  =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                       <div id="hcTickerMedioDia" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div>
+                                    
+                                    <!-- ========================= QUANTIDADE POR DIA  =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                       <div id="hcQuantidadeDia" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div><br><br>
+                                    
+                                    <!-- ========================= TICKECT MÉDIO POR DIA E CANAL =========================  -->
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="tableAnaliseProdutos">
+                                       <div id="hcTickerMedioDiaCanal" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div> 
+                                    
+                                    <!-- ========================= QUANTIDADE POR DIA E CANAL =========================  -->
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="tableAnaliseProdutos">
+                                       <div id="hcQuantidadeDiaCanal" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div> 
+                                    
+                                    <!-- ========================= VENDA POR REGIAO - TOTAL  =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                        <div id="hcVendaPorRegiaoTot" style="min-width: 400px; max-width: 700px; height: 433px; margin: 0 auto"></div>                                       
+                                    </div>
+                                    
+                                    <!-- ========================= VENDA POR REGIAO - QUANTIDADE  =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                        <div id="hcVendaPorRegiaoQtd" style="min-width: 400px; max-width: 700px; height: 433px; margin: 0 auto"></div>                                       
+                                    </div>
+                                    
+                                    <!-- ========================= MEDIA DE FRETE POR ESTADO - MAPA GEOGRAFICO =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                       <div id="hcMapaEstadoMediaFrete"></div>
+                                    </div>
+                                    
+                                    <!-- ========================= QUANTIDADE VENDIDA POR ESTADO - MAPA GEOGRAFICO =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableAnaliseProdutos">
+                                       <div id="hcMapaEstadoQuantidade"></div>
+                                    </div>
+                                    
+                                    
+                                    <!-- ========================= FATURAMENTO MENSAL PRODUTO =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableFaturamentoProduto">
+                                       <div id="hcFaturamentoMensalProduto" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div> 
+                                    
+                                    <!-- ========================= QUANTIDADE MENSAL PRODUTO =========================  -->
+                                    <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6" ng-show="tableFaturamentoProduto">
+                                       <div id="hcQuantidadeMensalProduto" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+                                    </div> 
+                                    
+                                </div> 
+                                
+                            <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>
+

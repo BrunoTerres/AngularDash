@@ -1,0 +1,655 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="atacadoController">
+
+    <div role="main">
+        <!-- top tiles -->
+        <div class="row tile_count">
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Faturamento</span>
+                <div class="count"><h2 ng-cloack>{{ visAtcVisaoGeral.vl_total_positivados | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.qtd_total_positivados }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.vl_total_positivados / visAtcVisaoGeral.qtd_total_positivados | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.clientes_positivados }} </i> Clientes</span></p>
+            </div>
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Novos Clientes</span>
+                <div class="count"><h2 ng-cloack>{{ visAtcVisaoGeral.vl_total_clientes_novos | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.qtd_total_novos }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.vl_total_clientes_novos / visAtcVisaoGeral.qtd_total_novos | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.clientes_novos }} </i><span ng-if="urlClientesNovos == false">Clientes</span> <a ng-if="urlClientesNovos == true" href="" ng-click="clientesNovoseReativados(1)"><b>Clientes</b></a><i class="green"> {{ visAtcVisaoGeral.clientes_novos * 100 / visAtcVisaoGeral.clientes_positivados | currency: ''}}% </i> </span></p>
+            </div>
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Clientes Reativados</span>
+                <div class="count"><h2 ng-cloack>{{ visAtcVisaoGeral.vl_total_clientes_reativados | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.qtd_total_reativados }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.vl_total_clientes_reativados / visAtcVisaoGeral.qtd_total_reativados | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVisaoGeral.clientes_reativados }} </i> <span ng-if="urlClientesNovos == false">Clientes</span> <a ng-if="urlClientesNovos == true" href="" ng-click="clientesNovoseReativados(2)"><b>Clientes</b></a></span><i class="green"> {{ visAtcVisaoGeral.clientes_reativados * 100 / visAtcVisaoGeral.clientes_positivados | currency: '' }}%</i> </p>
+            </div>
+        </div> 
+        <div class="row">
+                <div class="col-md-12 col-sm-20 col-xs-12">
+                    <div class="dashboard_graph">
+                        <div class="row x_title">
+                              <div class="col-md-6">
+                                <h3>Analise das Vendas - Atacado <small></small></h3>
+                              </div>
+                              <div class="col-md-6">
+                                    <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                                        <div class="pull-right"  style="margin: auto" >
+                                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                            <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                            <button class="btn btn-round btn-default pull-right" type="button" ng-click="atcVisaoGeral()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>    
+                                        </div>    
+                                             
+                                    </div>
+                              </div>       
+                        </div>                               
+                        
+                        <div class="row" ng-show="showTop10">
+                            
+                            <!-- ========================= DIV VENDAS POR REGIÃO  =========================  -->
+                            <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12">
+                                <div id="hcVendasPorRegiao" ></div>
+                            </div>
+                            
+                            <!-- ========================= DIV VENDAS POR CANAL  =========================  -->                        
+                            <div ng-show="login.modalidade_vendedor == -1" class="col-lg-4 col-md-4 col-sm-8 col-xs-12">
+                                <div id="hcVendasPorCanal" ></div>
+                            </div>
+                            
+                            <!-- ========================= META GERAL EMPRESA  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1"  class="animated flipInY col-lg-4 col-md-4 col-sm-8 col-xs-12">
+                                <div id="hcMetaGeralEmpresa" style="min-width: 310px; max-width: 400px; height: 300px; margin: 0 auto"></div>
+                            </div>
+                            
+                            <!-- ========================= DIV TENDENCIA DE META GERAL ========================= -->      
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16 table-responsive" ng-show="visAtcVisaoGeral.enableTendeciaMeta && (login.modalidade_vendedor == -1)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Tendencia de Meta</strong></h3> Geral</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th width="120">Clientes</th>
+                                                <th width="120">Meta</th>
+                                                <th width="120">Realizado</th>
+                                                <th width="120">Tck Ideal/Dia</th>
+                                                <th width="120">Tck Real./Dia</th>
+                                                <th width="120">Valor Estimado</th>
+                                                <th width="100">% Estimado</th>
+                                            </thead>
+                                            <body>
+                                                <tr>
+                                                    <td align=right> {{tendencia_meta_geral.clientes}} </td>
+                                                    <td align=right> {{tendencia_meta_geral.meta | currency:'R$ '}} </td>
+                                                    <td align=right> {{tendencia_meta_geral.venda | currency:'R$ '}} </td>
+                                                    <td align=right> {{tendencia_meta_geral.dt_ideal | currency:'R$ '}} </td>
+                                                    <td align=right> {{tendencia_meta_geral.dt_realizado | currency:'R$ '}} </td>
+                                                    <td align=right> {{tendencia_meta_geral.valor_estimado | currency: 'R$ '}} </td>
+                                                    <td align=right> {{tendencia_meta_geral.percentual_estimado | currency: ''}}% </td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> 
+                            
+                            <!-- ========================= VENDAS POR DATA  ========================= -->
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div id="hcVendasPorData"></div>    
+                            </div>   
+                            
+                             <!-- ========================= VENDAS POSITIVADAS POR VENDEDOR INTERNO  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 10" class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div id="hcVendasPositivadasPorVendedorInterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= TENDENCIA DE META - CANAL INTERNO  =========================  -->
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="visAtcVisaoGeral.enableTendeciaMeta && (login.modalidade_vendedor == -1 || login.modalidade_vendedor == 10)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Tendencia de Meta</strong></h3> Canal Interno</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Vendedor</th>
+                                                <th width="120">Clientes</th>
+                                                <th width="120">Meta</th>
+                                                <th width="120">Realizado</th>
+                                                <th width="120">Tck Ideal/Dia</th>
+                                                <th width="120">Tck Real./Dia</th>
+                                                <th width="120">Valor Estimado</th>
+                                                <th width="100">% Estimado</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rMeta in visAtcVisaoGeral.tendencia_meta_interna">
+                                                    <td> {{rMeta.vendedor}} </td>
+                                                    <td align=right> {{rMeta.clientes}} </td>
+                                                    <td align=right> {{rMeta.meta | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.venda | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_ideal | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_realizado | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.valor_extimado | currency: 'R$ '}} </td>
+                                                    <td align=right> {{rMeta.percentual_extimado | currency: ''}}% </td>
+                                                </tr>
+                                                <tr ng-repeat="rMeta in visAtcVisaoGeral.tendencia_meta_canal" ng-if="rMeta.canal=='interno'">
+                                                    <td><strong>TOTAL</strong></td>
+                                                    <td align=right><strong>{{rMeta.clientes}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.meta | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.venda | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.dt_ideal | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.dt_realizado | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.valor_extimado | currency: 'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.percentual_extimado | currency: ''}}%</strong></td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> 
+                            
+                            <!-- ========================= VENDAS POSITIVADAS POR VENDEDORES EXTERNOS  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 11" class="col-xs-12 col-sm-12 col-md-12 col-lg-16">      <div id="hcVendasPositivadasPorVendedorExterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= TENDENCIA DE META - CANAL EXTERNO  =========================  -->                        
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="visAtcVisaoGeral.enableTendeciaMeta && (login.modalidade_vendedor == -1 || login.modalidade_vendedor == 11)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Tendencia de Meta</strong></h3> Canal Externo</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Vendedor</th>
+                                                <th width="120">Clientes</th>
+                                                <th width="120">Meta</th>
+                                                <th width="120">Realizado</th>
+                                                <th width="120">Tck Ideal/Dia</th>
+                                                <th width="120">Tck Real./Dia</th>
+                                                <th width="120">Valor Estimado</th>
+                                                <th width="100">% Estimado</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rMeta in visAtcVisaoGeral.tendencia_meta_externo">
+                                                    <td> {{rMeta.vendedor}} </td>
+                                                    <td align=right> {{rMeta.clientes}} </td>
+                                                    <td align=right> {{rMeta.meta | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.venda | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_ideal | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_realizado | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.valor_extimado | currency: 'R$ '}} </td>
+                                                    <td align=right> {{rMeta.percentual_extimado | currency: ''}}% </td>
+                                                </tr>
+                                                <tr ng-repeat="rMeta in visAtcVisaoGeral.tendencia_meta_canal" ng-if="rMeta.canal=='externo'">
+                                                    <td><strong>TOTAL</strong></td>
+                                                    <td align=right><strong>{{rMeta.clientes}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.meta | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.venda | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.dt_ideal | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.dt_realizado | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.valor_extimado | currency: 'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.percentual_extimado | currency: ''}}%</strong></td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POSITIVADAS POR REPRESENTANTE =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 10" class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div id="hcVendasPositivadasPorRepresentante" ></div>
+                            </div> 
+                            
+                             <!-- ========================= TENDENCIA DE META - CANAL REPRESENTANTE  =========================  -->
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="visAtcVisaoGeral.enableTendeciaMeta && (login.modalidade_vendedor == -1 || login.modalidade_vendedor == 6)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Tendencia de Meta</strong></h3> Canal Representante</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Vendedor</th>
+                                                <th width="120">Clientes</th>
+                                                <th width="120">Meta</th>
+                                                <th width="120">Realizado</th>
+                                                <th width="120">Tck Ideal/Dia</th>
+                                                <th width="120">Tck Real./Dia</th>
+                                                <th width="120">Valor Estimado</th>
+                                                <th width="100">% Estimado</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rMeta in visAtcVisaoGeral.tendencia_meta_representante">
+                                                    <td> {{rMeta.vendedor}} </td>
+                                                    <td align=right> {{rMeta.clientes}} </td>
+                                                    <td align=right> {{rMeta.meta | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.venda | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_ideal | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_realizado | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.valor_extimado | currency: 'R$ '}} </td>
+                                                    <td align=right> {{rMeta.percentual_extimado | currency: ''}}% </td>
+                                                </tr>
+                                                <tr ng-repeat="rMeta in visAtcVisaoGeral.tendencia_meta_canal" ng-if="rMeta.canal=='representante'">
+                                                    <td><strong>TOTAL</strong></td>
+                                                    <td align=right><strong>{{rMeta.clientes}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.meta | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.venda | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.dt_ideal | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.dt_realizado | currency:'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.valor_extimado | currency: 'R$ '}}</strong></td>
+                                                    <td align=right><strong>{{rMeta.percentual_extimado | currency: ''}}%</strong></td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> 
+                            
+                            <!-- ========================= VENDAS HAVAN  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 2" class="col-xs-12 col-sm-12 col-md-12 col-lg-16"> 
+                                <div id="hcVendasHavan" ></div>
+                            </div>
+                            
+                            <!-- ========================= TENDENCIA DE META - CANAL HAVAN  =========================  -->
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="visAtcVisaoGeral.enableTendeciaMeta && (login.modalidade_vendedor == -1 || login.modalidade_vendedor == 2)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><strong>Tendencia de Meta</strong></h3> Canal Havan</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th>Vendedor</th>
+                                                <th width="120">Meta</th>
+                                                <th width="120">Realizado</th>
+                                                <th width="120">Tck Ideal/Dia</th>
+                                                <th width="120">Tck Real./Dia</th>
+                                                <th width="120">Valor Estimado</th>
+                                                <th width="100">% Estimado</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rMeta in visAtcVisaoGeral.tendencia_meta_havan">
+                                                    <td> {{rMeta.vendedor}} </td>
+                                                    <td align=right> {{rMeta.meta | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.venda | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_ideal | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.dt_realizado | currency:'R$ '}} </td>
+                                                    <td align=right> {{rMeta.valor_extimado | currency: 'R$ '}} </td>
+                                                    <td align=right> {{rMeta.percentual_extimado | currency: ''}}% </td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> 
+                            
+                            <!-- ========================= VENDAS POR FORNECEDOR  =========================  -->    
+                            <div ng-show="login.modalidade_vendedor == -1" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorFornecedor" ></div>
+                            </div>  
+                            
+                            <!-- ========================= VENDAS POR FORNECEDOR INTERNO  =========================  --> 
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 10" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorFornecedorInterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POR FORNECEDOR EXTERNO  =========================  --> 
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 11" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorFornecedorExterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POR FORNECEDOR HAVAN  =========================  --> 
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 2" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorFornecedorHavan" ></div>
+                            </div><p></p>
+                            
+                            <!-- ========================= PRODUTOS TOP 10 - CANAL INTERNO  =========================  --> 
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="(showTop10) && (login.modalidade_vendedor == 10) && (login.modalidade_vendedor != -1)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><b>PRODUTOS TOP 10</b></h3> Canal Interno</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th width="50">Posição</th>
+                                                <th width="90">Código</th>
+                                                <th>Descrição</th>
+                                                <th width="120">Quantidade</th>
+                                                <th width="120">Valor</th>
+                                                <th width="50">%</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rTop10 in visAtcVisaoGeral.top10.top10_interno">
+                                                    <td> {{rTop10.posicao}} </td>
+                                                    <td> {{rTop10.codigo}} </td>
+                                                    <td> {{rTop10.descricao}} </td>
+                                                    <td align=right > {{rTop10.quantidade}} </td>
+                                                    <td align=right> {{rTop10.valor | currency:'R$ '}} </td>
+                                                    <td align=right> {{rTop10.percentual | currency: ''}}% </td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p></p>
+                            
+                            <!-- ========================= PRODUTOS TOP 10 - CANAL EXTERNO  =========================  -->   
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="(showTop10) && (login.modalidade_vendedor == 11) && (login.modalidade_vendedor != -1)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><b>PRODUTOS TOP 10</b></h3> Canal Externo</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th width="50">Posição</th>
+                                                <th width="90">Código</th>
+                                                <th>Descrição</th>
+                                                <th width="120">Quantidade</th>
+                                                <th width="120">Valor</th>
+                                                <th width="50">%</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rTop10 in visAtcVisaoGeral.top10.top10_externo">
+                                                    <td> {{rTop10.posicao}} </td>
+                                                    <td> {{rTop10.codigo}} </td>
+                                                    <td> {{rTop10.descricao}} </td>
+                                                    <td align=right > {{rTop10.quantidade}} </td>
+                                                    <td align=right> {{rTop10.valor | currency:'R$ '}} </td>
+                                                    <td align=right> {{rTop10.percentual | currency: ''}}% </td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p></p>
+                            
+                            <!-- ========================= PRODUTOS TOP 10 - CANAL HAVAN  =========================  -->  
+                            <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" ng-show="(showTop10) && (login.modalidade_vendedor == 2) && (login.modalidade_vendedor != -1)">
+                                <div class="container">
+                                    <div class="row">
+                                        <center><h3><b>PRODUTOS TOP 10</b></h3> Canal Havan</center>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <table class="table table-bordered table-striped table-hover">
+                                            <thead>
+                                                <th width="50">Posição</th>
+                                                <th width="90">Código</th>
+                                                <th>Descrição</th>
+                                                <th width="120">Quantidade</th>
+                                                <th width="120">Valor</th>
+                                                <th width="50">%</th>
+                                            </thead>
+                                            <body>
+                                                <tr ng-repeat="rTop10 in visAtcVisaoGeral.top10.top10_havan">
+                                                    <td> {{rTop10.posicao}} </td>
+                                                    <td> {{rTop10.codigo}} </td>
+                                                    <td> {{rTop10.descricao}} </td>
+                                                    <td align=right > {{rTop10.quantidade}} </td>
+                                                    <td align=right> {{rTop10.valor | currency:'R$ '}} </td>
+                                                    <td align=right> {{rTop10.percentual | currency: ''}}% </td>
+                                                </tr>
+                                            </body>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div><p></p>
+                            
+                            <!-- ========================= CADASTRO CLIENTES MÊS  =========================  -->  
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 2" class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <div id="hcCadCliMes" ></div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POR TIPO CLIENTE  =========================  --> 
+                            <div ng-show="login.modalidade_vendedor == -1" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                              <div id="hcVendasPorTipoCliente" ></div>
+                            </div> 
+                            
+                            <!-- ========================= VENDAS POR TIPO CLIENTE -  INTERNO  =========================  -->  
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 10" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorTipoClienteInterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POR TIPO CLIENTE -  EXTERNO  =========================  -->  
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 11" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorTipoClienteExterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POR TIPO -  CLIENTE REPRESENTANTE  =========================  -->  
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 6" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorTipoClienteRepresentante" ></div>
+                            </div> 
+                            
+                            <!-- ========================= VENDAS POR GRUPO PRODUTO  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                              <div id="hcVendasPorGrupoProduto" ></div>
+                            </div>  
+                            
+                            <!-- ========================= VENDAS POR GRUPO PRODUTO - INTERNO  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 10" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorGrupoProdutoInterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POR GRUPO PRODUTO - EXTERNO  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 11" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorGrupoProdutoExterno" ></div>
+                            </div>
+                            
+                            <!-- ========================= VENDAS POR GRUPO PRODUTO - REPRESENTANTE  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 6" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorGrupoProdutoRepresentante" ></div>
+                            </div> 
+                            
+                            <!-- ========================= VENDAS POR GRUPO PRODUTO - HAVAN  =========================  -->
+                            <div ng-show="login.modalidade_vendedor == -1 || login.modalidade_vendedor == 2" class="col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcVendasPorGrupoProdutoHavan" ></div>
+                            </div>                             
+                        </div>   
+                        <!-- FIM CLASS ROW -->  
+                        
+                        <!-- ========================= MODAL - CLIENTES NOVOS  =========================  -->          
+                        <a id="modalNovos" data-toggle="modal" data-target="#myModalNovos"></a>                     
+                        <div class="modal fade" id="myModalNovos" role="dialog">
+                            <div class="modal-dialog"  style="width: 60%;  margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        
+                                        <div align="center">
+                                            <h4 class="modal-title" ng-show="divNovosVendedor"> Clientes Novos - Por Vendedor</h4>
+                                            <h4 class="modal-title" ng-if="divNovosVendedor == false"> Clientes Novos</h4>                                       
+                                        </div>
+                                        <p ng-if="divNovosVendedor == false"><b>VENDEDOR(A) :</b> {{ infoVendedor.nome  }}</p>                                    
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                        <div ng-show="divNovosVendedor">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Código</th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Clientes Novos</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>                                                    
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in clientesInfo.infoClientesNovos.data">
+                                                        <td><a href="" ng-click="vendClieNovoseReativados(i.codigo,i.nome,1)" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.nome }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.clientesNovos }}</td>
+                                                        <td>{{ i.total | currency: 'R$'}}</td>
+                                                        <td>{{ i.ticketMedio | currency: 'R$'}}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td colspan="3" align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{ clientesInfo.infoClientesNovos.total.totalQuantidade }}</td>
+                                                        <td>{{ clientesInfo.infoClientesNovos.total.totalClientesNovos }}</td>
+                                                        <td>{{ clientesInfo.infoClientesNovos.total.total | currency: 'R$' }}</td>
+                                                        <td>{{ clientesInfo.infoClientesNovos.total.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div ng-if="divNovosVendedor == false">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Grupo Financeiro</th>
+                                                        <th>Nome</th>
+                                                        <th>CNPJ</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>                                                        
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in vendedorInfo.infoClientesNovos.data">
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.nome }}</td>
+                                                        <td>{{ i.cnpj }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.total | currency: 'R$' }}</td>
+                                                        <td>{{ i.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td colspan="3" align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{ vendedorInfo.infoClientesNovos.total.quantidade }}</td>                                                       
+                                                        <td>{{ vendedorInfo.infoClientesNovos.total.total | currency: 'R$' }}</td>
+                                                        <td>{{ vendedorInfo.infoClientesNovos.total.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>                                    
+                                    </div>                                
+                                    <div class="modal-footer">
+                                        <button class="btn buttonGeral" type="button" ng-if="divNovosVendedor == false" ng-click="voltar()" >Voltar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div> 
+                        
+                        <!-- ========================= MODAL - CLIENTES REATIVADOS =========================  -->          
+                        <a id="modalReativados" data-toggle="modal" data-target="#myModalReativados"></a>                     
+                        <div class="modal fade" id="myModalReativados" role="dialog">
+                            <div class="modal-dialog"  style="width: 60%;  margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        
+                                        <div align="center">
+                                            <h4 class="modal-title" ng-show="divReativadosVendedor"> Clientes Reativados - Por Vendedor</h4>
+                                            <h4 class="modal-title" ng-if="divReativadosVendedor == false"> Clientes Reativados</h4>                                       
+                                        </div>
+                                        <p ng-if="divReativadosVendedor == false"><b>VENDEDOR(A) :</b> {{ infoVendedor.nome  }}</p>                                    
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                        <div ng-show="divReativadosVendedor">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Código</th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Clientes Novos</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>                                                    
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in clientesInfo.infoClientesReativados.data">
+                                                        <td><a href="" ng-click="vendClieNovoseReativados(i.codigo,i.nome,2)" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.nome }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.clientesNovos }}</td>
+                                                        <td>{{ i.total | currency: 'R$'}}</td>
+                                                        <td>{{ i.ticketMedio | currency: 'R$'}}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td colspan="3" align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{ clientesInfo.infoClientesReativados.total.totalQuantidade }}</td>
+                                                        <td>{{ clientesInfo.infoClientesReativados.total.totalClientesNovos }}</td>
+                                                        <td>{{ clientesInfo.infoClientesReativados.total.total | currency: 'R$' }}</td>
+                                                        <td>{{ clientesInfo.infoClientesReativados.total.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div ng-if="divReativadosVendedor == false">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Grupo Financeiro</th>
+                                                        <th>Nome</th>
+                                                        <th>CNPJ</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>                                                        
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in vendedorInfo.infoClientesReativados.data">
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.nome }}</td>
+                                                        <td>{{ i.cnpj }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.total | currency: 'R$' }}</td>
+                                                        <td>{{ i.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td colspan="3" align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{ vendedorInfo.infoClientesReativados.total.quantidade }}</td>                                                       
+                                                        <td>{{ vendedorInfo.infoClientesReativados.total.total | currency: 'R$' }}</td>
+                                                        <td>{{ vendedorInfo.infoClientesReativados.total.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>                                    
+                                    </div>                                
+                                    <div class="modal-footer">
+                                        <button class="btn buttonGeral" type="button" ng-if="divReativadosVendedor == false" ng-click="voltar()" >Voltar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div> 
+                        
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+        </div>
+    </div>
+</div>
+    
+

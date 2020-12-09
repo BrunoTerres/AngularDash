@@ -1,0 +1,176 @@
+<div class="col-md-12 col-sm-12 col-xs-18 table-responsive " ng-controller="analiseEstoqueFinanceiro">    
+    <div role="main">        
+      
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Analise Estoque e Financeiro  <small></small></h3>
+                        </div>   
+                        
+                        <div class="col-md-12 col-sm-20 col-xs-12">                       
+                            <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">   
+                                
+                                <div class="pull-left"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;">
+                                 <select
+                                        class="form-control"
+                                        name="mySelect"
+                                        id="mySelect1"
+                                        ng-options="option.name for option in selecaoEmpresa.availableOptions track by option.id"
+                                        ng-change="filterEmpresa(selecaoEmpresa.selectedOption)"
+                                        ng-model="selecaoEmpresa.selectedOption">
+                                </select>
+                                </div> 
+                                <div class="pull-right"  style="margin: auto" >                                 
+                                    <button class="btn btn-round btn-default pull-right" type="button" ng-click="analiseLojasFinanceiroEstoque()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button> 
+                                </div>                                
+                            </div>
+                        </div>       
+                    </div>        
+                    
+                    <div class="row"  style="margin-top: 20px" ng-show="divApresenta">
+                        
+                        <center><h3>{{ dadosAnalise.analiseEstoqueFinanceiro.loja }}</h3></center>
+                        
+                        <!-- ========================= ESTOQUE  =========================  -->
+                        <div  class="animated flipInY col-md-12 col-sm-20 col-xs-12" style="margin-top: 20px">
+                            <h3 align="center">ESTOQUE</h3>
+                            <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                <select
+                                    style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                    class="form-control pull-left"
+                                    name="mySelect"
+                                    id="mySelect1"
+                                    ng-options="option.name for option in selecaoEstoque.availableOptions track by option.id"
+                                    ng-change="filterEstoque(selecaoEstoque.selectedOption)"
+                                    ng-model="selecaoEstoque.selectedOption">
+                                </select>                                        
+                                <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaEstoque" class="form-control fonte-size-input">   
+                            </div>   
+                             
+                            <table class="table table-hover" >
+                                <thead>
+                                    <tr ng-show="divTableLojas">
+                                        <th>Código</th>
+                                        <th>Produto</th>
+                                        <th>Itajaí Quiosque</th>
+                                        <th>Itajaí Loja</th>
+                                        <th>Balneario</th>
+                                        <th>Joinville</th>
+                                        <th>Blumenau</th>
+                                        <th>São José</th>
+                                        <th>Curitiba - Palladium</th>       
+                                        <th>Curitiba - Jockey Plaza</th>                               
+                                    </tr> 
+                                    <tr ng-show="divTableLoja">
+                                        <th>Código</th>
+                                        <th>Produto</th>
+                                        <th>Loja</th>                                                           
+                                    </tr> 
+                                </thead>                                
+                                <tbody>
+                                    <tr ng-show="divTableLojas" dir-paginate="i in dadosAnalise.analiseEstoqueFinanceiro.estoque | filter: pesquisaEstoque |itemsPerPage:contagemEstoque" pagination-id="pesquisaEstoque">
+                                        <td>{{ i.codigo }}</td>
+                                        <td>{{ i.produto }}</td>
+                                        <td>{{ i.estoqueItajai1 }}</td>
+                                        <td>{{ i.estoqueItajai2 }}</td>
+                                        <td>{{ i.estoqueBalneario }}</td>
+                                        <td>{{ i.estoqueJoinville }}</td>
+                                        <td>{{ i.estoqueBlumenau }}</td>
+                                        <td>{{ i.estoqueSaoJose }}</td>
+                                        <td>{{ i.estoqueCuritiba }}</td>
+                                        <td>{{ i.estoqueCuritibaJB }}</td>
+                                    </tr>
+                                    <tr ng-show="divTableLojas" style="background-color: #F0F0F0">
+                                        <td align='right' colspan="2"> <b>TOTAL:</b></td>
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueIT1 }}</td>
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueIT2 }}</td>
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueBAL }}</td>
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueJV  }}</td>    
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueBL }}</td>  
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueSP }}</td>  
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueCT }}</td> 
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueCT }}</td> 
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalEstoqueCTJB}}</td>
+                                    </tr>
+                                    
+                                    <tr ng-show="divTableLoja" dir-paginate="i in dadosAnalise.analiseEstoqueFinanceiro.estoque | filter: pesquisaEstoque |itemsPerPage:contagemEstoque" pagination-id="pesquisaEstoque">
+                                        <td>{{ i.codigo }}</td>
+                                        <td>{{ i.produto }}</td>
+                                        <td>{{ i.estoqueLoja }}</td>                                  
+                                    </tr>
+                                    
+                                     <tr ng-show="divTableLoja"  ng-if="dadosAnalise.analiseEstoqueFinanceiro.empresa != '999'" style="background-color: #F0F0F0">
+                                        <td align='right' colspan="2"> <b>TOTAL:</b></td>
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalLoja }}</td>
+                                      
+                                    </tr>
+                                </tbody>                                 
+                            </table>
+                            <dir-pagination-controls max-size="5"  pagination-id="pesquisaEstoque" boundary-links="true"></dir-pagination-controls>
+                        </div>
+                        
+                        <!-- ========================= FINANCEIRO  =========================  -->
+                        <div  class="animated flipInY col-md-12 col-sm-20 col-xs-12" style="margin-top: 20px">
+                            <h3 align="center">FINANCEIRO</h3>
+                            <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                <select
+                                    style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                    class="form-control pull-left"
+                                    name="mySelect"
+                                    id="mySelect1"
+                                    ng-options="option.name for option in selecaoApagar.availableOptions track by option.id"
+                                    ng-change="filterApagar(selecaoApagar.selectedOption)"
+                                    ng-model="selecaoApagar.selectedOption">
+                                </select>                                        
+                                <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaApagar" class="form-control fonte-size-input">   
+                            </div>   
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Fornecedor</th>
+                                        <th>CNPJ</th>
+                                        <th>Loja</th>
+                                        <th>Empresa</th>
+                                        <th>Número</th>
+                                        <th>Série</th>
+                                        <th>Sequência</th>                                        
+                                        <th>Emissão</th>
+                                        <th>Vencimento</th>
+                                        <th>Valor</th>
+                                    </tr>                                
+                                </thead>
+                                <tbody>
+                                    <tr dir-paginate="i in dadosAnalise.analiseEstoqueFinanceiro.apagar | filter: pesquisaApagar|itemsPerPage:contagemApagar" pagination-id="pesquisaApagar">
+                                        <td>{{ i.codigo }}</td>
+                                        <td>{{ i.fornecedor }}</td>
+                                        <td>{{ i.cnpj }}</td>
+                                        <td>{{ i.loja }}</td>
+                                        <td>{{ i.empresa }}</td>
+                                        <td>{{ i.numero }}</td>
+                                        <td>{{ i.serie }}</td>
+                                        <td>{{ i.sequencia }}</td>                                        
+                                        <td>{{ i.emissao }}</td>
+                                        <td>{{ i.vencimento }}</td>
+                                        <td>{{ i.valor | currency:'R$ ' }}</td>
+                                    </tr>
+                                    <tr style="background-color: #F0F0F0">
+                                        <td align='right' colspan="10"> <b>TOTAL:</b></td>
+                                        <td>{{  dadosAnalise.analiseEstoqueFinanceiro.totalApagar | currency:'R$ ' }}</td>                                        
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            <dir-pagination-controls max-size="5"  pagination-id="pesquisaApagar" boundary-links="true"></dir-pagination-controls>
+                        </div>  
+                        
+                    </div>
+                    <!-- FIM CLASS ROW -->   
+                </div>    
+                <div class="clearfix"></div>
+            </div>
+        </div>   
+    </div>
+    <br/>
+</div>  

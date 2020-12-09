@@ -1,0 +1,240 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="usuariosHavanController">    
+    <div role="main">        
+      
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                        <div class="row x_title">
+                            <div class="col-md-6">
+                                <h3>Usuários<small></small></h3>
+                            </div>  
+                        </div>   
+                                 
+                        <div class="row"  style="margin-top: 20px">
+                            <div style="font-size: 14px" ng-show ="divAconra"class="col-md-12 col-sm-12 col-xs-12">
+                                <a  ng-if="login.superUser == true"  href="" ng-click="menu(5,'smart','')">Smart</a><br>   
+                                <a href="" ng-click="menu(5,'havan','')">Havan</a>                       
+                            </div> 
+                            
+                            <!-- ========================= TELA DE VISUALIZAR FORNECEDOR ========================= -->  
+                            <div ng-show ="divVisualizar" ng-if="divHavan == true" class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="cabecalhoDiv col-md-12">
+                                    <span><h2 class="col-md-4" style="margin-top: 10px"><b>Usuários Cadastrados</b></h2></span>
+                                    <button class="pull-right btn btn-success col-md-2"style="margin-top: 10px" ng-click="menu(1,'','')">Cadastrar Usuário</button> 
+                                </div>
+                                <div class="cabecalhoGeralDiv col-md-12">
+                                    <div ng-if="login.superUser == true">
+                                        PORTAL HAVAN                                       
+                                    </div>
+                                    <div style="margin-top: 20px; margin-bottom: 5px">                                                
+                                        <input type="text" style="border-radius: 4px; width: 20%" placeholder="Pesquise Usuário" ng-model="usuarioPesquisa" class="form-control fonte-size-input">   
+                                    </div> 
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr> 
+                                                <th colspan="3" style="width: 1%"></th>                                                                                               
+                                                <th>Nome</th>
+                                                <th>Usuário</th>
+                                                <th>Email</th>                                                                                                                                            
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in infoUsuario | filter: usuarioPesquisa"> 
+                                              
+                                                <td><a href="" ng-click="modalEditar(i.id, i.first_name, i.usuario, i.email)"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Usuário" ></button></td>
+                                                <td><a href="" ng-click="menu(3,i.first_name, i.id)"><button style="font-size: 10px" class="glyphicon glyphicon-folder-open btn btn-info" title="Permissão Usuário" ></button></td>
+                                                <td><a href="">
+                                                    <button ng-if="i.is_active == true" ng-click="modalInativoStatus(i.is_active,i.id,i.first_name)" style="font-size: 10px" class="glyphicon glyphicon-eye-open btn btn-success" title="Inativar Usuário" ></button>
+                                                    <button ng-if="i.is_active == false" ng-click="modalInativoStatus(i.is_active,i.id,i.first_name)" style="font-size: 10px" class="glyphicon glyphicon-eye-close btn btn-danger" title="Ativar Usuário" ></button>
+                                                </td>
+                                                <td>{{ i.first_name}}</td> 
+                                                <td>{{ i.usuario }}</td> 
+                                                <td>{{ i.email }}</td>                                         
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                                     
+                            </div> 
+
+                            <!-- ========================= TELA DE VISUALIZAR COLABORADORES MIXTEL ========================= -->  
+                            <div  ng-show="login.superUser == true" ng-if="divSmart == true" class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="cabecalhoGeralDiv col-md-12">                                   
+                                    <div style="margin-top: 20px; margin-bottom: 5px">                                                
+                                        <input type="text" style="border-radius: 4px; width: 20%" placeholder="Pesquise Usuário" ng-model="pesquisaUser" class="form-control fonte-size-input">   
+                                    </div> 
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr> 
+                                                <th colspan="1" style="width: 1%"></th>                                                                                               
+                                                <th>Nome</th>                                                                                                                                                                                       
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in userSmart | filter: pesquisaUser">                                                    
+                                                
+                                                <td><a href="" ng-click="menu(3,i.nome, i.id)"><button style="font-size: 10px" class="glyphicon glyphicon-folder-open btn btn-" title="Permissão Usuário" ></button></td>
+                                                <td>{{ i.nome }}</td>                                                                                    
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                                     
+                            </div> 
+
+                            <!-- ========================= TELA DE CADASTRAR USUARIO HAVAN ========================= -->     
+                            <div ng-show="divCadastro" ng-if="divHavan == true"  class="col-md-12 col-sm-12 col-xs-12">
+                                <form style="margin-top: 20px" class="form-group col-md-12" method="POST" ng-submit="cadastroUsuarioHavan()" name="formCadastro">
+                                    <div class="form-group col-md-4">
+                                        <label>Nome <b style="color:red">*</b></label>
+                                        <input type="text" class="form-control"  ng-model="dadosCadastroUsuario.nome" maxlength="30" required>
+                                    </div>  
+                            
+                                    <div class="form-group col-md-4">
+                                        <label>Usuário<b style="color:red">*</b></label>
+                                        <input type="text" class="form-control"  ng-model="dadosCadastroUsuario.usuario" maxlength="30" required>
+                                    </div>  
+
+                                    <div class="form-group col-md-4">
+                                        <label>Senha<b style="color:red">*</b></label>
+                                        <input type="password" class="form-control" maxlength="6" ng-model="dadosCadastroUsuario.senha" required>
+                                    </div>  
+
+                                    <div class="form-group col-md-4">
+                                        <label>Confirme Senha<b style="color:red">*</b></label>
+                                        <input type="password" class="form-control" maxlength="6" ng-model="dadosCadastroUsuario.confirmaSenha" required>
+                                    </div>  
+
+                                    <div class="form-group col-md-4">
+                                        <label>Email<b style="color:red">*</b></label>
+                                        <input type="email" class="form-control" ng-model="dadosCadastroUsuario.email" maxlength="150" required>
+                                    </div>  
+                                
+                                    <div class="form-group col-md-12" style="margin-top: 20px">
+                                        <button ng-show="botaoVolta" type="button"class="btn btn-primary" ng-click="menu(2,'','')">Voltar</button>
+                                        <button type="submit"class="btn btn-primary">Cadastrar</button>
+                                    </div>
+
+                                    <legend class="col-md-12"></legend> 
+                                    <div class="form-group col-md-6">
+                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                    </div>  
+                                </form>
+                            </div>  
+
+                            <div ng-show="divPermissao" class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="cabecalhoDiv col-md-12">
+                                        <p><span ><h2 class="col-md-4" style="margin-top: 10px"><b>Permissão de acesso do Usuário(a):</b>  {{infoPermissao.nome}} </h2></span> </p>                                 
+                                        <button ng-show="botaoVolta" class="pull-right fa fa-reply btn btn-danger"style="font-size:15px" ng-click="menu(2,'','')" title="Voltar ao Inicio"></button>   
+                                        <button ng-show="botaoSubmenu" class="pull-right fa fa-reply btn btn-danger"style="font-size:15px" ng-click="menu(4,'','')" title="Voltar ao Inicio"></button>                          
+                                </div>
+
+                                <div class="cabecalhoGeralDiv x_panel">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 1%"></th>
+                                                <th>Menu</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in menus">
+                                                <td>                                                  
+                                                    <div class="pretty p-switch p-fill">
+                                                        <input type="checkbox"  ng-model="i.permissao" name="switch1" />
+                                                        <div class="state p-success">
+                                                            <label></label>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>{{ i.nome_menu }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="form-group col-md-12" style="margin-top: 20px">                                       
+                                        <button value="Get" ng-click="liberarPermissaoUsuarioHavan()" style="font-size: 16px" type="button"class="btn btn-primary"> <span class="glyphicon glyphicon-floppy-save "></span> Salvar</button>
+                                    </div>  
+                                </div> 
+                             
+                            </div>   
+                        
+                            <!-- ========================= MODAL EDITAR - > USUÁRIOS =========================  -->                   
+                            <a id="modalEditarUsuario" data-toggle="modal" data-target="#myModalEditarUsuario"></a>                     
+                            <div class="modal fade" id="myModalEditarUsuario" role="dialog">
+                                <div class="modal-dialog" style="width: 60%;   margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>   
+                                            <p><center><h4 class="modal-title">Edição Usuário</h4>  </center></p>                                                            
+                                        </div>
+                                        <div class="modal-body" style="padding: 0px">                                                                   
+                                            <form style="margin-top: 20px" class="form-group col-md-12" method="POST" ng-submit="editarCadastroUsuarioHavan()" name="formEditar">
+                        
+                                                <div class="form-group col-md-4">
+                                                    <label>Nome Completo</label>
+                                                    <input type="text" class="form-control" ng-model="editarUsuario.nome" maxlength="30">
+                                                </div> 
+
+                                                <div class="form-group col-md-4">
+                                                    <label>Usuário </label>
+                                                    <input type="text" class="form-control" ng-model="editarUsuario.usuario" maxlength="30">
+                                                </div> 
+                                                
+                                                <div class="form-group col-md-4">
+                                                    <label>Nova Senha</label>
+                                                    <input type="password" class="form-control" maxlength="6" ng-model="editarUsuario.novaSenha">
+                                                </div>
+
+                                                <div class="form-group col-md-4">
+                                                    <label>Confirme Senha</label>
+                                                    <input type="password" class="form-control" maxlength="6" ng-model="editarUsuario.confirmaSenha">
+                                                </div>  
+            
+                                                <div class="form-group col-md-4">
+                                                    <label>Email</label>
+                                                    <input type="email" class="form-control" ng-model="editarUsuario.email" maxlength="150">
+                                                </div>  
+                                            
+                                                <div class="form-group col-md-12" style="margin-top: 20px">                                                 
+                                                    <button type="submit"class="btn btn-primary">Editar</button>
+                                                </div>             
+                                            </form>          
+                                        </div>
+                                        <div class="modal-footer">  
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= MODAL INATIVAR > FORNECEDOR =========================  -->                 
+                            <a id="modalInativarUsuario" data-toggle="modal" data-target="#myModalInativarUsuario"></a>                     
+                            <div class="modal fade" id="myModalInativarUsuario" role="dialog">
+                                <div class="modal-dialog" style="width: 25%;  margin-top: 300px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>                                    
+                                          
+                                            <div ng-if="inativarUsuario.status == 'F'" class="modal-title" style="font-size:15px">
+                                                Deseja inativar o Fornecedor <b>{{inativarUsuario.nome}}</b>? 
+                                            </div> 
+                                            <div ng-if="inativarUsuario.status == 'T'" class="modal-title" style="font-size:15px">
+                                                Deseja ativar o Fornecedor <b>{{inativarUsuario.nome}}</b>? 
+                                            </div>                                    
+                                        </div>                                      
+                                        <div class="modal-footer">  
+                                            <button type="button" ng-click="inativarUsuarioHavan()" class="btn btn-warning">Sim</button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+                            
+                        </div> 
+                        <!-- FIM CLASS ROW -->    
+                    <div class="clearfix"></div>
+                </div>
+            </div>   
+        </div>
+        <br/>
+    </div> 
+</div>
+

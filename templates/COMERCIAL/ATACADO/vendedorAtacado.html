@@ -1,0 +1,760 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="vendedoresAtacadoController">
+    <div role="main">
+        <!-- top tiles -->
+        <div class="row tile_count">
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Faturamento</span>
+                <div class="count"><h2 ng-cloack>{{ visAtcVendVisaoGeral.vl_total_positivados | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.qtd_total_positivados }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.vl_total_positivados / visAtcVendVisaoGeral.qtd_total_positivados | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{visAtcVendVisaoGeral.clientes_positivados }} </i> Clientes</span></p>
+            </div>
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Novos Clientes</span>
+                <div class="count"><h2 ng-cloack>{{ visAtcVendVisaoGeral.vl_total_clientes_novos | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.qtd_total_novos }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.vl_total_clientes_novos / visAtcVendVisaoGeral.qtd_total_novos | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.clientes_novos }} </i> <span ng-if="urlClienteNovo == false">Clientes</span> <a ng-if="urlClienteNovo == true" href="" ng-click="clientesNovoseReativados(1)"><b>Clientes</b></a> <i class="green"> {{ visAtcVendVisaoGeral.clientes_novos * 100 / visAtcVendVisaoGeral.clientes_positivados | currency: ''}}% </i> </span></p>
+            </div>
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Clientes Reativados</span>
+                <div class="count"><h2 ng-cloack>{{ visAtcVendVisaoGeral.vl_total_clientes_reativados | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.qtd_total_reativados }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.vl_total_clientes_reativados / visAtcVendVisaoGeral.qtd_total_reativados | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visAtcVendVisaoGeral.clientes_reativados }} </i> <span ng-if="urlClienteReativado == false">Clientes</span> <a ng-if="urlClienteReativado == true" href="" ng-click="clientesNovoseReativados(2)"><b>Clientes</b></a></span><i class="green"> {{ visAtcVendVisaoGeral.clientes_reativados * 100 / visAtcVendVisaoGeral.clientes_positivados | currency: '' }}%</i> </p>
+            </div>
+        </div> 
+        
+        <div class="row">
+                <div class="col-md-12 col-sm-20 col-xs-12">
+                    <div class="dashboard_graph">
+                    <div class="row x_title">
+                            <div class="col-md-6">
+                                <h3>Analise das Vendas - Atacado Vendedor <small></small></h3>
+                            </div>    
+                            
+                            <div class="col-md-12 col-sm-20 col-xs-12">                       
+                                <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">  
+                                        <div class="pull-left"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;"  ng-if="apresentarSelect == true">
+                                    
+                                            <select class="form-control" style="border-radius: 2px;" name="mySelect" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption" ng-change="dataSelect()">
+                                            </select>
+                                        </div> 
+                                    
+                                    <div class="pull-right"  style="margin: auto" >
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                        <button class="btn btn-round btn-default pull-right" type="button" ng-click="atacadoVendedor()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>    
+                                    </div>                              
+                                </div>
+                            </div>       
+                        </div>                        
+                        
+                        <div class="row">
+                            <div class="animated flipInY col-md-12 col-sm-20 col-xs-12" ng-show="divGeral">
+                                <div ng-if="apresentarSelect == true" align="center" >
+                                    <h2><b> {{ nameDoVendedor }}</b></h2>                            
+                                </div>
+                                <nav ng-show="visAtcVendVisaoGeral.menu == true">
+                                    <ul class="pager">
+                                        <li><a ng-click="metaVisaoGeral  = !metaVisaoGeral" href="" >Meta - Visão Geral <i ng-class="{'fa fa-minus': metaVisaoGeral, 'fa fa-plus': !metaVisaoGeral  }"></i></a></li> 
+                                        <li ><a ng-click="vendaPorFornecedor  = !vendaPorFornecedor" href="" >Venda Por Fabricante <i ng-class="{'fa fa-minus': vendaPorFornecedor, 'fa fa-plus': !vendaPorFornecedor  }"></i></a></li> 
+                                        <li ><a ng-click="vendaPorTipoCliente  = !vendaPorTipoCliente" href="" >Venda Por Tipo de Cliente <i ng-class="{'fa fa-minus': vendaPorTipoCliente, 'fa fa-plus': !vendaPorTipoCliente  }"></i></a></li> 
+                                        <li ><a ng-click="vendaPorRegiao  = !vendaPorRegiao" href="" >Venda Por Região <i ng-class="{'fa fa-minus': vendaPorRegiao , 'fa fa-plus': !vendaPorRegiao   }"></i></a></li> 
+                                        <li ><a ng-click="vendaPorFormaPagamento  = !vendaPorFormaPagamento" href="" >Venda Por Forma de Pagamento <i ng-class="{'fa fa-minus': vendaPorFormaPagamento, 'fa fa-plus': !vendaPorFormaPagamento  }"></i></a></li> 
+                                        <li ><a ng-click="carteiraClientes  = !carteiraClientes" href="" >Clientes <i ng-class="{'fa fa-minus': carteiraClientes, 'fa fa-plus': !carteiraClientes  }"></i></a></li>
+                                        <li ><a ng-click="percentualAvistaAprazo  = !percentualAvistaAprazo" href="" >À Vista x A Prazo <i ng-class="{'fa fa-minus': percentualAvistaAprazo, 'fa fa-plus': !percentualAvistaAprazo  }"></i></a></li> 
+                                        <li ><a ng-click="mapaGeografico  = !mapaGeografico" href="" >Mapa Geografico <i ng-class="{'fa fa-minus': mapaGeografico, 'fa fa-plus': !mapaGeografico  }"></i></a></li> 
+                                        <li ><a ng-click="carteiraDeClientes  = !carteiraDeClientes" href="" >Clientes Positivados <i ng-class="{'fa fa-minus': carteiraDeClientes, 'fa fa-plus': !carteiraDeClientes  }"></i></a></li> 
+                                    </ul>
+                                </nav> 
+                                
+                                <!-- =========================  META VISÃO GERAL - VENDEDOR  =========================  -->
+                                <div ng-show="metaVisaoGeral" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    
+                                    <div class="table-responsive">
+                                        <div id="hcMetaVisaoGeral" ></div>
+                                    </div><br>
+                                    
+                                    <div class="animated flipInY" align='center'>
+                                        <div class="tile-stats table-responsive " style="width: 23%; height: 30%">
+                                            <div class="icon"><i class="fa fa-bar-chart-o"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:70px" align="left">VENDA POR DIA</h3></center><br>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Ideal: {{ valorIdeal | currency: 'R$ '}} </p>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Realizado: {{ valorRealizado | currency: 'R$ '}}</p>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Dias Úteis: {{ diasUteis }}</p>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Dias Úteis Restantes: {{ diasRestantes }}</p>
+                                        </div>
+                                    </div>                                 
+                                </div>     
+                                
+                                <!-- =========================  VENDA POR FORNECEDOR - VENDEDOR  =========================  -->
+                                <div ng-show="vendaPorFornecedor" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    
+                                    <div class="col-md-12 col-sm-20 col-xs-12">
+                                        <div id="hcVendasPorFornecedor" ng-click="fornecedorProdutoAtacado()"></div>
+                                    </div>                                 
+                                
+                                    
+                                    <div class="col-md-12 col-sm-20 col-xs-12">
+                                        <center>
+                                        <h2><b>Ticket Médio</b></h2>
+                                        <table class="table" style="width: 50%">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>Fornecedor</th>
+                                                    <th>Total Vendido</th>
+                                                    <th>Quantidade</th>
+                                                    <th>Ticket Médio</th>
+                                                </tr>                                          
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in visAtcVendVisaoGeral.vendasporfornecedor | orderBy:'name'">
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.name }}</td>
+                                                    <td>{{ i.y | currency: 'R$ '}}</td>
+                                                    <td>{{ i.quantidade }}</td>
+                                                    <td>{{ i.ticket_medio | currency: 'R$ '}}</td>
+                                                </tr>                                        
+                                            </tbody>
+                                        </table>  
+                                        </center>                              
+                                    </div> 
+                                    
+                                     <!-- ========================= MODAL FORNECEDOR - > PRODUTOS  =========================  -->                 
+                                     <a id="modalProduto" data-toggle="modal" data-target="#myModalProduto"></a>                     
+                                     <div class="modal fade" id="myModalProduto" role="dialog">
+                                         <div class="modal-dialog" style="width: 45%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                         <div class="modal-content">
+                                             <div class="modal-header">
+                                                     <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                                     <div align="center">
+                                                         <h4 class="modal-title"> Venda por Produto</h4>                                         
+                                                     </div>                                     
+                                                     <br>
+                                                     <b>FORNECEDOR(A) :</b> {{ inforFornecedor.name }}  
+                                                     <p><b>VENDEDOR(A) :</b> {{ nomeDoVendedor }}   </p>
+                                                 </div>
+                                                 <div class="modal-body">
+                                                     <table class="table">
+                                                         <thead>
+                                                             <tr>
+                                                                 <th>Código</th>
+                                                                 <th>Nome</th>
+                                                                 <th>Quantidade</th>
+                                                                 <th>Total</th>
+                                                             </tr>
+                                                         </thead>
+                                                         <tbody>
+                                                             <tr ng-repeat="i in visAtcFornecedorProduto.produtoFornecedor">
+                                                                 <td>{{ i.codigoProduto }}</td>
+                                                                 <td>{{ i.name }}</td>
+                                                                 <td>{{ i.quantidade }}</td>
+                                                                 <td>{{ i.y | currency: 'R$ '}}</td>
+                                                             </tr>
+                                                         </tbody>
+                                                     
+                                                     </table>
+                                                 </div>
+                                                 <div class="modal-footer">  
+                                                     <div align="right">
+                                                         <b>TOTAL VENDIDO: {{inforFornecedor.y | currency: 'R$ '}}</b>
+                                                         
+                                                     </div>
+                                                     <br>
+                                                     <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                                 </div>
+                                         </div>
+                                         </div>
+                                     </div>
+                                </div>
+                                
+                                <!-- =========================  VENDA POR TIPO DE CLIENTE - VENDEDOR  =========================  -->
+                                <div ng-show="vendaPorTipoCliente" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="table-responsive">
+                                        <div id="hcVendasPorTipoDeCliente" ></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- =========================  VENDA POR REGIÃO - VENDEDOR  =========================  -->
+                                <div ng-show="vendaPorRegiao" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <center><b style="font-size: 14px">Venda Por Região</b></center>
+                                    <center>
+                                    <table class="table table-responsive" style="width: 35%">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Nome</th>
+                                                <th>Quantidade</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat=" i in visAtcVendVisaoGeral.vendaporregiao ">
+                                                <td><a href="" ng-click="regiaoEstado(i.codigoRegiao, i.name, i.y )" > <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                <td>{{ i.name }}</td>
+                                                <td>{{ i.quantidade }}</td>
+                                                <td>{{ i.y | currency: 'R$ '}}</td>                                        
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </center>
+                                    
+                                    <!-- ========================= MODAL FORNECEDOR - > PRODUTOS  =========================  -->                 
+                                    <a id="modalRegiao" data-toggle="modal" data-target="#myModalRegiao"></a>                     
+                                    <div class="modal fade" id="myModalRegiao" role="dialog">
+                                        <div class="modal-dialog" style="width: 45%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                                    <div align="center">
+                                                        <h4 ng-if="regiaoCidadeDiv != true" class="modal-title"> Venda por Estado</h4>     
+                                                        <h4 ng-if="regiaoCidadeDiv == true" class="modal-title"> Venda por Cidade</h4>   
+                                                    </div>                                     
+                                                    <br>
+                                                    <b>Região :</b> {{ infoRegiao.name }}  
+                                                    <p ng-if="regiaoCidadeDiv == true"><b>Estado :</b> {{ infoEstado.name }}</p>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div ng-if="regiaoCidadeDiv != true">
+                                                        <table class="table table-responsive">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th>Estado</th>
+                                                                    <th>Quantidade</th>
+                                                                    <th>Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="i in visAtcRegiaoEstado.regiaoestado">
+                                                                    <td><a href="" ng-click="regiaoCidade(i.uf, i.name, i.y)"> <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                                    <td>{{ i.name }}</td>
+                                                                    <td>{{ i.quantidade }}</td>
+                                                                    <td>{{ i.y | currency: 'R$ '}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    
+                                                    <div ng-if="regiaoCidadeDiv == true">
+                                                        <table class="table table-responsive">
+                                                            <thead>
+                                                                <tr>
+                                                                    <!--<th></th> -->
+                                                                    <th>Cidade</th>
+                                                                    <th>Quantidade</th>
+                                                                    <th>Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="i in visAtcRegiaoCidade.cidadeRegiao" >
+                                                                <!-- <td><a href="" > <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>-->
+                                                                    <td>{{ i.name }}</td>
+                                                                    <td>{{ i.quantidade }}</td>
+                                                                    <td>{{ i.y | currency: 'R$ '}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">  
+                                                    <div align="right">
+                                                        <p ng-if="regiaoCidadeDiv != true"><b>TOTAL VENDIDO: {{ infoRegiao.y | currency: 'R$ ' }}</b></p>
+                                                        <p ng-if="regiaoCidadeDiv == true"><b>TOTAL VENDIDO: {{ infoEstado.y | currency: 'R$ ' }} </b></p>
+                                                        
+                                                    </div>
+                                                    <br>
+                                                    <button class="btn buttonGeral" type="button" ng-if="regiaoCidadeDiv == true" ng-click="tableGrupo()" >Voltar</button>
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                                </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- =========================  VENDA POR FORMA DE PAGAMENTO - VENDEDOR  =========================  -->
+                                <div ng-show="vendaPorFormaPagamento" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-12 col-sm-20 col-xs-12">
+                                        <div id="hcVendasPorFormaPagamento" ></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- =========================  CARTEIRA DE CLIENTE - VENDEDOR  =========================  -->
+                                <div ng-show="carteiraClientes" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"  style=" margin-top:40px">
+                                                            
+                                    <div class="animated flipInY" align='center'>
+                                        <div class="tile-stats table-responsive " style="width: 40%; height: 30%" >
+                                            <div class="icon hidden-xs"><i class="fa fa-group"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:20px" align="left">CARTEIRA DE CLIENTES</h3></center><br>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Total: {{ carteiraCliente }} </p>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Total Positivados: {{ clientesPositivados }}</p>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Percentual De Atingimento: {{ (( clientesPositivados *100 ) / carteiraCliente)   | currency: '' }}%</p>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Total Novos: {{ clientesNovos }}</p>
+                                        </div>
+                                        
+                                        <div class="tile-stats table-responsive " style="width: 40%; height: 30%">
+                                            <div class="icon hidden-xs"><i class="fa fa-group"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:20px" align="left">LIMITE TOTAL CLIENTES</h3></center><br>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">Limite Total: {{ limiteTotal | currency: 'R$ '}} </p>
+                                            <p style="font-size: 30px; margin-left: 5px" align="left">A Receber: {{ valorTotal | currency: 'R$ '}}</p>     
+                                            <p style="font-size: 30px; margin-left: 5px" align="left"><a href="" ng-click="consultaLimiteCliente()">Consultar Clientes</a></p>
+                                        </div>                                   
+                                    </div>  
+                                    
+                                    <!-- ========================= MODAL FORNECEDOR - > PRODUTOS  =========================  -->                 
+                                    <a id="modalInfoCliente" data-toggle="modal" data-target="#myModalInfoCliente"></a>                     
+                                    <div class="modal fade" id="myModalInfoCliente" role="dialog">
+                                        <div class="modal-dialog" style="width: 55%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                                    <div align="center">
+                                                        <h4 ng-if="regiaoCidadeDiv != true" class="modal-title"> Informações Clientes</h4>                                                    
+                                                    </div>                                  
+                                                </div>
+                                                <div class="modal-body">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Código</th>
+                                                                <th>Nome</th>
+                                                                <th>CNPJ</th>
+                                                                <th>A Receber</th>
+                                                                <th>Limite</th>
+                                                                <th>Saldo Limite</th>                                                        
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat=" i in visAtcVendVisaoGeral.infoLimiteCliente">
+                                                                <td>{{ i.codigo }}</td>
+                                                                <td>{{ i.name }}</td>
+                                                                <td>{{ i.cnpj }}</td>
+                                                                <td>{{ i.valorReceber | currency: 'R$ '}}</td>
+                                                                <td>{{ i.limite | currency: 'R$ '}}</td>
+                                                                <td>{{ i.limiteAtual | currency: 'R$ '}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>                                              
+                                                </div>
+                                                <div class="modal-footer">                                                 
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                                </div>
+                                        </div>
+                                        </div>
+                                    </div>                                  
+                                </div>  
+                                
+                                <!-- =========================  PERCENTUAL CARTEIRA A VISTA X A PRAZO - VENDEDOR  =========================  -->
+                                <div ng-show="percentualAvistaAprazo" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-md-12 col-sm-20 col-xs-12">
+                                        <div id="hcPercentAvistaXaprazo" ></div>
+                                    </div>
+                                </div>   
+                                
+                                <!-- =========================  CLIENTES POR CARTEIRA MAPA GEOGRAFICO - VENDEDOR   =========================  -->
+                                <div ng-show="mapaGeografico" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    
+                                    <nav ng-show="visAtcVendVisaoGeral.menu == true">
+                                    <ul class="pager">
+                                        <li><a href="" ng-click="mapaTrocarValores(mapaCarteira = true,mapaPositivado = false, mapaVenda = false)">Carteira De Clientes <i ng-class="{'fa fa-minus': mapaCarteira, 'fa fa-plus': !mapaCarteira  }"></i></a>
+                                        <li><a href="" ng-click="mapaTrocarValores(mapaCarteira = false, mapaPositivado = true, mapaVenda = false )">Clientes Positivados <i ng-class="{'fa fa-minus':  mapaPositivado, 'fa fa-plus': !mapaPositivado  }"></i></a>
+                                        <li><a href="" ng-click="mapaTrocarValores(mapaCarteira = false, mapaPositivado = false,mapaVenda = true )">Total De Venda Do Vendedor <i ng-class="{'fa fa-minus': mapaVenda, 'fa fa-plus': !mapaVenda  }"></i></a>
+                                    </ul>
+                                    </nav>  <br>
+                                    <div class="col-md-12 col-sm-20 col-xs-12">
+                                        <div id="hcMapaRegiaoCarteira" ng-click="mapaCidade()"></div>
+                                    </div>
+                                    
+                                    
+                                <!-- ========================= MODAL FORNECEDOR - > PRODUTOS  =========================  -->               
+                                <a id="mapaCidade" data-toggle="modal" data-target="#myModalMapaCidade"></a>                     
+                                <div class="modal fade" id="myModalMapaCidade" role="dialog">
+                                    <div class="modal-dialog" style=" width:40%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                    <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" ng-click="close()" data-dismiss="modal">&times;</button>    
+
+                                                <div align="center">
+                                                    <h4 class="modal-title"> {{ tituloModal }}</h4>                                      
+                                                </div> 
+                                                <div align='left'>
+                                                    <p><b>ESTADO :</b> {{ infoMapa.name }}    </p>  
+                                                    <p ng-if="mapaClienteModal  == true "><b>CIDADE :</b> {{ infoCidade.cidade }}    </p>                                                   
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <div>
+
+                                                    <div ng-if="mapaClienteModal == false">                                                       
+                                                        <table class="table" style="width: 70%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th></th>
+                                                                    <th>Nome</th>
+                                                                    <th ng-if="cifraoCidade == false">Total de clientes</th>
+                                                                    <th ng-if="cifraoCidade == true">Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="i in visAtcMapaCidade.mapaCidade">
+                                                                    <td><a href="" ng-click="mapaCliente(i.name)"> <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                                    <td>{{ i.name }}</td>
+                                                                    <td ng-if="cifraoCidade == false">{{ i.y }}</td>
+                                                                    <td ng-if="cifraoCidade == true">{{ i.y | currency: 'R$ '}}</td>
+                                                                </tr>
+                                                            </tbody>                                                                                                    
+                                                        </table>
+                                                    </div>
+
+                                                    <div ng-if="mapaClienteModal == true">
+                                                        <table class="table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Código</th>
+                                                                    <th>Nome</th>
+                                                                    <th>Nome Fantasia</th>
+                                                                    <th>CNPJ</th>
+                                                                    <th ng-if="cifraoCliente  == true" >Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="i in visAtcMapaCidadeCliente.mapaCarteiraCliente">
+                                                                    <td>{{ i.codigo }}</td>
+                                                                    <td>{{ i.name }}</td>
+                                                                    <td>{{ i.nameFantasia }}</td>
+                                                                    <td>{{ i.cnpj }}</td>
+                                                                    <td ng-if="cifraoCliente  == true" >{{ i.y | currency: 'R$ ' }}</td>
+                                                                </tr>
+                                                            </tbody>                                                                                                    
+                                                        </table>
+                                                    </div>
+
+                                                </div>                                                 
+
+
+
+                                            </div>                                
+                                            <div class="modal-footer">
+                                                <button class="btn buttonGeral" type="button" ng-if="volta == true" ng-click="tableGrupo()" >Voltar</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                            </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                
+                                    
+                                </div>
+                                
+                                <div ng-show="carteiraDeClientes" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                                    <br>
+                                    <div ng-if="carteiraClienteDiv == false">
+                                        <h3 align="center">Carteira de Clientes</h3>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>                                                   
+                                                    <th colspan="2"><input type="text" placeholder="Código" ng-model="codigo" class="form-control fonte-size-input inputRadius" id="txtColuna1"></th>
+                                                    <th><input type="text" placeholder="CNPJ" ng-model="CNPJ" class="form-control fonte-size-input inputRadius" id="txtColuna2"></th>  
+                                                    <th><input type="text" placeholder="Nome" ng-model="nameFornecedor" class="form-control fonte-size-input inputRadius" id="txtColuna3"></th> 
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Código</th>
+                                                    <th>CNPJ</th>
+                                                    <th>Nome</th>
+                                                    <th>Nome Fantasia</th>
+                                                    <th>Telefone</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in visAtcVendVisaoGeral.carteiradeclientes | filter:codigo | filter:CNPJ | filter:nameFornecedor">
+                                                    <td><a href="" ng-click="vendedorPesquisaNfCarteira(i.codigo, i.nomeFantasia)" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.CNPJ }}</td>
+                                                    <td>{{ i.nome }}</td>
+                                                    <td>{{ i.nomeFantasia }}</td>
+                                                    <td>{{ i.telefone }}</td>
+                                                    
+                                                </tr>                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div ng-if="carteiraClienteDiv == true">
+                                        <a ng-click="close()"><span style="font-size: 2.5em" class="glyphicon glyphicon glyphicon-circle-arrow-left"></span></a>
+                                        <h3 align="center">NF Cliente - {{ infoCarteira.name  }}</h3>
+                                        <table class="table">
+                                            <thead> 
+                                                <tr>                                                   
+                                                    <th colspan="2"><input type="text" placeholder="Número NF" ng-model="numero" class="form-control fonte-size-input inputRadius" id="txtColuna1"></th> 
+                                                </tr>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Número</th>
+                                                    <th>Série</th>
+                                                    <th>CNPJ Emitente</th>
+                                                    <th>Emissão</th>
+                                                    <th>Total Produtos</th>
+                                                    <th>Total ST</th>
+                                                    <th>Total NF</th>
+                                                    <th>Chave</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in visNfCarteiraCliente.carteiradeclientesNF | filter:numero">
+                                                    <td><a href="" ng-click="vendedorPesquisaNfProduto(i.numero, i.serie, i.empresa,i.emissao,i.numeroinscricao,i.descricao, i.transportador, i.protocolo,i.codigoCliente, i.emissaoRastreio)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.numero }}</td>
+                                                    <td>{{ i.serie }}</td>
+                                                    <td>{{ i.numeroinscricao }}</td>
+                                                    <td>{{ i.emissao | date: 'dd/MM/yyyy' }}</td>
+                                                    <td>{{ i.totalProdutos  | currency: 'R$'}}</td>
+                                                    <td>{{ i.valorIcmsSubstituicao | currency: 'R$' }}</td>
+                                                    <td>{{ i.valorTotalNota | currency: 'R$' }}</td>
+                                                    <td>{{ i.idnfe }}</td>
+                                                </tr>                                
+                                            </tbody>
+                                        </table>                              
+                                    </div>                                
+                                    
+                                    <!-- ========================= MODAL ATACADO VENDEDORES - VENDEDOR -> PESQUISA NF -> PRODUTO  =========================  -->          
+                                    <a id="modalNfProduto" data-toggle="modal" data-target="#myModalNfProduto"></a>                     
+                                    <div class="modal fade" id="myModalNfProduto" role="dialog">
+                                        <div class="modal-dialog"  style="width: 60%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                        <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                                    <h4 class="modal-title" align='center'>Informações Nota Fiscal</h4>   
+                                                    <legend></legend>
+                                                    <h6 style="font-size: 13px;">
+                                                        <p><b>Número: </b> {{ infoNf.numero }}</p> 
+                                                        <p><b>Série: </b> {{ infoNf.serie }}</p>
+                                                        <p><b>Empresa Emitente: </b> {{ infoNf.descricao }}</p> <p><b>CNPJ: </b> {{ infoNf.numeroinscricao }}</p> 
+                                                        <p><b>Emissão: </b> {{ infoNf.emissao | date: 'dd/MM/yyyy'}}</p> 
+                                                        <p><b>Emissão Rastreio: </b>{{ infoNf.emissaoRastreio }}</p> 
+                                                        <p><b>Transportadora: </b>{{ infoNf.transportador }}</p> 
+                                                        <p ng-if="infoNf.protocolo != null"><b>Código Rastreio: </b> {{infoNf.protocolo}}</p>
+                                                        
+                                                    </h6>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h3 align="center">Produto</h3>
+                                                    <h5 align="center">Total Nota Fiscal: {{  visNfCarteiraClienteProduto.carteiraclienteProduto.totalNf | currency: 'R$ ' }}</h5>
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Cód. Produto</th>
+                                                                <th>Descrição Do Produto/Serviços</th>
+                                                                <th>Quantidade</th>                     
+                                                                <th>Valor Unitário</th>
+                                                                <th>Valor Total</th>
+                                                                <th>Valor Substituição</th>                                                            
+                                                                <th>ICMS</th>
+                                                            </tr>                                                    
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="i in visNfCarteiraClienteProduto.carteiraclienteProduto.data">
+                                                                <td>{{ i.codigo }}</td>
+                                                                <td>{{ i.descricao }}</td>                        
+                                                                <td>{{ i.quantidade }}</td>                      
+                                                                <td>{{ i.unitario| currency: 'R$' }}</td>
+                                                                <td>{{ i.total | currency: 'R$'}}</td>
+                                                                <td>{{ i.totalSubstituicao | currency: 'R$'}}</td>                                                            
+                                                                <td>{{ i.icms | currency: '' }}%</td>
+                                                            </tr> 
+                                                            <tr style="background-color: #F0F0F0 ">
+                                                                <td align='right' colspan="2"> <b>TOTAL PRODUTO:</b></td>
+                                                                <td>{{  visNfCarteiraClienteProduto.carteiraclienteProduto.totalQuantidade }}</td>
+                                                                <td></td>
+                                                                <td>{{  visNfCarteiraClienteProduto.carteiraclienteProduto.totalProduto | currency: 'R$ ' }}</td>
+                                                                <td>{{  visNfCarteiraClienteProduto.carteiraclienteProduto.totalSubs | currency: 'R$ ' }}</td>                                       
+                                                                <td colspan="2"><b>TOTAL NOTA FISCAL: {{  visNfCarteiraClienteProduto.carteiraclienteProduto.totalNf | currency: 'R$ ' }}</b> </td>                          
+                                                            </tr>
+                                                        
+                                                        </tbody>
+                                                    
+                                                    </table><br>
+                                                    <legend></legend>
+                                                    <h3 align="center">Duplicatas</h3>
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Número</th>
+                                                                <th>Sequência</th>
+                                                                <th>Série</th>
+                                                                <th>Emissão</th>
+                                                                <th>Vencimento</th>
+                                                                <th>Data do Pagamento</th>
+                                                                <th>Valor</th>
+                                                                <th>Empresa</th>
+                                                                <th>Emissão do Boleto</th>
+                                                                <th>Situação</th>                                        
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="i in visNfCarteiraClienteProduto.carteiraClienteBoleto">
+                                                                <td>{{ i.numero }}</td>
+                                                                <td>{{ i.sequencia }}</td>
+                                                                <td>{{ i.serie }}</td>
+                                                                <td>{{ i.emissao | date: 'dd/MM/yyyy' }}</td>
+                                                                <td>{{ i.vencimento | date: 'dd/MM/yyyy' }}</td>
+                                                                <td>{{ i.dt_pagamento }}</td>
+                                                                <td>{{ i.valor | currency: 'R$' }}</td>
+                                                                <td>{{ i.empresa }}</td>
+                                                                <td>
+                                                                    <div ng-if="i.boleto == ''" align="center">
+                                                                        Não disponível
+                                                                    </div>
+                                                                    <div  ng-if="i.boleto !=''" align="center">
+                                                                        <a href="/{{i.boleto}}" target="_blanck">Visualizar</a>
+                                                                    </div>
+
+                                                                </td>
+                                                                <td>{{ i.situacao }}</td>
+                                                            
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    
+                                                </div>                                           
+                                                
+                                                <div align="right" ng-if="visNfCarteiraClienteProduto.carteiraclienteProduto.validacao == true" style="margin-right: 5px">
+                                                    <a href="/{{visNfCarteiraClienteProduto.carteiraclienteProduto.downPDF}}" target="_blanck"> <button type="button" class="btn nfPdf">Visualizar PDF</button></a>
+                                                    <a href="/{{visNfCarteiraClienteProduto.carteiraclienteProduto.downXML}}" download="{{visNfCarteiraClienteProduto.carteiraclienteProduto.idnfe}}.xml"> <button type="button" class="btn nfPdf">Download XML</button></a>
+                                                </div>
+                                                <div align="right" ng-if="visNfCarteiraClienteProduto.carteiraclienteProduto.validacao == false" style="margin-right: 5px">
+                                                    <a href="" target="_blanck"> <button type="button" class="btn nfPdf" disabled>Visualizar PDF</button></a>
+                                                    <a href="" download="{% verbatim %}{{chave}}{% endverbatim %}.xml"> <button type="button" class="btn nfPdf" disabled>Download XML</button></a>
+                                                    <br>
+                                                    <span class="label label-warning" style="font-size:13px;">A nota fiscal não esta disponível para download ou visualização, entre em contato com a Mixtel Distribuidora.</span>
+                                                    <br>
+                                                </div>
+                                            
+                                                <div class="modal-footer">                                               
+                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                                </div>
+                                        </div>
+                                        </div>
+                                    </div>  
+                                    
+                                </div>
+                            </div>
+                        </div>   
+                        <!-- FIM CLASS ROW --> 
+                        
+                        <!-- ========================= MODAL - CLIENTES NOVOS  =========================  -->          
+                        <a id="modalNovos" data-toggle="modal" data-target="#myModalNovos"></a>                     
+                        <div class="modal fade" id="myModalNovos" role="dialog">
+                            <div class="modal-dialog"  style="width: 75%;  margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        
+                                        <div align="center">                                            
+                                            <h4 class="modal-title"> Clientes Novos</h4>                                       
+                                        </div>
+                                        <p><b>VENDEDOR(A) :</b>{{ nameDoVendedor }}</p>                                    
+                                    </div>
+                                    <div class="modal-body">                                       
+                                        
+                                        <div>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Grupo Financeiro</th>
+                                                        <th>Nome</th>
+                                                        <th>CNPJ</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>                                                        
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visAtcVendVisaoGeral.infoClientesNovos.data">
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.nome }}</td>
+                                                        <td>{{ i.cnpj }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.total | currency: 'R$' }}</td>
+                                                        <td>{{ i.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td colspan="3" align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{ visAtcVendVisaoGeral.infoClientesNovos.total.quantidade }}</td>                                                       
+                                                        <td>{{ visAtcVendVisaoGeral.infoClientesNovos.total.total | currency: 'R$' }}</td>
+                                                        <td>{{ visAtcVendVisaoGeral.infoClientesNovos.total.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>                                    
+                                    </div>                                
+                                    <div class="modal-footer">
+                                        
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div> 
+                        
+                        <!-- ========================= MODAL - CLIENTES REATIVADOS =========================  -->          
+                        <a id="modalReativados" data-toggle="modal" data-target="#myModalReativados"></a>                     
+                        <div class="modal fade" id="myModalReativados" role="dialog">
+                            <div class="modal-dialog"  style="width: 60%;  margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        
+                                        <div align="center">                                            
+                                            <h4 class="modal-title"> Clientes Reativados</h4>                                       
+                                        </div>
+                                        <p><b>VENDEDOR(A) :</b>{{ nameDoVendedor }}</p>                                    
+                                    </div>
+                                    <div class="modal-body">                                       
+                                       
+                                        
+                                        <div>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Grupo Financeiro</th>
+                                                        <th>Nome</th>
+                                                        <th>CNPJ</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Total</th>
+                                                        <th>Ticket Médio</th>                                                        
+                                                    </tr>                                                
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in visAtcVendVisaoGeral.infoClientesReativados.data">
+                                                        <td>{{ i.codigo }}</td>
+                                                        <td>{{ i.nome }}</td>
+                                                        <td>{{ i.cnpj }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.total | currency: 'R$' }}</td>
+                                                        <td>{{ i.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #F0F0F0">
+                                                        <td colspan="3" align='right'> <b>TOTAL:</b></td>
+                                                        <td>{{ visAtcVendVisaoGeral.infoClientesReativados.total.quantidade }}</td>                                                       
+                                                        <td>{{ visAtcVendVisaoGeral.infoClientesReativados.total.total | currency: 'R$' }}</td>
+                                                        <td>{{ visAtcVendVisaoGeral.infoClientesReativados.total.ticketMedio | currency: 'R$' }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>                                    
+                                    </div>                                
+                                    <div class="modal-footer">                                        
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div> 
+                        
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>           
+        </div>
+    </div>
+</div>   

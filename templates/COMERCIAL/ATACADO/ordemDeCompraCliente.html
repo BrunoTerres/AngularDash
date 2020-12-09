@@ -1,0 +1,414 @@
+<div class="col-md-12 col-sm-12 col-xs-18 " ng-controller="ordemDeCompraClienteController">  
+    <div role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h1>Ordem de Compra Clientes<small></small></h1>
+                        </div>   
+                        <div class="col-md-12 col-sm-20 col-xs-12"> 
+                            
+                            <div class="pull-right divMenu1" >
+                                <div class="pull-left "> 
+                                    <div class="pull-right"  style="margin: auto" >
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                        <button class="btn btn-round btn-default pull-right" type="button" ng-click="pesquisaOcCLienteAtacado('','')" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>    
+                                    </div>                                       
+                                  
+                                </div>                                                                 
+                            </div>   
+                        </div>                     
+                    </div>
+                    <div class="row">
+                        <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">
+
+                            <!-- ========================= VISUALIZAÇÃO DA OC CLIENTE ========================= -->
+                            <div ng-show ="divVisualizarOc" class="col-md-12">
+                                <div class="col-md-12 col-sm-20 col-xs-12 campanhaBordas">
+                                    <span><h2 class="col-md-4" style="margin-top: 10px;">OC Cadastradas</h2></span>
+                                    <button class="pull-right btn btn-success col-md-2"style="margin-top: 10px" ng-click="menus(1)">Cadastrar OC</button> 
+                                </div>                           
+
+                                <div class="col-md-12 col-sm-20 col-xs-12 campanhaBordas">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="3" style="width: 1%"></th>
+                                                <th>Número OC</th>
+                                                <th>Código Cliente</th>
+                                                <th>Nome Cliente</th>
+                                                <th>Quantidade</th>
+                                                <th>Total</th>
+                                                <th>Semana Entrega</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat=" i in oc">
+                                                <td>
+                                                    <a ng-show="i.inativo == 'E' || i.inativo == 'S'" href=""><button style="font-size: 10px" class="glyphicon glyphicon-search btn btn-success" title="Visualizar OC" disabled></button></a>
+                                                    <a ng-show="i.inativo != 'E'" ng-if="i.inativo != 'S'" href="" ng-click="pesquisaOcClienteProdAtacado('',i.id,i.numero,i.cliente,i.quantidade,i.total)"><button style="font-size: 10px" class="glyphicon glyphicon-search btn btn-success" title="Visualizar OC"></button></a>
+                                                </td>   
+                                                <td>
+                                                    <a ng-show="i.inativo == 'E' || i.inativo == 'S'" href=""> <button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar OC" disabled></button></a>
+                                                    <a ng-show="i.inativo != 'E'" ng-if="i.inativo != 'S'" href="" ng-click="pesquisaOcCLienteAtacado(i.id,'E')"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar OC" ></button></a>
+                                                </td>                                              
+                                                <td>
+                                                    <a ng-show="i.inativo == 'E' || i.inativo == 'S'" href=""><button style="font-size: 10px" class="glyphicon glyphicon-trash btn btn-success" title="Excluir OC" disabled></button></a>
+                                                    <a ng-show="i.inativo != 'E'" ng-if="i.inativo != 'S'" href="" ng-click="modalExcluirOcCliente(i.id,i.numero)"><button style="font-size: 10px" class="glyphicon glyphicon-trash btn btn-success" title="Excluir OC" ></button></a>                                                 
+                                                </td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.codigoCliente }}</td>
+                                                <td>{{ i.cliente }}</td>
+                                                <td>{{ i.quantidade }}</td>
+                                                <td>{{ i.total | currency: 'R$ '}}</td>
+                                                <td>{{ i.inicioEntrega }} - {{ i.fimEntrega}}</td>
+                                                <td><b ng-class="{'excluidoStatus': i.inativo == 'E', 'pendenteStatus': i.inativo == 'N', 'concluidoStatus': i.inativo == 'S'}">{{ i.status }}</b></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>          
+                            </div> 
+                            
+                            <!-- ========================= FORMULÁRIO DE CADASTRO DA OC CLIENTE ========================= -->
+                            <div ng-show="divCadastroOc" class="col-md-12">
+                                <legend>Cadastro de OC Cliente</legend> 
+                                <form  method="POST" ng-submit="cadastroOcClienteAtacado()" name="etapaUm">
+                                            
+                                    <div class="form-group col-md-2">
+                                        <label>Número OC <b style="color:red">*</b></label>
+                                        <input type="text" class="form-control" ng-model="cadastroOc.numeroOC" required>
+                                    </div> 
+                                    
+                                    <div class="form-group col-md-2">
+                                        <label>Código Cliente <b style="color:red">*</b></label>
+                                        <input type="text" class="form-control" ng-model="cadastroOc.codigoCliente" required>
+                                    </div> 
+
+                                    <div class="form-group col-md-2">
+                                        <label>Quantidade <b style="color:red">*</b></label>
+                                        <input type="number" class="form-control" ng-model="cadastroOc.quantidade" required>
+                                    </div> 
+
+                                    <div class="form-group col-md-2">
+                                        <label>Valor Total <b style="color:red">*</b></label>
+                                        <input type="text" class="form-control" ng-model="cadastroOc.total"  mask-money required>
+                                    </div> 
+
+                                    <div class="form-group col-md-2">
+                                        <label>Início Entrega <b style="color:red">*</b></label>
+                                        <input type="date" class="form-control" ng-model="cadastroOc.dataInicial" required>
+                                    </div>                                          
+
+                                    <div class="form-group col-md-2">
+                                        <label>Fim da Entrega <b style="color:red">*</b></label>
+                                        <input type="date" class="form-control" ng-model="cadastroOc.dataFim" required>  
+                                    </div>    
+                                
+                                    <div class="form-group col-md-12" style="margin-top: 20px">
+                                        <button type="submit"class="btn btn btn-primary"><i style="font-size: 15px" class="fa fa-floppy-o"></i> Cadastrar</button>
+                                        <button type="button"class="btn btn btn-primary" ng-show="botaoVoltaCadastroOC" ng-click="menus(2)"><i style="font-size: 15px" class="fa fa-reply"></i> Voltar</button>
+                                    </div>                                   
+                                    <legend class="col-md-12"></legend> 
+                                    <div class="form-group col-md-6">
+                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                    </div>            
+                                </form>
+                            </div> 
+
+                            <!-- ========================= VISUALIZAÇÃO DA OC CLIENTE ========================= -->
+                            <div ng-show="divVisualizarOcPRod" class="col-md-12">
+                                <div class="col-md-12 col-sm-20 col-xs-12 campanhaBordas">
+                                    <span>
+                                        <h2 class="col-md-4" style="margin-top: 10px;">
+                                            <p><b>Ordem de Compra: </b>{{infoProd.numeroOC}}</p>
+                                            <p><b>Cliente: </b>{{infoProd.nomeCliente}}</p>
+                                            <p><b>Total: </b>{{infoProd.total | currency: 'R$ '}}</p>
+                                            <p><b>Quantidade: </b>{{infoProd.quantidade}}</p>
+                                          
+                                        </h2>                                    
+                                    </span>
+                                    <button style="margin-top: 10px; min-width:2%;max-width: 4%;" type="button"class="btn btn btn-danger pull-right col-md-2" ng-click="menus(5)"><i style="font-size: 15px;" class="fa fa-reply"></i></button>
+                                    
+                                </div>                           
+                                <div class="col-md-12 col-sm-20 col-xs-12 campanhaBordas">
+                                    <div style="margin-top: 5px; margin-bottom: 5px">
+                                        <button class="pull-right btn btn-success col-md-2"style="margin-top: 10px" ng-click="menus(6)">Cadastrar Produto</button>     
+                                    </div> 
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" style="width: 1%"></th>
+                                                <th>Código</th>
+                                                <th>Descrição</th>
+                                                <th>Marca</th>
+                                                <th>EAN</th>
+                                                <th>Unitário</th>
+                                                <th>Quantidade</th>    
+                                                <th>Total</th>                                           
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr  ng-repeat="i in produtoOc">
+                                                <td>
+                                                    <a ng-show="i.status == 'E'" href=""> <button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" disabled></button></a>
+                                                    <a ng-show="i.status == 'N'" href="" ng-click="pesquisaOcClienteProdAtacado('ED',i.id,'',i.descricao)" ><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Produto" ></button></a>
+                                                </td>    
+                                                <td>
+                                                    <a ng-show="i.status == 'E'" href=""><button style="font-size: 10px" class="glyphicon glyphicon-trash btn btn-success" disabled></button></a>
+                                                    <a ng-show="i.status == 'N'" href="" ng-click="modalExcluirOcProdCliente(i.id,i.descricao)"><button style="font-size: 10px" class="glyphicon glyphicon-trash btn btn-success" title="Excluir Produto" ></button></a>                                                 
+                                                </td>
+                                                <td>{{ i.codigo }}</td>
+                                                <td>{{ i.descricao }}</td>
+                                                <td>{{ i.marca }}</td>
+                                                <td>{{ i.codigoBarras }}</td>
+                                                <td>{{ i.total | currency: 'R$ ' }}</td>
+                                                <td>{{ i.quantidade }}</td>
+                                                <td title="Unitário x Quantidade">{{ i.valorTotal | currency: 'R$ ' }}</td>
+                                                <td ng-show="i.status == 'E'"><b style="color: red">Excluído</b></td>
+                                                <td ng-show="i.status != 'E'"></td>
+                                            </tr>
+                                            <tr style="background-color: #F0F0F0">
+                                                <td colspan="7"align='right'><b>TOTAL:</b></td>                                                
+                                                <td><b>{{  totalizadores.quantidade }}</b></td>                                      
+                                                <td><b>{{ totalizadores.totalValor | currency: 'R$ ' }}</b></td>      
+                                                <td></td>                            
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>          
+                            </div> 
+
+                            <!-- ========================= FORMULÁRIO DE CADASTRO DA OC CLIENTE ========================= -->
+                            <div ng-show="divCadastroOcProd" class="col-md-12">
+                                <div class="col-md-12 campanhaBordas"> 
+                                        <span><h2 class="col-md-12">Cadastro de Produto na OC - {{ infoProd.numeroOC }}</h2></span>                                 
+                                    <div class="col-md-4"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;">
+                                        <input type="text" style="border-radius: 4px;" placeholder="Digite EAN Produto" ng-model="codigoProduto" class="form-control fonte-size-input">    
+                                    </div> 
+                                    <div class="col-md-2"  style="margin: auto">
+                                        <button class="btn btn-primary" type="button" style="height:35px;font-size: 13px" ng-click="pesquisaProdutoOCAtacado()"><span class="glyphicon glyphicon-search"aria-hidden="true"></span> Pesquisar </button>  
+                                        <button type="button"class="btn btn btn-primary" ng-show="botaoVisualizarProd == false"  ng-click="menus(4)"><i style="font-size: 15px" class="fa fa-reply"></i> Voltar</button>
+                                        <button type="button"class="btn btn btn-primary" ng-show="botaoVisualizarProd"  ng-click="menus(7)"><i style="font-size: 15px" class="fa fa-reply"></i> Voltar</button>
+                                    </div>                                
+                                </div>
+                                <div class="col-md-12 campanhaBordas"  ng-show="divFormProdOC" >
+                                    <form  method="POST" ng-submit="cadastrarOcClienteProdAtacado()" name="cadastroProdutoOc">
+                                                
+                                        <div class="form-group col-md-2">
+                                            <label>Código Mixtel</label>
+                                            <input type="text" class="form-control" ng-model="cadastrarProdutoOc.codigo" disabled>
+                                        </div>                                        
+                                       
+                                        <div class="form-group col-md-6">
+                                            <label>Descrição <b style="color:red">*</b></label>
+                                            <input type="text" class="form-control" ng-model="cadastrarProdutoOc.descricao"required>
+                                        </div>  
+
+                                        <div class="form-group col-md-2">
+                                            <label>Marca</label>
+                                            <input type="text" class="form-control" ng-model="cadastrarProdutoOc.marca" disabled>
+                                        </div>  
+
+                                        <div class="form-group col-md-2">
+                                            <label>EAN</label>
+                                            <input type="text" class="form-control" ng-model="cadastrarProdutoOc.codigoBarras"  disabled>
+                                        </div>  
+
+                                        <div class="form-group col-md-2">
+                                            <label>Quantidade <b style="color:red">*</b></label>
+                                            <input type="number" class="form-control" ng-model="cadastrarProdutoOc.quantidade"  required>
+                                        </div>  
+                                        
+                                        
+                                        <div class="form-group col-md-2">
+                                            <label>Valor Total <b style="color:red">*</b></label>
+                                            <input type="text" class="form-control" ng-model="cadastrarProdutoOc.valorTotal"  mask-money required>
+                                        </div>     
+                                    
+                                        <div class="form-group col-md-12" style="margin-top: 20px">
+                                            <button type="submit"class="btn btn btn-primary"><i style="font-size: 15px" class="fa fa-floppy-o"></i> Cadastrar</button>
+                                            <button type="button"class="btn btn btn-primary" ng-show="botaoVoltaCadastroOC" ng-click="menus(2)"><i style="font-size: 15px" class="fa fa-reply"></i> Voltar</button>
+                                        </div>                                   
+                                        <legend class="col-md-12"></legend> 
+                                        <div class="form-group col-md-6">
+                                            <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                        </div>            
+                                    </form>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= MODAL EDITAR OC CLIENTE  =========================  -->          
+                            <a id="modalEditarOC" data-toggle="modal" data-target="#myModalEditarOC"></a>                     
+                            <div class="modal fade" id="myModalEditarOC" role="dialog">
+                                <div class="modal-dialog"  style="width: 50%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                            <div align="center"><h4 class="modal-title" > Editação OC Cliente </h4></div>   
+                                            <p style="margin-top: 10px"><b>Nome Cliente :</b> {{ editarOc.cliente }}</p>                                
+                                        </div>
+                                        <div class="modal-body" style="overflow-y: -webkit-paged-x;">
+                                            <form  method="POST" ng-submit="editarOcClienteAtacado()" name="editarOrc">
+                                        
+                                                <div class="form-group col-md-2">
+                                                    <label>Número OC</label>
+                                                    <input type="text" class="form-control" ng-model="editarOc.numero" disabled>
+                                                </div> 
+                                                
+                                                <div class="form-group col-md-2">
+                                                    <label>Código Cliente <b style="color:red">*</b></label>
+                                                    <input type="text" class="form-control" ng-model="editarOc.codigoCliente" required>
+                                                </div> 
+            
+                                                <div class="form-group col-md-2">
+                                                    <label>Quantidade <b style="color:red">*</b></label>
+                                                    <input type="number" class="form-control" ng-model="editarOc.quantidade" required>
+                                                </div>                                               
+                                                
+                                                <div class="form-group col-md-4">
+                                                    <label>Total <b style="color:red">*</b></label>
+                                                    <input type="text" class="form-control" ng-model="editarOc.total"  mask-money>
+                                                </div> 
+                                                <div class="form-group col-md-4">
+                                                    <label>Início Entrega <b style="color:red">*</b></label>
+                                                    <input type="date" class="form-control" ng-model="editarOc.dataInicial" required>
+                                                </div>                                          
+            
+                                                <div class="form-group col-md-4">
+                                                    <label>Fim da Entrega <b style="color:red">*</b></label>
+                                                    <input type="date" class="form-control" ng-model="editarOc.dataFim" required>  
+                                                </div>    
+                                            
+                                                <div class="form-group col-md-12" style="margin-top: 20px">
+                                                    <button type="submit" class="btn btn-primary"><i style="font-size: 15px" class=" fa fa-pencil-square-o"></i> Editar</button>                                              
+                                                </div>                                                
+            
+                                                <legend class="col-md-12"></legend> 
+                                                <div class="form-group col-md-6">
+                                                    <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                </div>            
+                                            </form>                            
+                                                                         
+                                        </div>                                
+                                        <div class="modal-footer">                                                                  
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div>    
+
+                            <!-- ========================= MODAL EXCLUIR OC CLIENTE =========================  -->                 
+                            <a id="modalExcluirOc" data-toggle="modal" data-target="#myModalExcluirOc"></a>                     
+                            <div class="modal fade" id="myModalExcluirOc" role="dialog">
+                                <div class="modal-dialog" style="width: 25%;  margin-top: 300px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>                                    
+                                          
+                                            <div class="modal-title" style="font-size:15px">
+                                                Deseja excluir a OC de número: <b>{{ excluirOSCliente.numeroOC}}</b>? 
+                                            </div> 
+                                                                             
+                                        </div>                                      
+                                        <div class="modal-footer">  
+                                            <button type="button" ng-click="excluirOcClienteAtacado()" class="btn btn-warning">Sim</button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="menus(3)">Não</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= MODAL EDITAR OC CLIENTE  =========================  -->          
+                            <a id="modalEditarProdOC" data-toggle="modal" data-target="#myModalEditarProdOC"></a>                     
+                            <div class="modal fade" id="myModalEditarProdOC" role="dialog">
+                                <div class="modal-dialog"  style="width: 50%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                            <div align="center"><h4 class="modal-title" > Editação Produto OC </h4></div>   
+                                            <p style="margin-top: 10px"><b>Produto :</b> {{ produtoInfo.nomeCliente }}</p>  
+                                            <p><b>Ordem de Compra :</b> {{ infoProd.numeroOC }}</p>  
+                                            <p><b>Nome Cliente :</b> {{ infoProd.nomeCliente }}</p>                                 
+                                        </div>
+                                        <div class="modal-body" style="overflow-y: -webkit-paged-x;">
+                                            <form  method="POST" ng-submit="editarOcClienteProdAtacado()" name="editarProdutoOC">                                            
+                                                <div class="form-group col-md-4">
+                                                    <label>Código Mixtel</label>
+                                                    <input type="text" class="form-control" ng-model="editarProdutosOC.codigo" disabled>
+                                                </div>                                        
+                                                
+                                                <div class="form-group col-md-8">
+                                                    <label>Descrição</label>
+                                                    <input type="text" class="form-control" ng-model="editarProdutosOC.descricao" disabled>
+                                                </div>  
+        
+                                                <div class="form-group col-md-2">
+                                                    <label>Marca</label>
+                                                    <input type="text" class="form-control" ng-model="editarProdutosOC.marca" disabled>
+                                                </div>  
+        
+                                                <div class="form-group col-md-2">
+                                                    <label>EAN</label>
+                                                    <input type="text" class="form-control" ng-model="editarProdutosOC.codigoBarras"  disabled>
+                                                </div>  
+        
+                                                <div class="form-group col-md-2">
+                                                    <label>Quantidade <b style="color:red">*</b></label>
+                                                    <input type="number" class="form-control" ng-model="editarProdutosOC.quantidade"  required>
+                                                </div>  
+                                                
+                                                
+                                                <div class="form-group col-md-2">
+                                                    <label>Valor Total <b style="color:red">*</b></label>
+                                                    <input type="text" class="form-control" ng-model="editarProdutosOC.total"  mask-money required>
+                                                </div>     
+                                            
+                                                <div class="form-group col-md-12" style="margin-top: 20px">
+                                                    <button type="submit" class="btn btn-primary"><i style="font-size: 15px" class=" fa fa-pencil-square-o"></i> Editar</button>
+                                                </div>                                   
+                                                <legend class="col-md-12"></legend> 
+                                                <div class="form-group col-md-6">
+                                                    <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                </div>            
+                                            </form>                                               
+                                        </div>                                
+                                        <div class="modal-footer">                                                                  
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div>  
+
+                            <!-- ========================= MODAL EXCLUIR OC CLIENTE =========================  -->                 
+                            <a id="modalExcluirOcProd" data-toggle="modal" data-target="#myModalExcluirOcProd"></a>                     
+                            <div class="modal fade" id="myModalExcluirOcProd" role="dialog">
+                                <div class="modal-dialog" style="width: 40%;  margin-top: 300px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>                                    
+                                          
+                                            <div class="modal-title" style="font-size:15px">
+                                                Deseja excluir o Produto: <b>{{ excluirOCProdCliente.produto}}</b>? 
+                                            </div> 
+                                                                             
+                                        </div>                                      
+                                        <div class="modal-footer">  
+                                            <button type="button" ng-click="excluirOcProdClienteAtacado()" class="btn btn-warning">Sim</button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="menus(3)">Não</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+
+                        </div>          
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+            </div>             
+        </div>        
+    </div>
+</div>

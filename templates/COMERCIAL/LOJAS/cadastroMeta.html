@@ -1,0 +1,224 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="lojasCadastroMetaController">    
+    <div role="main">        
+      
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Cadastro de Metas - Lojas <small></small></h3>
+                        </div>   
+                        <div class="col-md-12 col-sm-20 col-xs-12">
+                            <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">  
+                                <div class="pull-left"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;">
+                                 <select
+                                        class="form-control"
+                                        name="mySelect"
+                                        id="mySelect1"
+                                        ng-options="option.name for option in selecaoEmpresa.availableOptions track by option.id"
+                                        ng-change="filterEmpresa(selecaoEmpresa.selectedOption)"
+                                        ng-model="selecaoEmpresa.selectedOption">
+                                </select>
+                                </div> 
+                                <div class="pull-right"  style="margin: auto">
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                        <button class="btn btn-round btn-default pull-right" type="button" ng-click="metaPesquisaLoja('N')"><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button> 
+                                </div>                                
+                            </div>
+                        </div>       
+                    </div>           
+                    <div class="row"  style="margin-top: 20px">
+                        <!-- ========================= VISUALIZAR METAS DOS VENDEDORES =========================  -->     
+                        <div class="col-md-12" ng-show="divVisualizarMetas"> 
+                            
+                            <h3 class="col-md-12">Meta Loja - {{nameEmpresa}} </h3>                          
+                            <div style="margin-top: 10px; margin-bottom: 5px">
+                                <div class="form-group col-md-12">                                                                                                                          
+                                    <div class="form-group col-md-4">
+                                        <input class="form-control" type="text" placeholder="Pesquisar" ng-model="pesquisaLogistico">
+                                    </div>
+
+                                    <div class="form-group col-md-4">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-success">Opções</button>
+                                            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <span class="caret"></span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>
+                                                    <a href="" ng-click="divCadastro(1)">Cadastrar Meta Vendedor</a>
+                                                </li>
+                                                <li>
+                                                    <a href="" id="btnExport" onclick="javascript:xport.toCSV('tabela');">Exporta Excel</a>
+                                                </li>                                                  
+                                            </ul>
+                                        </div>                                      
+                                    </div>                                
+                                </div>
+                            </div>
+                            <table class="table col-md-12" id="tabela">
+                                <thead>
+                                    <tr>                                        
+                                        <th>Código</th>
+                                        <th>Nome</th>
+                                        <th>Início Meta</th>
+                                        <th>Fim Meta</th>
+                                        <th>Meta Geral</th>
+                                        <th>Meta Celulares</th>
+                                        <th>Meta Acessórios</th>
+                                        <th>Meta Eletros</th> 
+                                        <th></th>                                  
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="i in infoVendedores">                                        
+                                        <td>{{ i.codigoVendedor }}</td>
+                                        <td>{{ i.nomeVendedor }}</td>
+                                        <td>{{ i.dataInicial }}</td>
+                                        <td>{{ i.dataFim }}</td>
+                                        <td>{{ i.metaGeral | currency: 'R$ ' }}</td>
+                                        <td>{{ i.metaCelulares | currency: 'R$ ' }}</td>
+                                        <td>{{ i.metaAcessorios | currency: 'R$ ' }}</td>
+                                        <td>{{ i.metaEletros | currency: 'R$ ' }}</td>   
+                                        <td><a href="" ng-click="modalEditarMetaLoja(i.id)"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Vendedor" ></button></td>                                   
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- ========================= CADASTRAR META DOS VENDEDORES =========================  -->   
+                        <div class="col-md-12" ng-show="divCadastroApresenta">
+
+                            <div class="col-md-12" ng-init="vendedor.id = A">
+                                <span class="col-md-12"><legend><h4>Cadastro de Meta - {{nameEmpresa}} </h4></legend></span>
+                                <select  class="form-control col-md-2" ng-model="vendedor.id" ng-change="apresentaDiv(vendedor.id)">
+                                    <option ng-selected="vendedor.id == A " ng-value="A" value="A">SELECIONE VENDEDOR</option>
+                                    <option ng-repeat="i in vendedoresLoja" ng-selected="vendedor.id == i.codigoVendedor" ng-value="i.codigoVendedor" value="i.codigoVendedor">{{i.nome}}</option>
+                                </select>                        
+                            </div>                          
+                            
+                            <form style="margin-top: 20px" class="form-group col-md-12" ng-show="formApresenta" method="POST" ng-submit="cadastroMetaLoja()">
+                                
+                                <div class="form-group col-md-4">
+                                    <label>Código Mixtel</label>
+                                    <input type="text" class="form-control" placeholder="{{dadosCadastroMeta.codigoVendedor}}" disabled>
+                                </div>
+                                
+
+                                <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                    <label>Meta Geral <b style="color:red">*</b></label>
+                                    <input type="text" class="form-control"  ng-model="dadosCadastroMeta.metaGeral" mask-money>
+                                </div>  
+
+                                <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                    <label>Meta Celulares</label>
+                                    <input type="text" class="form-control" ng-model="dadosCadastroMeta.metaCelulares" mask-money>
+                                </div>  
+
+                                <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                    <label>Meta Acessórios</label>
+                                    <input type="text" class="form-control" ng-model="dadosCadastroMeta.metaAcessorios" mask-money>
+                                </div> 
+                                
+                                <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                    <label>Meta Eletros</label>
+                                    <input type="text" class="form-control"  ng-model="dadosCadastroMeta.metaEletros" mask-money>
+                                </div>  
+                                
+                                <div class="form-group col-md-4">
+                                    <label>Início da Meta <b style="color:red">*</b></label>
+                                    <input type="date" class="form-control" ng-model="dadosCadastroMeta.dataInicial">
+                                </div>                                          
+
+                                <div class="form-group col-md-4">
+                                    <label>Fim da Meta <b style="color:red">*</b></label>
+                                    <input type="date" class="form-control" ng-model="dadosCadastroMeta.dataFim">  
+                                </div> 
+        
+                                <div class="form-group col-md-12" style="margin-top: 20px">
+                                    <button ng-show="botaoVolta" type="button"class="btn btn-primary" ng-click="divCadastro(2)">Voltar</button>
+                                    <button type="submit"class="btn btn-primary">Cadastrar</button>
+                                </div>
+                                <legend class="col-md-12"></legend> 
+                                <div class="form-group col-md-6">
+                                    <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                </div>  
+                            </form>
+                        </div>  
+
+                        <!-- ========================= MODAL EDITAR META VENDEDOR =========================  -->          
+                        <a id="modalEditar" data-toggle="modal" data-target="#myModalEditar"></a>                     
+                        <div class="modal fade" id="myModalEditar" role="dialog">
+                            <div class="modal-dialog"  style="width: 60%;  margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>  
+                                        <h4 class="modal-title" align="center">Editar Meta - {{ editarVendedores.nomeVendedor }}</h4>  
+                                    </div>
+                                    <div class="modal-body">
+                                        <form style="margin-top: 20px" class="form-group col-md-12"  method="POST" ng-submit="editarMetaLoja()">
+                            
+                                            <div class="form-group col-md-4">
+                                                <label>Código Mixtel</label>
+                                                <input type="text" class="form-control" placeholder="{{ editarVendedores.codigoVendedor }}" disabled>
+                                            </div>
+                                            
+            
+                                            <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                                <label>Meta Geral <b style="color:red">*</b></label>
+                                                <input type="text" class="form-control"  ng-model="editarVendedores.metaGeral" mask-money>
+                                            </div>  
+            
+                                            <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                                <label>Meta Celulares</label>
+                                                <input type="text" class="form-control" ng-model="editarVendedores.metaCelulares" mask-money>
+                                            </div>  
+            
+                                            <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                                <label>Meta Acessórios</label>
+                                                <input type="text" class="form-control" ng-model="editarVendedores.metaAcessorios" mask-money>
+                                            </div> 
+                                            
+                                            <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                                <label>Meta Eletros</label>
+                                                <input type="text" class="form-control"  ng-model="editarVendedores.metaEletros" mask-money>
+                                            </div>  
+                                            
+                                            <div class="form-group col-md-4">
+                                                <label>Início da Meta <b style="color:red">*</b></label>
+                                                <input type="date" class="form-control" ng-model="editarVendedores.dataInicial">
+                                            </div>                                          
+            
+                                            <div class="form-group col-md-4">
+                                                <label>Fim da Meta <b style="color:red">*</b></label>
+                                                <input type="date" class="form-control" ng-model="editarVendedores.dataFim">  
+                                            </div>  
+                    
+                                            <div class="form-group col-md-12" style="margin-top: 20px">
+                                                <button type="submit"class="btn btn-primary">Editar</button>
+                                            </div>
+                                            <legend class="col-md-12"></legend> 
+                                            <div class="form-group col-md-6">
+                                                <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                            </div>  
+                                        </form>                                                               
+                                    </div>                                        
+                                    <div class="modal-footer"> 
+                                      
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                              </div>
+                            </div>
+                        </div> 
+                        
+                    </div>
+                    <!-- FIM CLASS ROW -->   
+                </div>    
+                <div class="clearfix"></div>
+            </div>
+        </div>   
+    </div>
+    <br/>
+</div>  

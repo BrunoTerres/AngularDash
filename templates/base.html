@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html  lang="pt-br" ng-app="app">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!-- Meta, title, CSS, favicons, etc. -->        
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate, Post-Check=0, Pre-Check=0">
+        <meta http-equiv="pragma" content="no-cache">
+        <meta http-equiv="expires" content="-1">
+        
+        <title>Mixtel Distribuidora</title>   
+        <!-- Bootstrap -->
+        <link href="LAYOUT/css/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link href="LAYOUT/css/fontw/css/font-awesome.min.css" rel="stylesheet">
+        <!-- NProgress -->
+        <link href="LAYOUT/css/nprogress.css" rel="stylesheet">
+        <!-- Custom Theme Style -->
+        <link href="LAYOUT/css/custom.min.css" rel="stylesheet">          
+        <link href="../css/estilo.css" rel="stylesheet">
+        <!--Loading Bar -->
+        <link href="../css/loading-bar.css" rel="stylesheet">         
+        <!--GROWL Menssage-->    
+        <link href="../js/angular/grow/angular-growl.min.css" rel="stylesheet">
+        <!--ICON -->
+        <link rel="icon" href="LAYOUT/images/icone.ico" type="image/ico" />
+        <!-- DATE PICKER  -->
+        <link href="LAYOUT/css/bootstrap/css/datepicker.css" rel="stylesheet">       
+        <link href="../js/angular/uicalendar/fullcalendar.min.css" rel="stylesheet">    
+
+        <!-- PRETTY CSS RADIO BUTTON -->
+        <link href="../css/pretty.css" rel="stylesheet"/>   
+        
+        <!-- DATA TABLES  -->
+        <link href="../css/dataTables.bootstrap4.css" rel="stylesheet"/> 
+        
+        <!-- LIGHT BOX -->
+        <link href="../css/lightbox.css" rel="stylesheet"/> 
+
+        <style> 
+            .active {font-weight: bolder; }
+            .active:hover {font-weight: bolder; }
+        </style>     
+    </head>
+    <body class="nav-md" > 
+        
+        <!-- jQuery-->  
+        <script src='../js/jquery/jquery-1.11.3.min.js' type="text/javascript"></script>
+        <script src='../js/jquery/jquery.maskMoney.js' type="text/javascript"></script>
+        <!-- DATA TABLE -->
+       
+        <script src='../js/js/jquery.dataTables.min.js' type="text/javascript"></script>
+        <script src='../js/js/datetime.js'></script> 
+        
+        <!-- LIGHT BOX -->
+        <script src='../js/js/lightbox.js' type="text/javascript"></script>
+        <!-- ANGULAR JS-->
+        <!--  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular-input-masks/4.4.1/angular-input-masks-standalone.min.js'></script> -->
+        <script src='../js/angular/angular.min.js' type="text/javascript"></script>       
+        <script src='../js/angular/angular-cookies.min.js' type="text/javascript"></script>
+        <script src='../js/angular/angular-ui.js' type="text/javascript"></script>
+        <script src='../js/angular/angular-animate.js' type="text/javascript"></script>
+        <script src='../js/angular/angular-route.js' type="text/javascript"></script>
+        <script src='../js/angular/loading-bar.js' type="text/javascript"></script>
+        <script src='../js/angular/grow/angular-growl.min.js' type="text/javascript"></script>
+        <script src='../js/angular/angular-ui-router.js' type="application/javascript"></script>
+        <script src='../js/angular/dirPagination.js' type="text/javascript"></script>
+        <script src='../js/angular/mask.min.js' type="text/javascript"></script>
+        <script src='../js/angular/angular-locale_pt-br.js' type="text/javascript"></script>
+        <script src='../js/angular/angular.maskMoney.js' type="text/javascript"></script>
+        <script src='../js/angular/ng-file-upload-shim.js' type="text/javascript"></script>
+        <script src='../js/angular/ng-file-upload.min.js' type="text/javascript"></script>
+        <script src='../js/angular/angular-idle.min.js' type="text/javascript"></script>
+        <script src='../js/angular/angular-input-mask.js' type="text/javascript"></script>        
+       
+
+        <!--CONTROLLER'S JS-->
+        <script src='../js/controller/app.js' type="text/javascript"></script>
+        <script src='../js/controller/baseController.js' type="text/javascript"></script>
+
+        <!-- CONTROLLER'S JS ATACADO -->
+        <script src='../js/controller/COMERCIAL/ATACADO/analiseLogisticaController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/atacadoController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/atacadoIndicador.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/controledeNovoCadastroController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/monitorAtacadoController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/monitorTelevendasController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/ocBacklogController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/ordemDeCompraClienteController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ATACADO/vendedorAtacadoController.js' type="text/javascript" ></script>
+
+        <!-- CONTROLLER'S JS ECOMMERCE -->
+        <script src='../js/controller/COMERCIAL/ECOMMERCE/analiseMovimentoController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ECOMMERCE/analiseProdutoController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ECOMMERCE/campanhaController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ECOMMERCE/ecommerceController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ECOMMERCE/evolucaoDiariaController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/ECOMMERCE/monitorEcommerceController.js' type="text/javascript" ></script>
+
+        <!-- CONTROLLER'S JS LOJAS -->
+        <script src='../js/controller/COMERCIAL/LOJAS/analiseEstoqueFinanceiroController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/LOJAS/dreLojasController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/LOJAS/lojasAnaliseMovimentoController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/LOJAS/lojasCadastroMetaController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/LOJAS/lojasController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/LOJAS/lojasGerentesController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/LOJAS/simuladorController.js' type="text/javascript" ></script>
+        <script src='../js/controller/COMERCIAL/LOJAS/estoqueReservaController.js' type="text/javascript" ></script>
+
+        <!-- CONTROLLER'S JS COMPRAS -->
+        <script src='../js/controller/compras/comprasGeralController.js' type="text/javascript" ></script>
+
+        <!-- CONTROLLER'S JS DIRETORIA -->
+        <script src='../js/controller/diretoria/visaoGeralFaturamentoController.js' type="text/javascript"></script>
+        <script src='../js/controller/diretoria/vendaxestoqueController.js' type="text/javascript"></script>
+        <script src='../js/controller/diretoria/vendasxestoqueLojasController.js' type="text/javascript"></script>
+
+        <!-- CONTROLLER'S JS FORNECEDORES -->
+        <script src='../js/controller/fornecedores/fornecedoresGeral.js' type="text/javascript" ></script>
+
+        <!-- CONTROLLER'S JS LOGISTICA -->
+        <script src='../js/controller/logistica/agendamentoEntregaController.js' type="text/javascript" ></script>
+        <script src='../js/controller/logistica/estoqueController.js' type="text/javascript" ></script>
+
+        <!-- CONTROLLER'S JS PORTAL HAVAN -->
+        <script src='../js/controller/portal havan/cadastroProdutoController.js' type="text/javascript" ></script>
+        <script src='../js/controller/portal havan/usuariosHavanController.js' type="text/javascript" ></script>
+        <script src='../js/controller/portal havan/campanhaController.js' type="text/javascript"></script>
+        <script src='../js/controller/portal havan/devolucaoAvariaController.js' type="text/javascript"></script>
+        <script src='../js/controller/portal havan/produtosLinhaController.js' type="text/javascript"></script>
+
+        <!-- HIGHCHARTS -->        
+        <script src='../js/highcharts/code/highcharts.js' type="text/javascript"></script>        
+        <script src='../js/highcharts/maps/map.js' type="text/javascript"></script>
+        <script src='../js/highcharts/maps/br-all.js' type="text/javascript"></script>
+        <script src='../js/highcharts/code/highcharts-more.js' type="text/javascript"></script>
+        <script src='../js/highcharts/code/modules/series-label.js' type="text/javascript"></script>
+        <script src='../js/highcharts/code/modules/exporting.js' type="text/javascript"></script>    
+        <script src='../js/highcharts/code/modules/export-data.js' type="text/javascript"></script>  
+        <script src='../js/highcharts/code/modules/solid-gauge.js' type="text/javascript"></script>
+        <script src='../js/highcharts/code/gauge.js' type="text/javascript"></script>
+    
+        <div class="container body" ng-controller="baseController">
+            <div growl></div>
+            <div class="main_container">
+                    <div class="col-md-3 left_col">
+                          <div class="left_col scroll-view">
+                                <div class="navbar nav_title" style="border: 0;">
+                                    <a class="site_title"><span>Mixtel Distribuidora</span></a>
+                                </div>
+                                <div class="clearfix"></div>
+                                <!-- menu profile quick info -->
+                                <div class="profile clearfix">
+                                    <div class="profile_pic">
+                                    </div>
+                                    <div class="profile_info" >
+                                        <span><h2>Bem Vindo,</h2></span>
+                                         
+                                        <h3 ng-cloak>{{ login.nome }}</h3>
+                                      
+                                    </div>
+                                </div>
+                                <!-- sidebar menu -->
+                                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                                      <div class="menu_section">
+                                       <!-- <h3>Mixtel</h3>-->                                                 
+                                            
+                                            <ul class="nav side-menu"> 
+                                                
+                                                <li  ng-if="permissoes[12] == true"><a><i class="fa fa-desktop"></i> Atacado <span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">
+                                                        <li ng-show="permissoes[28]" ui-sref-active="active"><a ui-sref="analiseLogistico" >Analise Logístico</a></li>
+                                                        <li ng-show="permissoes[0]" ui-sref-active="active"><a ui-sref="atacado" >Atacado Geral</a></li>
+                                                        <li ng-show="permissoes[8]" ui-sref-active="active"><a ui-sref="atacadoVendedor">Atacado Vendedor</a></li>   
+                                                        <li ng-show="permissoes[24]" ui-sref-active="active"><a ui-sref="atacadoIndicador">Atacado Indicador</a></li> 
+                                                        <li ng-show="permissoes[16]" ui-sref-active="active"><a ui-sref="controleDeNovoCadastro">Controle De Novos Cadastros</a></li>   
+                                                        <li ng-show="permissoes[3]" ui-sref-active="active"><a ui-sref="monitorTelevendas">Monitor Consultores internos</a></li>
+                                                        <li ng-show="permissoes[15]" ui-sref-active="active"><a ui-sref="monitorAtacado">Monitor Atacado</a></li>   
+                                                        <li ng-show="permissoes[32]" ui-sref-active="active"><a ui-sref="ordemDeCompra">OC - Cadastro</a></li>  
+                                                        <li ng-show="permissoes[34]" ui-sref-active="active"><a ui-sref="ordemDeCompraBC">OC - Gestão</a></li> 
+                                                        <li ng-show="permissoes[37]" ui-sref-active="active"><a ui-sref="usuariosHavan" >Usuários - Havan</a></li>  
+                                                    </ul>
+                                                </li> 
+                                                
+                                                <li ng-if="permissoes[19] == true"><a><i class="fa fa-cubes"></i> Compras <span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">   
+                                                        <li ng-show="permissoes[20]" ui-sref-active="active"><a ui-sref="compras" >Compras Geral</a></li>
+                                                    </ul>
+                                                </li>
+                                                
+                                                <li  ng-if="permissoes[13] == true"><a><i class="fa fa-shopping-cart"></i> E-commerce <span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">  
+                                                        <li ng-show="permissoes[4]" ui-sref-active="active"><a ui-sref="analiseMovimento">Analise Movimento</a></li> 
+                                                        <li ng-show="permissoes[14]" ui-sref-active="active"><a ui-sref="analiseProduto">Analise de Produto</a></li>
+                                                        <li ng-show="permissoes[29]" ui-sref-active="active"><a ui-sref="campanha">Campanhas</a></li>
+                                                        <li ng-show="permissoes[9]" ui-sref-active="active"><a ui-sref="evolucaoDiaria">Evolução Diária</a></li>
+                                                        <li ng-show="permissoes[1]" ui-sref-active="active"><a ui-sref="ecommerce">E-Commerce Geral</a></li>    
+                                                        <li ng-show="permissoes[31]" ui-sref-active="active"><a ui-sref="monitorEcommerce">Monitor E-commerce</a></li>                                        
+                                                    </ul>
+                                                </li> 
+                                                
+                                                <li ng-if="permissoes[25] == true"><a><i class="fa fa-users"></i> Fornecedores <span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">   
+                                                        <li ng-show="permissoes[26]" ui-sref-active="active"><a ui-sref="fornecedoresGeral" >Fornecedores Geral</a></li>
+                                                    </ul>
+                                                </li>
+                                                
+                                                <li  ng-if="permissoes[17] == true"><a><i class="fa fa-tachometer"></i>Geral<span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">  
+                                                        <li ng-show="permissoes[42]" ui-sref-active="active"><a ui-sref="analiseLogisticoHavan">Analise Logístico</a></li>   
+                                                        <li ng-show="permissoes[18]" ui-sref-active="active"><a ui-sref="visaoGeralFat">Faturamento Geral</a></li>  
+                                                        <li ng-show="permissoes[41]" ui-sref-active="active"><a ui-sref="vendasxestoqueAE">Vendas x Estoque</a></li>                                                                                         
+                                                    </ul>
+                                                </li>
+                                                
+                                                <li ng-if="permissoes[21] == true"><a><i class="fa fa-truck"></i> Logística <span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">   
+                                                        <li ng-show="permissoes[23]" ui-sref-active="active"><a ui-sref="agendamentoEntrega">Histórico</a></li> 
+                                                        <li ng-show="permissoes[22]" ui-sref-active="active"><a ui-sref="estoque">Estoque</a></li>                                                          
+                                                    </ul>
+                                                </li>
+                                                
+                                                <li ng-if="permissoes[11] == true"><a><i class="fa fa-home"></i> Lojas <span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">  
+                                                        <li ng-show="permissoes[27]" ui-sref-active="active"><a ui-sref="analiseEstoqueFinanceiro" >Analise Estoque e Financeiro</a></li> 
+                                                        <li ng-show="permissoes[10]" ui-sref-active="active"><a ui-sref="lojasAnaliseMovimento" >Analise Movimento Lojas</a></li>
+                                                        <li ng-show="permissoes[33]" ui-sref-active="active"><a ui-sref="dreLojas" >Dre Lojas</a></li>
+                                                        <li ng-show="permissoes[40]" ui-sref-active="active"><a ui-sref="estoqueReserva" >Estoque Reserva</a></li> 
+                                                        <li ng-show="permissoes[2]" ui-sref-active="active"><a ui-sref="lojas">Lojas Geral</a></li>
+                                                        <li ng-show="permissoes[7]" ui-sref-active="active"><a ui-sref="lojasGerentes"  >Lojas Gerentes</a></li>
+                                                        <li ng-show="permissoes[30]" ui-sref-active="active"><a ui-sref="cadastroMeta"  >Lojas Cadastros de Metas</a></li>
+                                                        <li ng-show="permissoes[44]" ui-sref-active="active"><a ui-sref="vendasEstoqueLoja">Vendas x Estoque</a></li>   
+                                                        <li ng-show="permissoes[6]" ui-sref-active="active"><a ui-sref="simulador" >Simulador</a></li> 
+                                                    </ul>
+                                                </li>
+                                                <!--
+                                                <li ng-if="permissoes[35] == true"><a><i class="fa fa-user"></i> Portal Havan <span class="fa fa-chevron-down"></span></a>
+                                                    <ul class="nav child_menu">  
+                                                        <li ng-show="permissoes[36]" ui-sref-active="active"><a ui-sref="cadastroProdutosHavan" >Cadastro Produtos</a></li>  
+                                                        <li ng-show="permissoes[38]" ui-sref-active="active"><a ui-sref="campanhaAtacado" >Campanhas</a></li> 
+                                                        <li ng-show="permissoes[39]" ui-sref-active="active"><a ui-sref="devolucaoAvaria" >Devoluções e Avarias</a></li> 
+                                                        <li ng-show="permissoes[42]" ui-sref-active="active"><a ui-sref="produtosLinhas" >Produtos em Linha</a></li>                                          
+                                                    </ul>
+                                                </li>
+                                                -->
+                                            </ul>                                                    
+                                      </div>
+                                </div>
+                                <!-- /sidebar menu -->
+                                <!-- /menu footer buttons -->
+                                <div class="sidebar-footer hidden-small">
+                                      <a data-toggle="tooltip" data-placement="top" title="Logout" href="LOGIN/login.html">
+                                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                                      </a>
+                                </div>
+                          </div>
+                    </div>
+                    <!-- top navigation -->
+                    <div class="top_nav">
+                          <div class="nav_menu">
+                                <nav>
+                                      <div class="nav toggle">
+                                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                                      </div>
+                                       <div align="center" class="nav toggle">
+                                       </div>
+
+                                      <ul class="nav navbar-nav navbar-right">
+                                          
+                                          <li class="">                                             
+                                              <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">                                                  
+                                                  {{ login.nome }} 
+                                                  <span class=" fa fa-angle-down"></span>
+                                              </a>
+                                              <ul  class="dropdown-menu dropdown-usermenu pull-right">
+                                                  <li><a href="LOGIN/login.html"><i class="fa fa-sign-out pull-right"></i> LogOut</a></li>
+                                              </ul>
+                                          </li>
+                                          
+                                          <li class="" >                                             
+                                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false" onclick="location.reload(true);">
+                                                <i class="fa fa-refresh"></i>                                              
+                                            </a>                                             
+                                          </li>
+                                      </ul>
+                                </nav>
+                          </div>
+                    </div>
+                    <!-- /top navigation -->
+                    <!-- page content -->
+                    <div class="right_col" role="main">
+                           
+                        <div class="row"  data-ng-controller="logoutBase">        
+                              
+                            <div>
+                                <script type="text/ng-template" id="warning-dialog.html">
+                                    <div class="modal-header">
+                                        <h3>Você está ocioso. Faça alguma coisa!</h3>
+                                    </div>
+                                    <div idle-countdown="countdown" ng-init="countdown=5" class="modal-body">
+                                        <uib-progressbar max="5" value="5" animate="false" class="progress active">Você será desconectado em {{countdown}} segundo(s).</uib-progressbar>
+                                    </div>                                    
+                                </script>
+                                <script type="text/ng-template" id="timedout-dialog.html">
+                                    <div class="modal-header">
+                                        <h3>Você esgotou o tempo!</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Você ficou ocioso por muito tempo. Você está sendo desconectado.</p>
+                                    </div>
+                                </script>   
+                                
+                            </div>   
+                            
+                            
+                                    
+                            <ui-view></ui-view>                                
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <footer >
+            <div class="pull-right">
+                @2018 Mixtel Distribuidora. Todos Direitos Reservados!
+            </div>
+            <div class="clearfix"></div>
+        </footer>  
+        
+        <!-- CALENDARIO -->
+        <script src='../js/angular/uicalendar/moment.js' type="text/javascript"></script>
+        
+        <!--JavaScript-->
+        <script src='../js/js/filtroPesquisa.js' type="text/javascript"></script>
+        <script src='../js/js/exportExcel.js' type="text/javascript"></script>    
+        <script src='LAYOUT/js/bootstrap-datepicker.js' type="text/javascript"></script>
+
+        <!-- UI-BOOTSTRAP -->
+        <script src='../js/js/ui-bootstrap-tpls-2.5.0.js' type="text/javascript"></script> 
+
+        <!-- Bootstrap -->
+        <script src='LAYOUT/js/bootstrap.min.js' type="text/javascript"></script>
+
+        <!-- NProgress -->
+         <script src='LAYOUT/js/nprogress.js' type="text/javascript"></script>
+         
+        <!-- Custom Theme Scripts -->
+        <script src='LAYOUT/js/custom.min.js' type="text/javascript"></script> 
+        
+        <!-- CALENDARIO -->
+        <script src='../js/angular/uicalendar/calendar.js' type="text/javascript"></script>
+        <script src='../js/angular/uicalendar/fullcalendar.min.js' type="text/javascript"></script>              
+        <script src='../js/angular/uicalendar/gcal.js' type="text/javascript"></script>
+  </body>
+</html>

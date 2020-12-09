@@ -1,0 +1,275 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="visaoGeralFaturamentoController">
+
+    <div role="main">
+        <!-- top tiles -->   
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-if="visaoGeralFat.clientesMesAtual.mes != ''" >
+            <h3 style="font-size: 13px;" > 
+                <b></b>Período: {{visaoGeralFat.clientesMesAtual.mes}}
+            </h3>
+            </div>
+        <div class="row tile_count">            
+             <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Faturamento Total </span>
+                <div class="count"><h2 ng-cloack>{{ visaoGeralFat.totalCanais.total | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.totalCanais.quantidade  }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{visaoGeralFat.totalCanais.ticketMedio| currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.totalCanais.positivados }} </i> Clientes</span></p>
+            </div>
+            
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Atacado</span>
+                <div class="count"><h2 ng-cloack>{{ visaoGeralFat.clientesMesAtual.totalAtacado | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.clientesMesAtual.quantidadeAtacado  }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{visaoGeralFat.clientesMesAtual.ticketAtacado| currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ percentAtacadoMes | currency: ' ' }} % </i> Percentual Faturamento</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.clientesMesAtual.positivadosAtacado }} </i> Clientes</span></p>
+                
+            </div>
+          
+            <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Ecommerce</span>
+                <div class="count"><h2 ng-cloack>{{ visaoGeralFat.clientesMesAtual.totalEcommerce | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.clientesMesAtual.quantidadeEcommerce  }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{visaoGeralFat.clientesMesAtual.ticketEcommerce | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ percentEcommerceMes | currency: ' ' }} % </i> Percentual Faturamento</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.clientesMesAtual.positivadosEcommerce}} </i> Clientes</span></p>
+                
+            </div>
+           <div  class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+                <span class="count_top"><i class="fa fa-user"></i> Lojas</span>
+                <div class="count"><h2 ng-cloack>{{ visaoGeralFat.clientesMesAtual.totalLoja | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.clientesMesAtual.quantidadeLoja  }} </i> Produtos</span>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{visaoGeralFat.clientesMesAtual.ticketLoja | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ percentLojaMes | currency: ' ' }} % </i> Percentual Faturamento</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ visaoGeralFat.clientesMesAtual.positivadosLoja }} </i> Clientes</span></p>
+               
+            </div><br>        
+          
+        </div> 
+        
+        <div class="row">
+                <div class="col-md-12 col-sm-20 col-xs-12">
+                    <div class="dashboard_graph">
+                        <div class="row x_title">
+                              <div class="col-md-6">
+                                <h3>Faturamento Geral - Canais <small></small></h3>
+                              </div>
+                              <div class="col-md-6">
+                                    <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 2px">                                     
+                                      <input type="number" style="width:125px;font-size: 13px; border-radius: 2px; text-align: center; margin-right: 10px; margin-top: 5px"   placeholder="{{ infoDate.dataAtual }}" min="{{infoDate.dataPassada}}" ng-model="infoDate.dataAtual" >
+                                      <button class="btn btn-round btn-default pull-right" type="button" ng-click="visaoGeralFaturamentoCanal()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>
+                                    </div>
+                              </div>       
+                        </div>                                
+                        
+                        <div class="row">  
+                            
+                            <div class="row"  style=" height: 300px; margin: 0 auto" ng-show="mostraFaturamento">
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - ATACADO ANO ANTERIOR  ========================= -->
+                                <div  class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style="width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Atacado - {{ visaoGeralFat.visaoFaturamentoCanal.anoPassado }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoAtacadoTotal | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoAtacadoQtde  }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoAtacadoTicket | currency: 'R$ '  }} </p>   
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Percentual Faturamento: </b> {{ percentAtacadoAnoPassado | currency: ' '  }}% </p> 
+                                        </div>
+                                    </div>
+                                </div>                           
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - ATACADO ANO ATUAL  ========================= -->
+                                <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style=" width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Atacado - {{ visaoGeralFat.visaoFaturamentoCanal.anoAtual }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualAtacadoTotal | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualAtacadoQtde  }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualAtacadoTicket | currency: 'R$ '   }} </p> 
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Percentual Faturamento: </b> {{ percentAtacadoAnoAtual | currency: ' '  }}% </p> 
+                                        </div>
+                                    </div>
+                                </div>                                 
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - ECOMMERCE  ANO ANTERIOR  ========================= -->
+                                <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style=" width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Ecommerce - {{  visaoGeralFat.visaoFaturamentoCanal.anoPassado }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoEcommerceTotal | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoEcommerceQtde  }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoEcommerceTicket | currency: 'R$ '   }} </p> 
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Percentual Faturamento: </b> {{ percentEcommerceAnoPassado | currency: ' '  }}% </p> 
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - ECOMMERCE ANO ATUAL  ========================= -->
+                                <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style=" width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Ecommerce - {{ visaoGeralFat.visaoFaturamentoCanal.anoAtual }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualEcommerceTotal | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualEcommerceQtde  }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualEcommerceTicket | currency: 'R$ '   }} </p>   
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Percentual Faturamento: </b> {{ percentEcommerceAnoAtual | currency: ' '  }}% </p> 
+                                        </div>
+                                    </div>
+                                </div>                                 
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - LOJA  ANO ANTERIOR  ========================= -->
+                                <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style=" width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Lojas - {{  visaoGeralFat.visaoFaturamentoCanal.anoPassado }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoLojaTotal | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoLojaQtde   }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoLojaTicket | currency: 'R$ '   }} </p>    
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Percentual Faturamento: </b> {{ percentLojaAnoPassado | currency: ' '  }}% </p> 
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - LOJA ANO ATUAL  ========================= -->
+                                <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style=" width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Lojas - {{ visaoGeralFat.visaoFaturamentoCanal.anoAtual }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualLojaTotal | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualLojaQtde }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualLojaTicket | currency: 'R$ '   }} </p> 
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Percentual Faturamento: </b> {{ percentLojaAnoAtual | currency: ' '  }}% </p> 
+                                        </div>
+                                    </div>
+                                </div>                                 
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - TOTAL  ANO ANTERIOR  ========================= -->
+                                <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style=" width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Total - {{  visaoGeralFat.visaoFaturamentoCanal.anoPassado }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoTotalFaturamento | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoQtdFaturamento }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoPassadoTicketFaturamento | currency: 'R$ '   }} </p>                                             
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                                <!-- ========================= TOTAL TICKET, QTDE E FATURAMENTO - TOTAL ANO ATUAL  ========================= -->
+                                <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                                           
+                                    <div  style=" width: 80%; margin: 0 auto">
+                                        <div class="tile-stats">
+                                            <div class="icon hidden-xs"><i style="width: 90%" class="fa fa-calculator"></i></div>
+                                            <center><h3 style="font-size: 25px; margin-top:10px" align="left">Total - {{ visaoGeralFat.visaoFaturamentoCanal.anoAtual }} </h3></center><br>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Total Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualTotalFaturamento | currency: 'R$ '   }} </p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Quantidade Faturamento: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualQtdFaturamento   }}</p>
+                                            <p style="font-size: 15px; margin-left: 5px" align="left"><b>Ticket Médio: </b> {{ visaoGeralFat.visaoFaturamentoCanal.anoAtualTicketFaturamento | currency: 'R$ '   }} </p>         
+                                        </div>
+                                    </div>
+                                </div> 
+                                
+                            </div>
+                            <!-- =========================  FATURAMENTO ATACADO - ANO PASSADO X ANO ATUAL  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcFaturamentoAtc" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  FATURAMENTO ANO PASSADO ATACADO  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcFaturamentoEc" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  FATURAMENTO ANO PASSADO ATACADO  =========================  -->
+                            <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">                            
+                                <div class="table-responsive">
+                                    <div id="hcFaturamentoLj" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  QUANTIDADE ATACADO =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcQtdeAnoAtualAtacado" ></div>
+                                </div>
+                            </div>                          
+                            
+                            <!-- =========================  FATURAMENTO ATACADO  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcFatAnoAtualAtacado" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  QUANTIDADE ECOMMERCE  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcQtdeAnoAtualEcommerce" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  FATURAMENTO ECOMMERCE  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcFatAnoAtualEcommerce" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  QUANTIDADE LOJA  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcQtdeAnoAtualLoja" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  FATURAMENTO LOJA  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcFatAnoAtualLoja" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  TICKET MÉDIO ATACADO  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcTicketAnoAtualAtacado" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- =========================  TICKET MÉDIO ECOMMERCE  =========================  -->
+                            <div class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">                            
+                                <div class="table-responsive">
+                                    <div id="hcTicketAnoAtualEcommerce" ></div>
+                                </div>
+                            </div>
+                            
+                            <!-- ========================col-xs-12 col-sm-12 col-md-5 col-lg-6==================  -->
+                            <div class="animated flipInY col-md-12 col-sm-20 col-xs-12">                            
+                                <div class="table-responsive">
+                                    <div id="hcTicketAnoAtualLoja" ></div>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                        </div>   
+                        <!-- FIM CLASS ROW -->    
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+        </div>
+    </div>
+</div>
+    
+

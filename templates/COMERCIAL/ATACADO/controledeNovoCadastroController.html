@@ -1,0 +1,780 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="controleDeNovoCadastroController">
+
+    <div role="main">
+     
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                          <div class="col-md-6">
+                            <h3>Controle de Novos Cadastros - Atacado <small></small></h3>
+                          </div>
+                          <div class="col-md-6">
+                                <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; border-radius: 2px">                                     
+                                  <input type="number" style="width:125px;font-size: 13px;  text-align: center; margin-right: 10px"   placeholder="{{ infoDate.dataAtual }}" min="{{infoDate.dataPassada}}" ng-model="infoDate.dataAtual" >
+                                  <button class="btn btn-round btn-default" type="button" ng-click="controleNovosCadastros()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>
+                                </div>
+                          </div>       
+                    </div> 
+                    
+                    <div class="row" >                        
+                        <!-- ========================= QUANTIDADE NOVOS CADASTROS =========================  -->
+                        <div class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div id="hcNovosCadastros" ng-click="controleNovosCadastrosPesquisaMes()" style="min-width: 310px; height: 400px; margin-top:50px"></div>
+                        </div><br>
+                        
+                        <hr ng-show="divCadastrosNovos" style="border-color: #aaa; box-sizing: border-box; width: 95%" /><p/><br>                     
+                        <h3 ng-show="divCadastrosNovos"><center>Mês Pesquisado - {{ cadastrosNovosPesquisaMes.pesquisa }}</center></h3>
+                        
+                         <nav ng-show="divCadastrosNovos">
+                              <ul class="pager">
+                                <li ><a ng-click="esconderLimitexQuantidade(QuantidadeInfo = true,LimiteInfo  = false)" href="" > Quantidade <i ng-class="{'fa fa-minus': QuantidadeInfo, 'fa fa-plus': !QuantidadeInfo}"></i></a></li>
+                                <li ><a ng-click="esconderLimitexQuantidade(LimiteInfo  = true, QuantidadeInfo = false)" href="" > Limite <i ng-class="{'fa fa-minus': LimiteInfo , 'fa fa-plus': !LimiteInfo}"></i></a></li>
+                              </ul>
+                        </nav><br>
+                        
+                        <!-- ========================= QUANTIDADE REGIÃO E ESTADO =========================  -->
+                        <div class="row" ng-show="QuantidadeInfo">
+                            <!-- ========================= QUANTIDADE CLIENTES NOVO POR REGIÃO =========================  -->
+                            <div   class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcQtdPorRegiao" style="min-width: 400px; max-width: 700px; height: 433px; margin: 0 auto"></div>                                       
+                            </div>
+                            
+                             <!-- ========================= QUANTIDADE CLIENTES NOVO POR ESTADO - MAPA GEOGRAFICO =========================  -->
+                            <div ng-show="divCadastrosNovos" class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcMapaQtdEstado"></div>                                       
+                            </div>                         
+                        </div>
+                        
+                        <!-- ========================= LIMITE REGIÃO E ESTADO =========================  -->
+                        <div class="row" ng-show="LimiteInfo">
+                            <!-- ========================= LIMITE CLIENTES NOVO POR REGIÃO =========================  -->
+                            <div   class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcLimitePorRegiao" style="min-width: 400px; max-width: 700px; height: 433px; margin: 0 auto"></div>                                       
+                            </div>                     
+                            
+                            <!-- ========================= LIMITE CLIENTES NOVO POR ESTADO - MAPA GEOGRAFICO =========================  -->
+                            <div ng-show="divCadastrosNovos" class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                                <div id="hcLimiteQtdEstado"></div>                                       
+                            </div> 
+                        </div>
+                     
+                        <!-- ========================= QUANTIDADE POR TIPO_CLIENTE =========================  -->
+                        <div ng-show="divCadastrosNovos" class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                            <div id="hcQtdTipoCliente"></div>                             
+                        </div> 
+                        
+                        <!-- ========================= CLIENTES NOVOS FORM PGTO =========================  -->
+                        <div ng-show="divCadastrosNovos" class="animated flipInY col-xs-12 col-sm-12 col-md-5 col-lg-6">
+                            <div id="hcFormPgto"></div>                             
+                        </div>  
+                        
+                        <!-- ========================= QUANTIDADE 1 FATURAMENTO X QUANTIDADE NOVOS CLIENTE P/ VENDEDOR =========================  -->
+                        <div ng-show="divCadastrosNovos" class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                            <div id="hcQtdeFatClieNovos"></div>                            
+                        </div>  
+                        
+                         <!-- ========================= TOTAL DA CARTEIRA POR VENDEDOR =========================  -->
+                        <div ng-show="divCadastrosNovos" class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                            <div id="hcTotCarteiraVendedor"></div>                            
+                        </div>  
+                    </div> 
+                    
+                    <!-- =========================  MODAL INFO CLIENTE POR VENDEDOR  =========================  -->          
+                    <a id="modalInfoCliente" data-toggle="modal" data-target="#myModalInfoCliente"></a>                     
+                    <div class="modal fade" id="myModalInfoCliente" role="dialog">
+                        <div class="modal-dialog"  style="width: 70%;  margin-top: 20px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                    
+                                    <div align="center">
+                                        <h4 class="modal-title"> Clientes Novos - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>                                    
+                                    </div><br>  
+                                    <p><b>Vendedor :</b> {{ infoVendedor.name  }}</p>
+                                    <p><b>Código :</b> {{ infoVendedor.codigoVendedor  }}</p>                                    
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row" ng-if="cadastrosNovosVendedor.infoClientesVendedor.validacao == true">
+                                        <h3><center>Clientes Novos</center> </h3>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>CNPJ</th>
+                                                    <th>Inscrição Estadual</th>
+                                                    <th>Nome</th>
+                                                    <th>Ramo de Atividade</th>
+                                                    <th>Endereço</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in cadastrosNovosVendedor.infoClientesVendedor.data">
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.cnpj }}</td>
+                                                    <td>{{ i.inscricao }}</td>
+                                                    <td>{{ i.nome }}</td>
+                                                    <td>{{ i.tipo }}</td>
+                                                    <td>{{ i.endereco }}</td>
+                                                </tr>
+                                            </tbody>                                    
+                                        </table>                                
+                                    </div>
+                                    
+                                     <div class="row" ng-if="cadastrosNovosVendedor.infoClientesFatClientes.validacao == true">
+                                        <h3><center>Clientes Novos e Primeiros Faturados</center></h3>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Código</th>
+                                                    <th>CNPJ</th>
+                                                    <th>Nome</th>
+                                                    <th>Quantidade</th>
+                                                    <th>Total</th>                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in cadastrosNovosVendedor.infoClientesFatClientes.data">
+                                                    <td><a href="" ng-click="infoProdutosFaturamento(i.codigo, i.cnpj, i.quantidade, i.y, i.name)"> <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.cnpj }}</td>
+                                                    <td>{{ i.name }}
+                                                    
+                                                        <div ng-if="i.codigo == infoCliente.codigo " ng-show="apresentaProdutos == true">
+                                                            <br>
+                                                               <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Código</th>
+                                                                            <th>Descrição</th>
+                                                                            <th>Número NF</th>
+                                                                            <th>Quantidade</th>
+                                                                            <th>Total</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr ng-repeat="i in infoProdutos.cadastroNovosClienteInfoProduto">
+                                                                            <td>{{ i.codigo }}</td>
+                                                                            <td>{{ i.descricao }}</td>
+                                                                            <td>{{ i.numeronf }}</td>
+                                                                            <td>{{ i.quantidade }}</td>
+                                                                            <td>{{ i.total | currency: 'R$ '}}</td>
+                                                                        </tr>
+                                                                        <tr style="background-color: #F0F0F0">
+                                                                            <td colspan="3" align='right'> <b>TOTAL:</b></td>
+                                                                            <td>{{  infoCliente.quantidade }}</td>
+                                                                            <td>{{  infoCliente.y | currency: 'R$ '}}</td>                                               
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>                                                     
+                                                            </div>
+                                                    </td>
+                                                    <td>{{ i.quantidade }}</td>
+                                                    <td>{{ i.y | currency: 'R$' }}</td>
+                                                </tr>
+                                            </tbody>                                    
+                                        </table>                                
+                                    </div>                                  
+                                    
+                                </div>                                
+                                <div class="modal-footer"> 
+                                    <div align="right">
+                                        <p ng-if="cadastrosNovosVendedor.infoClientesVendedor.validacao == true"><b>TOTAL CLIENTES NOVOS: </b> {{ cadastrosNovosVendedor.infoClientesVendedor.total }}</p>   
+                                        <p ng-if="cadastrosNovosVendedor.infoClientesFatClientes.validacao == true"><b>TOTAL CLIENTES E PRIMEIROS FATURADOS: </b> {{ cadastrosNovosVendedor.infoClientesFatClientes.total }}</p>  
+                                    </div>
+                                    <br>                                
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="sair()">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>      
+                    
+                    <!-- ========================= MODAL GRAFICO REGIÃO QUANTIDADE - INFO ESTADO, CIDADE E CLIENTE PESQUISADO =========================  -->          
+                    <a id="modalInfoRegiao" data-toggle="modal" data-target="#myModalInfoRegiao"></a>                     
+                    <div class="modal fade" id="myModalInfoRegiao" role="dialog">
+                        <div class="modal-dialog"  style="width: {{width}}%;  margin-top: 40px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>    
+                                    <div align="center">
+                                        <h4 class="modal-title" ng-show="apresentaEstado"> Informação Estado - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4> 
+                                        <h4 class="modal-title" ng-show="apresentaCidade"> Informação Cidade - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                        <h4 class="modal-title" ng-show="apresentaCliente"> Informação Cliente - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                    </div><br>  
+                                    <p><b>Região :</b> {{ infoRegiao.regiao  }}</p>
+                                    <p ng-show="apresentaCidade"><b>Estado :</b> {{ infoEst.estado  }}-{{ infoEst.estado }}</p>    
+                                    <p ng-show="apresentaCliente"><b>Estado :</b> {{ infoEst.estado  }}-{{ infoEst.estado }}</p>  
+                                    <p ng-show="apresentaCliente"><b>Cidade :</b> {{ infoCity.cidade  }}</p>  
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <div ng-show="apresentaEstado">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Estado</th>
+                                                    <th>UF</th>
+                                                    <th>Quantidade</th>
+                                                </tr>                                        
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in infoEstado.infoRegiaoEstado.data">
+                                                    <td><a href="" ng-click="infoEstadoCidade(i.estado, i.uf, i.quantidade)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.estado }}</td>
+                                                    <td>{{ i.uf }}</td>
+                                                    <td>{{ i.quantidade }}</td>
+                                                </tr>                                                
+                                            </tbody>
+                                        </table>                                    
+                                    </div>
+                                    
+                                    <div ng-show="apresentaCidade">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Cidade</th>
+                                                    <th>Quantidade</th>
+                                                </tr>
+                                            
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCidade.infoEstadoCidade.data">
+                                                    <td><a href="" ng-click="infoCidadeCliente(i.cidade, i.quantidade)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.quantidade }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div ng-show="apresentaCliente">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>CNPJ</th>
+                                                    <th>Inscrição Estadual</th>
+                                                    <th>Nome</th>
+                                                    <th>Telefone</th>
+                                                    <th>Endereço</th>
+                                                    <th>Número</th>
+                                                    <th>CEP</th>
+                                                    <th>Bairro</th>
+                                                    <th>Cidade</th>
+                                                    <th>Estado</th>                                               
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCliente.infoCidadeCliente">
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.cnpj }}</td>
+                                                    <td>{{ i.inscricao }}</td>
+                                                    <td>{{ i.nome }}</td>
+                                                    <td>{{ i.telefone }}</td>
+                                                    <td>{{ i.endereco }}</td>
+                                                    <td>{{ i.numero }}</td>
+                                                    <td>{{ i.cep }}</td>
+                                                    <td>{{ i.bairro }}</td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.estado }}</td>
+                                                </tr>
+                                            </tbody>
+                                        
+                                        
+                                        </table>
+                                    </div>
+                                    
+                                </div>                                
+                                <div class="modal-footer"> 
+                                    <div align="right">
+                                        <p><b>TOTAL REGIÃO: </b> {{ infoRegiao.total }}</p>     
+                                        <p ng-show="apresentaCidade"><b>TOTAL ESTADO: </b> {{ infoEst.total }}</p>
+                                        <p ng-show="apresentaCliente"><b>TOTAL CIDADE: </b> {{ infoCity.total }}</p> 
+                                    </div>
+                                    <br>  
+                                    <button class="btn buttonGeral" type="button" ng-if="apresentaCidade == true" ng-click="tableGrupo()" >Voltar</button>
+                                    <button class="btn buttonGeral" type="button" ng-if="apresentaCliente == true" ng-click="tableGrupo()" >Voltar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ========================= MODAL MAPA GEOGRAFICO QUANTIDADE - INFO CIDADE E CLIENTE =========================  -->          
+                    <a id="modalInfoEstado" data-toggle="modal" data-target="#myModalInfoEstado"></a>                     
+                    <div class="modal fade" id="myModalInfoEstado" role="dialog">
+                        <div class="modal-dialog"  style="width: {{width}}%;  margin-top: 40px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>    
+                                    <div align="center">
+                                        <h4 class="modal-title" ng-show="apresentaCidade"> Informação Cidade - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>                                         
+                                        <h4 class="modal-title" ng-show="apresentaCliente"> Informação Cliente - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                    </div><br>  
+                                    <p><b>Estado :</b> {{ infoMapa.estado }}</p>                                  
+                                    <p ng-show="apresentaCliente"><b>Cidade :</b> {{ infoCity.cidade  }}</p>  
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <div ng-show="apresentaCidade">
+                                        <table class="table">
+                                           <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Cidade</th>
+                                                    <th>Quantidade</th>
+                                                </tr>                                             
+                                            </thead> 
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCidade.infoEstadoCidade.data">
+                                                    <td><a href="" ng-click="infoCidadeClient(i.cidade, i.quantidade) "><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.quantidade }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div ng-show="apresentaCliente">
+                                        <table class="table">
+                                           <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>CNPJ</th>
+                                                    <th>Inscrição Estadual</th>
+                                                    <th>Nome</th>
+                                                    <th>Telefone</th>
+                                                    <th>Endereço</th>
+                                                    <th>Número</th>
+                                                    <th>CEP</th>
+                                                    <th>Bairro</th>
+                                                    <th>Cidade</th>
+                                                    <th>Estado</th>
+                                                </tr>                                             
+                                            </thead> 
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCliente.infoCidadeCliente">
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.cnpj }}</td>
+                                                    <td>{{ i.inscricao }}</td>
+                                                    <td>{{ i.nome }}</td>
+                                                    <td>{{ i.telefone }}</td>
+                                                    <td>{{ i.endereco }}</td>
+                                                    <td>{{ i.numero }}</td>
+                                                    <td>{{ i.cep }}</td>
+                                                    <td>{{ i.bairro }}</td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.estado }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 
+                                </div>                                
+                                <div class="modal-footer"> 
+                                    <div align="right">                                             
+                                        <p><b>TOTAL ESTADO: </b> {{ infoMapa.total }}</p>
+                                        <p ng-show="apresentaCliente"><b>TOTAL CIDADE: </b> {{ infoCity.total }}</p> 
+                                    </div>
+                                    <br>                                     
+                                    <button class="btn buttonGeral" type="button" ng-if="apresentaCliente == true" ng-click="tableGrupo()" >Voltar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>      
+                    
+                    <!-- ========================= MODAL GRAFICO REGIÃO LIMITE - INFO ESTADO, CIDADE E CLIENTE PESQUISADO =========================  -->          
+                    <a id="modalInfoRegion" data-toggle="modal" data-target="#myModalInfoRegion"></a>                     
+                    <div class="modal fade" id="myModalInfoRegion" role="dialog">
+                        <div class="modal-dialog"  style="width: {{width}}%;  margin-top: 40px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>    
+                                    <div align="center">
+                                         <h4 class="modal-title" ng-show="apresentaEstado"> Informação Estado - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4> 
+                                        <h4 class="modal-title" ng-show="apresentaCidade"> Informação Cidade - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                        <h4 class="modal-title" ng-show="apresentaCliente"> Informação Cliente - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>    
+                                    </div><br>  
+                                     <p><b>Região :</b> {{ infoRegiao.regiao  }}</p>
+                                    <p ng-show="apresentaCidade"><b>Estado :</b> {{ infoEst.estado  }}</p>    
+                                    <p ng-show="apresentaCliente"><b>Estado :</b> {{ infoEst.estado  }}</p>  
+                                    <p ng-show="apresentaCliente"><b>Cidade :</b> {{ infoCity.cidade  }}</p>  
+                                </div>
+                                <div class="modal-body">  
+                                    
+                                    <div ng-show="apresentaEstado">
+                                        <div ng-show="apresentaEstado">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Estado</th>
+                                                        <th>UF</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Limite</th>
+                                                    </tr>                                        
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="i in infoEstado.infoRegiaoEstadoLimite.data">
+                                                        <td><a href="" ng-click="infoEstadoCidadeLimite(i.estado, i.uf, i.limite)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>{{ i.estado }}</td>
+                                                        <td>{{ i.uf }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.limite | currency: 'R$ '}}</td>
+                                                    </tr>                                                
+                                                </tbody>
+                                            </table>                                    
+                                        </div>
+                                    
+                                    </div>
+                                    
+                                    <div ng-show="apresentaCidade">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Cidade</th>
+                                                    <th>Quantidade</th>
+                                                    <th>Limite</th>
+                                                </tr>
+                                            
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCidade.infoCidadeClienteLimite.data">
+                                                    <td><a href="" ng-click="infoCidadeClienteLimite(i.cidade, i.limite)"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.quantidade }}</td>
+                                                    <td>{{ i.limite | currency: 'R$ ' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div ng-show="apresentaCliente">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>CNPJ</th>
+                                                    <th>Inscrição Estadual</th>
+                                                    <th>Nome</th>
+                                                    <th>Telefone</th>
+                                                    <th>Endereço</th>
+                                                    <th>Número</th>
+                                                    <th>CEP</th>
+                                                    <th>Bairro</th>
+                                                    <th>Cidade</th>
+                                                    <th>Estado</th>
+                                                    <th>Limite</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCliente.infoCidadeClienteLimite">
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.cnpj }}</td>
+                                                    <td>{{ i.inscricao }}</td>
+                                                    <td>{{ i.nome }}</td>
+                                                    <td>{{ i.telefone }}</td>
+                                                    <td>{{ i.endereco }}</td>
+                                                    <td>{{ i.numero }}</td>
+                                                    <td>{{ i.cep }}</td>
+                                                    <td>{{ i.bairro }}</td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.estado }}</td>
+                                                    <td>{{ i.limite | currency: 'R$ ' }}</td>
+                                                </tr>
+                                            </tbody>                                       
+                                        </table>
+                                    </div>
+                                    
+                                </div>                                
+                                <div class="modal-footer"> 
+                                    <div align="right">                                             
+                                        <p><b>TOTAL REGIÃO: </b> {{ infoRegiao.total | currency: 'R$ '}}</p>     
+                                        <p ng-show="apresentaCidade"><b>TOTAL ESTADO: </b> {{ infoEst.total | currency: 'R$ '  }}</p>
+                                        <p ng-show="apresentaCliente"><b>TOTAL CIDADE: </b> {{ infoCity.total | currency: 'R$ ' }}</p> 
+                                    </div>
+                                    <br>                                     
+                                    <button class="btn buttonGeral" type="button" ng-if="apresentaCidade == true" ng-click="tableGrupo()" >Voltar</button>
+                                    <button class="btn buttonGeral" type="button" ng-if="apresentaCliente == true" ng-click="tableGrupo()" >Voltar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>  
+                    
+                    <!-- ========================= MODAL MAPA GEOGRAFICO LIMITE - INFO CIDADE E CLIENTE =========================  -->          
+                    <a id="modalInfoState" data-toggle="modal" data-target="#myModalInfoState"></a>                     
+                    <div class="modal fade" id="myModalInfoState" role="dialog">
+                        <div class="modal-dialog"  style="width: {{width}}%;  margin-top: 40px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>    
+                                    <div align="center">
+                                        <h4 class="modal-title" ng-show="apresentaCidade"> Informação Cidade - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>                                         
+                                        <h4 class="modal-title" ng-show="apresentaCliente"> Informação Cliente - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                    </div><br>  
+                                    <p><b>Estado :</b> {{ infoMapa.estado }}</p>                                  
+                                    <p ng-show="apresentaCliente"><b>Cidade :</b> {{ infoCity.cidade  }}</p>  
+                                </div>
+                                <div class="modal-body">
+                                    
+                                    <div ng-show="apresentaCidade">
+                                        <table class="table">
+                                           <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Cidade</th>
+                                                    <th>Quantidade</th>
+                                                    <th>Limite</th>
+                                                </tr>                                             
+                                            </thead> 
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCidade.infoEstadoLimite.data">
+                                                    <td><a href="" ng-click="infoCityCliente(i.cidade, i.limite) "><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.quantidade }}</td>
+                                                    <td>{{ i.limite  | currency: 'R$ '}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div ng-show="apresentaCliente">
+                                        <table class="table">
+                                           <thead>
+                                                <tr>
+                                                    <th>Código</th>
+                                                    <th>CNPJ</th>
+                                                    <th>Inscrição Estadual</th>
+                                                    <th>Nome</th>
+                                                    <th>Telefone</th>
+                                                    <th>Endereço</th>
+                                                    <th>Número</th>
+                                                    <th>CEP</th>
+                                                    <th>Bairro</th>
+                                                    <th>Cidade</th>
+                                                    <th>Estado</th>
+                                                    <th>Limite</th> 
+                                                </tr>                                             
+                                            </thead> 
+                                            <tbody>
+                                                <tr ng-repeat="i in infoCliente.infoClienteLimite">
+                                                    <td>{{ i.codigo }}</td>
+                                                    <td>{{ i.cnpj }}</td>
+                                                    <td>{{ i.inscricao }}</td>
+                                                    <td>{{ i.nome }}</td>
+                                                    <td>{{ i.telefone }}</td>
+                                                    <td>{{ i.endereco }}</td>
+                                                    <td>{{ i.numero }}</td>
+                                                    <td>{{ i.cep }}</td>
+                                                    <td>{{ i.bairro }}</td>
+                                                    <td>{{ i.cidade }}</td>
+                                                    <td>{{ i.estado }}</td>
+                                                    <td>{{ i.limite | currency: 'R$ ' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                 
+                                </div>                                
+                                <div class="modal-footer"> 
+                                    <div align="right">                                             
+                                        <p><b>TOTAL ESTADO: </b> {{ infoMapa.total | currency: 'R$ '}}</p>
+                                        <p ng-show="apresentaCliente"><b>TOTAL CIDADE: </b> {{ infoCity.total | currency: 'R$ ' }}</p> 
+                                    </div>
+                                    <br>                                     
+                                    <button class="btn buttonGeral" type="button" ng-if="apresentaCliente == true" ng-click="tableGrupo()" >Voltar</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                </div>
+                          </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ========================= MODAL GRAFICO MULTIMARCAS - LISTAGEM DE CLIENTES =========================  --> 
+                    <a id="modalInfoMultiMarcas" data-toggle="modal" data-target="#myModalInfoMultiMarcas"></a>                     
+                    <div class="modal fade" id="myModalInfoMultiMarcas" role="dialog">
+                        <div class="modal-dialog"  style="width: 95%;  margin-top: 15px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>    
+                                    <div align="center">                                                                              
+                                        <h4 class="modal-title" > Informação Cliente - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                    </div><br>  
+                                    <p><b>Tipo :</b> {{ infoMultimarcas.nome }}</p>                                 
+                                   
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>CNPJ</th>
+                                                <th>Inscrição Estadual</th>
+                                                <th>Nome</th>
+                                                <th>Telefone</th>
+                                                <th>Endereço</th>
+                                                <th>Número</th>
+                                                <th>CEP</th>
+                                                <th>Bairro</th>
+                                                <th>Cidade</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in infoMultiMarcaClientes.infoMarcaCliente">
+                                                <td>{{ i.codigo }}</td>
+                                                <td>{{ i.cnpj }}</td>
+                                                <td>{{ i.inscricao }}</td>
+                                                <td>{{ i.nome }}</td>
+                                                <td>{{ i.telefone }}</td>
+                                                <td>{{ i.endereco }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.cep }}</td>
+                                                <td>{{ i.bairro }}</td>
+                                                <td>{{ i.cidade }}</td>
+                                                <td>{{ i.estado }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>   
+                                <div class="modal-footer"> 
+                                    <div align="right">                                             
+                                        <p><b>TOTAL: </b> {{ infoMultimarcas.total }}</p>                  
+                                    </div>
+                                    <br>                                    
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                        </div>
+                    </div> 
+                </div>  
+                    
+                    <!-- ========================= MODAL GRAFICO MULTIMARCAS - LISTAGEM DE CLIENTES =========================  --> 
+                    <a id="modalInfoFormPgto" data-toggle="modal" data-target="#myModalInfoFormPgto"></a>                     
+                    <div class="modal fade" id="myModalInfoFormPgto" role="dialog">
+                        <div class="modal-dialog"  style="width: 95%;  margin-top: 15px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>    
+                                    <div align="center">                                                                              
+                                        <h4 class="modal-title" > Informação Cliente - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                    </div><br>  
+                                    <p><b>Forma de Pagamento :</b> {{ infoFormPgto.nome }}</p>                                 
+                                   
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>CNPJ</th>
+                                                <th>Inscrição Estadual</th>
+                                                <th>Nome</th>
+                                                <th>Telefone</th>
+                                                <th>Endereço</th>
+                                                <th>Número</th>
+                                                <th>CEP</th>
+                                                <th>Bairro</th>
+                                                <th>Cidade</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat=" i in infoFormePagamento.infoFormPgtoCliente">
+                                                <td>{{ i.codigo }}</td>
+                                                <td>{{ i.cnpj }}</td>
+                                                <td>{{ i.inscricao }}</td>
+                                                <td>{{ i.nome }}</td>
+                                                <td>{{ i.telefone }}</td>
+                                                <td>{{ i.endereco }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.cep }}</td>
+                                                <td>{{ i.bairro }}</td>
+                                                <td>{{ i.cidade }}</td>
+                                                <td>{{ i.estado }}</td>
+                                            </tr>
+                                        </tbody>
+                                    
+                                    </table>
+                                </div>   
+                                <div class="modal-footer"> 
+                                    <div align="right">                                             
+                                        <p><b>TOTAL: </b> {{ infoFormPgto.total }}</p>                  
+                                    </div>
+                                    <br>                                    
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                        </div>
+                    </div> 
+                </div>  
+                    
+                    <!-- ========================= MODAL GRAFICO TOTAL LIMITE VENDEDOR - LISTAGEM DE CLIENTES =========================  --> 
+                    <a id="modalInfoVendLimite" data-toggle="modal" data-target="#myModalInfoVendLimite"></a>                     
+                    <div class="modal fade" id="myModalInfoVendLimite" role="dialog">
+                        <div class="modal-dialog"  style="width: 95%;  margin-top: 15px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                          <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>    
+                                    <div align="center">                                                                              
+                                        <h4 class="modal-title" > Informação Cliente - {{ cadastrosNovosPesquisaMes.pesquisa }}</h4>   
+                                    </div><br>  
+                                    <p><b>Forma de Pagamento :</b> {{ infoClientVend.nome }}</p>                                 
+                                   
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>CNPJ</th>
+                                                <th>Inscrição Estadual</th>
+                                                <th>Nome</th>
+                                                <th>Telefone</th>
+                                                <th>Endereço</th>
+                                                <th>Número</th>
+                                                <th>CEP</th>
+                                                <th>Bairro</th>
+                                                <th>Cidade</th>
+                                                <th>Estado</th>
+                                                <th>Limite</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat=" i in infoVendCliente.infoLimiteCliente">
+                                                <td>{{ i.codigo }}</td>
+                                                <td>{{ i.cnpj }}</td>
+                                                <td>{{ i.inscricao }}</td>
+                                                <td>{{ i.nome }}</td>
+                                                <td>{{ i.telefone }}</td>
+                                                <td>{{ i.endereco }}</td>
+                                                <td>{{ i.numero }}</td>
+                                                <td>{{ i.cep }}</td>
+                                                <td>{{ i.bairro }}</td>
+                                                <td>{{ i.cidade }}</td>
+                                                <td>{{ i.estado }}</td>
+                                                <td>{{ i.limite | currency: 'R$ ' }}</td>
+                                            </tr>
+                                        </tbody>                                    
+                                    </table>
+                                </div>   
+                                <div class="modal-footer"> 
+                                    <div align="right">                                             
+                                        <p><b>TOTAL: </b> {{ infoClientVend.total | currency: 'R$ '}}</p>                  
+                                    </div>
+                                    <br>                                    
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                        </div>
+                    </div> 
+                </div>  
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>    
+

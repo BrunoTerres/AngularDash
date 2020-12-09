@@ -1,0 +1,395 @@
+﻿<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="lojasGerentesController">    
+    <div role="main">          
+        <div class="row tile_count" ng-show="divGeral">              
+            <!-- ========================= MENU FATURAMENTO TOTAL GERAL  =========================  -->         
+            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" ng-repeat="rEmp in visLjfGerentes.visaogeralporloja" ng-show="rEmp.show">   
+		      
+                <span ng-if="rEmp.empresa == '102'" class="count_top"><i class="fa fa-user"></i> Itajaí Quiosque </span>
+                <span ng-if="rEmp.empresa == '107'" class="count_top"><i class="fa fa-user"></i> Itajaí Loja </span>
+                <span ng-if="rEmp.empresa == '106'" class="count_top"><i class="fa fa-user"></i> Balneário </span>
+                <span ng-if="rEmp.empresa == '103'" class="count_top"><i class="fa fa-user"></i> Joinville </span>
+                <span ng-if="rEmp.empresa == '104'" class="count_top"><i class="fa fa-user"></i> Blumenau </span>
+                <span ng-if="rEmp.empresa == '105'" class="count_top"><i class="fa fa-user"></i> São José </span>
+                <span ng-if="rEmp.empresa == '201'" class="count_top"><i class="fa fa-user"></i> Curitiba - Palladium </span>
+                <span ng-if="rEmp.empresa == '202'" class="count_top"><i class="fa fa-user"></i> Curitiba - Jockey Plaza </span>
+                <div class="count"><h2 ng-cloack>{{ rEmp.valor | currency: 'R$ ' }}</h2></div>
+                <span class="count_bottom"><i ng-cloack class="green">{{ rEmp.produto }} </i> Produtos</span>
+                <p><span class="count_bottom"><i ng-cloack class="green">{{ rEmp.markDown }} </i> Markdown</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rEmp.valor / rEmp.produto | currency: 'R$ ' }} </i> Ticket Médio</span></p>
+                <p><span ng-cloack class="count_bottom"><i ng-cloack class="green">{{ rEmp.cliente }} </i> Clientes</span></p>
+            </div>             
+        </div>        
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Analise das Vendas - Lojas Físicas Gerentes <small></small></h3>
+                        </div>   
+                        
+                        <div class="col-md-12 col-sm-20 col-xs-12">
+                            <div class="pull-right " style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">   
+                                
+                                <div class="pull-left"  style="margin-bottom: 2px; margin-top: 2px; margin-left: 2px; margin-right: 10px;"  ng-if="showEmpresa == true">
+                                    <select
+                                            class="form-control"
+                                            name="mySelect"
+                                            id="mySelect1"
+                                            ng-options="option.name for option in selecaoEmpresa.availableOptions track by option.id"
+                                            ng-change="filterEmpresa(selecaoEmpresa.selectedOption)"
+                                            ng-model="selecaoEmpresa.selectedOption">
+                                    </select>
+                                </div> 
+                                <div class="pull-right"  style="margin: auto" >
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                        <button class="btn btn-round btn-default pull-right" type="button" ng-click="ljfGerentes()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>
+                                </div>                                
+                            </div>
+                        </div>       
+                    </div> 
+                    <div ng-show="divGeral">
+
+                        <nav ng-show="visLjfGerentes.error == false">
+                        <ul class="pager">
+                            <li ><a ng-click="metaVendedor = !metaVendedor" href="" >Metas Vendedores <i ng-class="{'fa fa-minus': metaVendedor, 'fa fa-plus': !metaVendedor  }"></i></a></li>
+                            <li ><a ng-click="vendasPorVendedor = !vendasPorVendedor" href="" >Vendas Por Vendedor <i ng-class="{'fa fa-minus': vendasPorVendedor, 'fa fa-plus': !vendasPorVendedor  }"></i></a></li>
+                            <li ><a ng-click="vendasPorFabricante = !vendasPorFabricante" href="" >Vendas Por Fabricante <i ng-class="{'fa fa-minus': vendasPorFabricante, 'fa fa-plus': !vendasPorFabricante  }"></i></a></li>
+                            <li ><a ng-click="vendasPorGrupo = !vendasPorGrupo" href="">Vendas Por Grupo <i ng-class="{'fa fa-minus': vendasPorGrupo, 'fa fa-plus': !vendasPorGrupo  }"></i></a></li>                          
+                        </ul>
+                        </nav>  
+                    
+                        <!-- ========================= METAS POR VENDEDOR =========================  -->
+                        <div ng-show="metaVendedor" align='center'>
+                            <div id="hcMetaVendedor" ng-click="ljfMetaVendedor()"></div>
+                        </div>                            
+                        
+                        <!-- ========================= VENDAS POR VENDEDOR  =========================  -->
+                        <div ng-show="vendasPorVendedor">
+                            <div id="hcVendasPorVendedor" ng-click="ljfVendedorGrupo()"></div>
+                        </div>
+                        
+                        <!-- ========================= VENDAS POR FABRICANTE  =========================  -->
+                        <div ng-show="vendasPorFabricante">
+                            <div id="hcVendasPorFabricante" ng-click="ljfFornecedorGrupo()"></div>
+                        </div><p/>   
+                        
+                        <!-- ========================= VENDAS POR GRUPO  =========================  -->
+                        <div  ng-show="vendasPorGrupo" align="center">
+                            <div id="hcVendasPorGrupo" ng-click="ljfGrupoFornecedor()"></div>
+                        </div>
+                        
+                        <!-- ========================= MODAL META POR SEGMENTO  =========================  -->                 
+                        <a id="modalMeta" data-toggle="modal" data-target="#myModalMeta"></a>                     
+                        <div class="modal fade" id="myModalMeta" role="dialog">
+                            <div class="modal-dialog" style="width: 45%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                            <div class="modal-content">
+                                
+                                    <div class="modal-body">
+                                        <!-- ========================= METAS POR VENDEDOR =========================  -->
+                                        <div ng-show="metaSegmento" align='center'>
+                                            <div id="hcMetaSegmentoVendedor"></div>
+                                        </div>                           
+                                    </div>
+                                    <div class="modal-footer">   
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ========================= MODAL VENDEDORES PESQUISA FORNECEDORES  =========================  -->                 
+                        <a id="modalVendedor" data-toggle="modal" data-target="#myModal"></a>                     
+                        <div class="modal fade" id="myModal" role="dialog">
+                            <div class="modal-dialog" style="width: 45%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                            <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>   
+                                        
+                                        <div align="center">
+                                            <h4 ng-if="vendedorGrupo == true" class="modal-title"> Venda por Grupo</h4>
+                                            <h4 ng-if="vendedorFornecedor == true" class="modal-title"> Venda por Fornecedor</h4>
+                                        </div>                                     
+                                        <br>
+                                        <b>VENDEDOR(A) :</b> {{ infoFuncionario.name}}   
+                                    </div>
+                                    <div class="modal-body">
+                                        <div ng-if="vendedorGrupo == true">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Valor da Venda</th>                                                
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesVendedorGrupo.ljfVendedorGrupo">
+                                                    <tr>
+                                                        <td><a href="" ng-click="ljfVendedorFornecedor(i.codigoGrupo, i.name, i.y)" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>{{ i.name  }}</td>
+                                                        <td>{{ i.quantidade  }}</td>
+                                                        <td>{{ i.y | currency: 'R$ '  }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>                                 
+                                    
+                                        
+                                        <div ng-if="vendedorFornecedor == true">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Valor da Venda</th>                                                      
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesVendedorFornecedor.ljfVendedorFornecedor">
+                                                    <tr>
+                                                        <td><a href="" ng-click="ljfVendedorProdutos(i.codigoFornecedor, i.name, i.showDiv = true)" ><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>
+                                                            {{i.name}}                                                       
+                                                            <div ng-if="i.codigoFornecedor == codigoFornecedor  ">                                                            
+                                                                <br> 
+                                                                <table class="table" ng-show="i.showDiv == true">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Código</th>
+                                                                            <th>Nome</th>
+                                                                            <th>Quantidade</th>
+                                                                            <th>Valor da Venda</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody ng-repeat="i in visLjfGerentesVendedorProduto.ljfVendedoresProdutos">
+                                                                        <tr>
+                                                                            <td>{{ i.codigoProduto}}</td>
+                                                                            <td>{{i.name}}</td>
+                                                                            <td>{{ i.quantidade }}</td>
+                                                                            <td>{{ i.y | currency: 'R$ '}}</td>
+                                                                        </tr>                                            
+                                                                    </tbody>
+                                                                </table>                                                                           
+                                                            </div>
+                                                        </td>
+                                                        <td>{{i.y | currency: 'R$ '}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>                                                                         
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">    
+                                        <div align="right">
+                                            <b ng-if="vendedorGrupo == true">TOTAL VENDIDO: {{infoFuncionario.y | currency: 'R$ '}}</b> 
+                                            <b ng-if="vendedorFornecedor == true">TOTAL VENDIDO: {{infoVendedorFornecedor.y | currency: 'R$ '}}</b> 
+                                        
+                                        </div>                                                      
+                                        <br>
+                                        <button class="btn buttonGeral" type="button" ng-if="vendedorFornecedor == true" ng-click="tableGrupo()" >Voltar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ========================= MODAL FORNECEDORES PESQUISA PRODUTO -> VENDEDORES  =========================  -->                                   
+                        <a id="modalFornecedor" data-toggle="modal" data-target="#myModalFornecedor"></a>                     
+                        <div class="modal fade" id="myModalFornecedor" role="dialog">
+                            <div class="modal-dialog" style="width: 50%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                            <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                        
+                                        <div align="center">
+                                            <h4 class="modal-title" ng-if="fornecedorGrupo == true"> Venda Por Grupo</h4>
+                                            <h4 class="modal-title" ng-if="fornecedorVendedor == true"> Venda Por Vendedor</h4>
+                                            <h4 class="modal-title" ng-if="fornecedorProduto == true"> Venda Por Produto</h4>
+                                        </div>                                 
+                                        <p><b>FORNECEDOR(A) :</b> {{ infoFornecedor.name}}    </p>
+                                        <p ng-if="fornecedorVendedor == true"><b>GRUPO :</b> {{ infoFornecedorGrupo.name }} </p> 
+                                        <p ng-if="fornecedorProduto == true"><b>GRUPO :</b> {{ infoFornecedorGrupo.name }} </p> 
+                                        <p ng-if="fornecedorProduto == true"><b>VENDEDOR(A) :</b> {{ infoFornecedorVendedor.name }} </p> 
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                        <div ng-if="fornecedorGrupo == true">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Valor da Venda</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesFornecedorGrupo.ljfFornecedorGrupo">
+                                                    <tr>
+                                                        <td><a href="" ng-click="ljfFornecedorVendedor(i.codigoGrupo, i.name, i.y)"> <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>{{ i.name }}</td>
+                                                        <td>{{ i.y  | currency: 'R$ '}}</td>                                                
+                                                    </tr>                                            
+                                                </tbody>                                        
+                                            </table>
+                                        </div>
+                                        
+                                        <div ng-if="fornecedorVendedor == true">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Valor da Venda</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesFornecedorVendedores.ljfFornecedorVendedor" >
+                                                    <tr>
+                                                        <td><a href="" ng-click="lfFornecedorProduto(i.codigoVendedor,i.name,i.y)" > <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>{{ i.name }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.y | currency: 'R$ ' }}</td>
+                                                    </tr>                                            
+                                                </tbody>                                        
+                                            </table>
+                                        </div>                                    
+                                        
+                                        <div ng-if="fornecedorProduto == true">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Código</th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Valor da Venda</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesFornecedorProduto.ljfFornecedorProduto">
+                                                    <tr>
+                                                        <td>{{ i.codigoProduto }}</td>
+                                                        <td>{{ i.name }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.y | currency: 'R$ ' }}</td>
+                                                    </tr>                                            
+                                                </tbody>                                        
+                                            </table>
+                                        </div>
+                                        
+                                    </div>                                
+                                    <div class="modal-footer"> 
+                                        <div align="right">
+                                            <b ng-if="fornecedorGrupo == true">TOTAL VENDIDO: {{infoFornecedor.y | currency: 'R$ '}}</b>
+                                            <b ng-if="fornecedorVendedor == true">TOTAL VENDIDO: {{infoFornecedorGrupo.y | currency: 'R$ '}}</b>
+                                            <b ng-if="fornecedorProduto == true">TOTAL VENDIDO: {{infoFornecedorVendedor.y | currency: 'R$ '}}</b>    
+                                        </div>
+                                        <br>
+                                        <button class="btn buttonGeral" type="button" ng-if="fornecedorVendedor == true" ng-click="tableGrupo()" >Voltar</button>
+                                        <button class="btn buttonGeral" type="button" ng-if="fornecedorProduto == true" ng-click="tableGrupo()" >Voltar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>
+                    
+                        <!-- ========================= MODAL FORNECEDORES PESQUISA GRUPO -> FORNECEDORES -> PRODUTOS -> VENDEDORES  =========================  -->          
+                        <a id="modalGrupo" data-toggle="modal" data-target="#myModalGrupo"></a>                     
+                        <div class="modal fade" id="myModalGrupo" role="dialog">
+                            <div class="modal-dialog"  style="width: 45%;  margin-top: 100px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                            <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>     
+                                        
+                                        <div align="center">
+                                            <h4 class="modal-title" ng-if="grupoFornecedor == true"> Venda por Fornecedor</h4>
+                                            <h4 class="modal-title" ng-if="grupoVendedor == true"> Venda por Vendedor</h4>
+                                            <h4 class="modal-title" ng-if="grupoProduto  == true"> Venda por Produto</h4> 
+                                        </div>   
+                                        <p><b>GRUPO :</b> {{ infoGrupo.name  }}</p>
+                                        <p ng-if="grupoVendedor == true"><b>FORNECEDOR(A) :</b> {{ infoFornecedorGrupo.name  }}</p>
+                                        <p ng-if="grupoProduto  == true"><b>FORNECEDOR(A) :</b> {{ infoFornecedorGrupo.name  }}</p>
+                                        <p ng-if="grupoProduto  == true"><b>VENDEDOR(A) :</b> {{ infoVendedorGrupo.name  }}</p>
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                        <div ng-if="grupoFornecedor == true">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Valor da Venda</th>
+                                                    </tr>                                              
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesGrupoFornecedor.ljfGrupoFornecedor">
+                                                    <tr>
+                                                        <td>
+                                                            <a href="" ng-click="ljfGruposVendedores(i.codigoFornecedor, i.name, i.y)" > <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+                                                        </td>
+                                                        <td>{{ i.name }}</td>
+                                                        <td>{{ i.y | currency: 'R$ '}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div ng-if="grupoVendedor == true">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Valor da Venda</th> 
+                                                    </tr>                                      
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesGrupoVendedor.ljfGrupoVendedor" >
+                                                    <tr>
+                                                        <td><a href="" ng-click="ljfGrupoProduto(i.codigoVendedor, i.name, i.y)" > <span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                                                        <td>{{ i.name }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.y | currency: 'R$ '}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <div ng-if="grupoProduto  == true">
+                                            <table class="table">
+                                                <thead>  
+                                                    <tr>
+                                                        <th>Nome</th>
+                                                        <th>Quantidade</th>
+                                                        <th>Valor da Venda</th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody ng-repeat="i in visLjfGerentesGrupoProduto.ljfGrupoProduto" >
+                                                    <tr>                                                    
+                                                        <td>{{ i.name }}</td>
+                                                        <td>{{ i.quantidade }}</td>
+                                                        <td>{{ i.y | currency: 'R$ '}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                    </div>                                
+                                    <div class="modal-footer"> 
+                                        <div align="right">
+                                            <p ng-if="grupoFornecedor == true"><b>TOTAL VENDIDO: </b> {{ infoGrupo.y | currency: 'R$ ' }}</p>
+                                            <p ng-if="grupoVendedor == true"><b>TOTAL VENDIDO: </b> {{ infoFornecedorGrupo.y | currency: 'R$ ' }}</p>
+                                            <p ng-if="grupoProduto  == true" ><b>TOTAL VENDIDO: </b> {{ infoVendedorGrupo.y | currency: 'R$ '  }}</p>
+                                        </div>
+                                        <br>
+                                        <button class="btn buttonGeral" type="button" ng-if="grupoVendedor == true" ng-click="tableGrupo()" >Voltar</button>
+                                        <button class="btn buttonGeral" type="button" ng-if="grupoProduto  == true" ng-click="tableGrupo()" >Voltar</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>   
+                    
+                    </div> 
+                </div>     
+                <div class="clearfix"></div>
+            </div>
+        </div>   
+    </div>   
+</div>  

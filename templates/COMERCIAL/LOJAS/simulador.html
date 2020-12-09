@@ -1,0 +1,359 @@
+<div class="col-md-12 col-sm-12 col-xs-18 table-responsive " ng-controller="simuladorController">    
+     
+    <div role="main">   
+      <div class="row">
+                    <div class="col-md-12 col-sm-20 col-xs-12">
+                        <div class="dashboard_graph">
+                            <div class="row x_title">
+                                <div class="col-md-6">
+                                    <h3>Simulador <small></small></h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc;display: inline; width: 450px">
+                                        <div class="col-md-6">
+                                            <label>
+                                                <h3>Empresa:</h3>
+                                            </label>
+                                        </div>
+                                        <div>                                            
+                                            <div class="pull-left" >
+                                                
+                                                <select class="form-control" name="mySelect" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption" ng-change="dataSelect()">
+                                                </select>                                            
+                                            </div>
+                                            
+                                            <div class="pull-right">
+                                                <button class="btn btn-round btn-default pull-right" type="button" ng-click="dataSelect()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button ng-show="login.idperfil == 1 || login.usuario == 'andressa'" type="button" class="btn btn-primary" ng-click="filtroEmpresa()" data-toggle="modal" data-target="#modalEmpresa">Regras</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <div class="container">
+                                        <div class="row table-responsive">
+                                            <table id="tabela" width="100%" class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="200"><input type="text" placeholder="Código" ng-model="codigo" class="form-control fonte-size-input" id="txtColuna5"></th>
+                                                        <th width="200"><input type="text" placeholder="Código Barras" ng-model="barras" class="form-control fonte-size-input" id="txtColuna6"></th>
+                                                        <th><input type="text" placeholder="Descrição"  ng-model="name" class="form-control fonte-size-input" id="txtColuna7"></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th ng-click="sortBy('produto')">
+                                                            Código
+                                                            <span class="sortorder" ng-show="propertyName === 'produto'" ng-class="{reverse: reverse}"></span>
+                                                        </th>
+                                                        <th>Código Barras</th>
+                                                        <th>Descrição</th>
+                                                        <th width="150">Grupo</th>
+                                                        <th width="120">Estoque</th>
+                                                        <th width="120">Preço Tabela</th>
+                                                        <th width="120">Preço Negociado</th>
+                                                        <th width="100"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="rP in retProd.produtosDisp | orderBy:propertyName:reverse | filter:codigo | filter:barras | filter:name">
+                                                        <td> {{ rP.produto }} </td>
+                                                        <td> {{ rP.codigo_barras }} </td>
+                                                        <td> {{ rP.nome_produto }} </td>
+                                                        <td> {{ rP.nome_grupo }} </td>
+                                                        <td> {{ rP.estoque }} </td>
+                                                        <td> {{ rP.valor_original | currency: ''}} </td>
+                                                        <td> <input id="input" type="number" style="width: 100px" placeholder="{{ rP.valor | currency: ''}}" ng-model="rP.valor" step="0.01"></td>
+                                                        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalConsulta" ng-click="attObjConsProd(rP.produto, rP.nome_produto, rP.nome_grupo, rP.custo, rP.valor,rP.valor_original,'', data.selectedOption.id)">Consultar</button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="modalConsulta" class="modal fade" role="dialog">
+                                <div class="modal-dialog" style="height:1200px !important">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div ng-class="{'remp-red': objConsProd.semaforo=='red','remp-yellow': objConsProd.semaforo=='yellow','remp-green': objConsProd.semaforo=='green'}" class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body table-responsive">
+                                            <center>
+                                                <div>
+                                                    <h2> Produto: <strong>{{ objConsProd.produto }} - {{ objConsProd.descricao }}</strong></h2>
+                                                </div>
+                                                <div>
+                                                    <h2> Grupo: <strong>{{ objConsProd.grupo }}</strong></h2>
+                                                </div>
+                                                <div ng-show="objConsProd.vislucratividade">
+                                                    <hr style="height:1px; border:none; color:#000; background-color:#000; margin-top: 0px; margin-bottom: 0px; opacity: 0.1; width: 75%" ng-show="objConsProd.vislucratividade"/>
+                                                    <h5> Custo: {{ objConsProd.custo | currency: '' }} </h5>
+                                                </div>
+                                                <div>
+                                                    <hr style="height:1px; border:none; color:#000; background-color:#000; margin-top: 0px; margin-bottom: 0px; opacity: 0.1; width: 75%" ng-show="objConsProd.vislucratividade"/>       <h5> Valor Tabela: {{ objConsProd.venda_original | currency: '' }} </h5>
+                                                </div>
+                                                <div ng-show="objConsProd.vislucratividade">
+                                                    <h5> Lucratividade: {{ objConsProd.luc_original | currency: '' }}% </h5>
+                                                </div>
+                                                <div ng-show="objConsProd.venda_vista > 0">
+                                                    <hr style="height:1px; border:none; color:#000; background-color:#000; margin-top: 0px; margin-bottom: 0px; opacity: 0.1; width: 75%" ng-show="objConsProd.vislucratividade"/>
+                                                    <h5> Valor à Vista: {{ objConsProd.venda_vista | currency: '' }} </h5>
+                                                </div>
+                                                <div ng-show="objConsProd.vislucratividade && objConsProd.venda_vista > 0">
+                                                    <h5> Lucratividade: {{ objConsProd.luc_vista | currency: '' }}% </h5>
+                                                </div>
+                                                <div>
+                                                    <hr style="height:1px; border:none; color:#000; background-color:#000; margin-top: 0px; margin-bottom: 0px; opacity: 0.1; width: 75%" ng-show="objConsProd.vislucratividade"/>
+                                                    <h5> Valor Negociado: {{ objConsProd.venda | currency: '' }} </h5>
+                                                </div>
+                                                <div ng-show="objConsProd.vislucratividade">
+                                                    <h5> Lucratividade Negociada: {{ objConsProd.luc_calc | currency: '' }}% </h5>
+                                                </div>
+                                                <!--div>
+                                                    <hr style="height:1px; border:none; color:#000; background-color:#000; margin-top: 0px; margin-bottom: 0px; opacity: 0.1; width: 75%"/>
+                                                    <h1><strong>SEMAFORO</strong></h1>
+                                                </div-->
+                                                <!--br-->
+                                                <!--div ng-class="{'remp-red': objConsProd.semaforo=='red','remp-yellow': objConsProd.semaforo=='yellow','remp-green': objConsProd.semaforo=='green'}" style="width:80px;height:80px;line-height:80px;vertical-align:middle;text-align:center;font-size:30px;border-radius:50%;-moz-border-radius:50%;-webkit-border-radius:50%;"></div-->
+                                                <br>
+                                                <div ng-show="objConsProd.obs != ''" class="alert" ng-class="{'rmov-red': objConsProd.semaforo=='red','rmov-yellow': objConsProd.semaforo=='yellow','rmov-green': objConsProd.semaforo=='green'}" role="alert" style="font-size:16px; width:80%">
+                                                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                                    <span class="sr-only"></span>
+                                                    {{objConsProd.obs}}
+                                                </div>
+                                            </center>
+                                        </div>
+                                        <div ng-class="{'remp-red': objConsProd.semaforo=='red','remp-yellow': objConsProd.semaforo=='yellow','remp-green': objConsProd.semaforo=='green'}" class="modal-footer">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="modalEmpresa" class="modal fade" role="dialog">
+                                <div class="modal-dialog" style="width: 85%">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Regras por Empresa</h4>
+                                        </div>
+                                        <div class="modal-body table-responsive">
+                                            <button type="button" ng-click='hideEmpObs = false' ng-show="hideEmpObs" class="btn btn-primary">Mostrar Observação</button>
+                                            <button type="button" ng-click='hideEmpObs = true' ng-hide="hideEmpObs" class="btn btn-primary">Ocultar Observação</button>
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th ng-click="sortBy('empresa')">Empresa
+                                                            <span class="sortorder" ng-show="propertyName === 'empresa'" ng-class="{reverse: reverse}"></span>
+                                                        </th>
+                                                        <!--th ng-show="hideEmpObs" colspan="1">Diretoria</th>
+                                                        <th ng-show="hideEmpObs" colspan="1">Ger. Geral</th>
+                                                        <th ng-show="hideEmpObs" colspan="1">Ger. Regional</th>
+                                                        <th ng-show="hideEmpObs" colspan="1">Ger. Sub-Regional</th>
+                                                        <th ng-show="hideEmpObs" colspan="1">Ger. Loja</th>
+                                                        <th ng-show="hideEmpObs" colspan="1">Vendedor</th>
+                                                        <th ng-show="hideEmpObs" colspan="1">Mark Down</th-->
+                                                        <th ng-hide="hideEmpObs" width="80%" colspan="2">Observação</th>
+                                                        <th ng-show="hideEmpObs" width="250">Regras</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="rEmp in empresas.empresas | orderBy:propertyName:reverse">
+                                                        <td>{{ rEmp.empresa }} - {{ rEmp.nome }}</td>
+                                                        <!--td ng-show="hideEmpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rEmp.drt_vml"></td>
+                                                        <td ng-show="hideEmpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rEmp.gge_vml"></td>
+                                                        <td ng-show="hideEmpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rEmp.gre_vml"></td>
+                                                        <td ng-show="hideEmpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rEmp.gsr_vml"></td>
+                                                        <td ng-show="hideEmpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rEmp.glj_vml"></td>
+                                                        <td ng-show="hideEmpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rEmp.ven_vml"></td>
+                                                        <td ng-show="hideEmpObs" class="remp-yellow" style="color: white"> {{ rEmp.par_aml | currency: '' }} </td-->
+                                                        <td align="center" ng-hide="hideEmpObs" class="remp-red"><textarea style="width: 100%; resize: none" rows="5" maxlength="4500" ng-model="rEmp.obs_vml"></textarea></td>
+                                                        <td align="center" ng-hide="hideEmpObs" class="remp-yellow"><textarea style="width: 100%; resize: none" rows="5" maxlength="4500" ng-model="rEmp.obs_aml"></textarea></td>
+                                                        <td ng-show="hideEmpObs">
+                                                            <button type="button" ng-click='filtroFabricante(rEmp.empresa, rEmp.nome)' class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#modalFabricante">Fabricantes</button>
+                                                            <button type="button" ng-click='filtroProduto(rEmp.empresa, rEmp.nome)' class="btn btn-primary" data-toggle="modal" data-dismiss="modal" data-target="#modalProduto">Produto</button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" ng-click="gravarEmpresa()">Gravar</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="modalFabricante" class="modal fade" role="dialog">
+                                <div class="modal-dialog" style="width: 85%">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <div class="modal-title">
+                                                <h4>Regras por Fabricante, Empresa <strong>{{ codEmpView }} - {{ descEmpView }}</strong></h4>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body table-responsive">
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th ng-click="sortBy('fabricante')">Fabricante
+                                                            <span class="sortorder" ng-show="propertyName === 'fabricante'" ng-class="{reverse: reverse}"></span>
+                                                        </th>
+                                                        <th width="100">Desc. A Vista</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="rFbc in fabricantes.fabricantes | orderBy:propertyName:reverse">
+                                                        <td>{{ rFbc.fabricante }} - {{ rFbc.nome }} </td>
+                                                        <td><input type="number" style="width: 35px" ng-model="rFbc.desc_vista">%</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" ng-click="gravarFabricante(codEmpView)">Gravar</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="modalGrupo" class="modal fade" role="dialog">
+                                <div class="modal-dialog" style="width: 85%">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <div class="modal-title">
+                                                <h4>Regras por Grupo - Empresa <strong>{{ codEmpView }}</strong></h4>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body table-responsive">
+                                            <button type="button" ng-click='hideGrpObs = false' ng-show="hideGrpObs" class="btn btn-primary">Mostrar Observação</button>
+                                            <button type="button" ng-click='hideGrpObs = true' ng-hide="hideGrpObs" class="btn btn-primary">Ocultar Observação</button>
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th ng-click="sortBy('grupo')">Grupo
+                                                            <span class="sortorder" ng-show="propertyName === 'grupo'" ng-class="{reverse: reverse}"></span>
+                                                        </th>
+                                                        <th ng-show="hideGrpObs" colspan="2">Diretoria</th>
+                                                        <th ng-show="hideGrpObs" colspan="2">Ger. Geral</th>
+                                                        <th ng-show="hideGrpObs" colspan="2">Ger. Regional</th>
+                                                        <th ng-show="hideGrpObs" colspan="2">Ger. Sub-Regional</th>
+                                                        <th ng-show="hideGrpObs" colspan="2">Ger. Loja</th>
+                                                        <th ng-show="hideGrpObs" colspan="2">Vendedor</th>
+                                                        <th ng-hide="hideGrpObs" width="80%" colspan="2">Observação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="rGrp in grupos.grupos | orderBy:propertyName:reverse">
+                                                        <td>{{ rGrp.grupo }} - {{ rGrp.nome }} </td>
+                                                        <td ng-show="hideGrpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rGrp.drt_vml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-yellow"><input type="number" style="width: 35px" ng-model="rGrp.drt_aml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rGrp.gge_vml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-yellow"><input type="number" style="width: 35px" ng-model="rGrp.gge_aml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rGrp.gre_vml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-yellow"><input type="number" style="width: 35px" ng-model="rGrp.gre_aml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rGrp.gsr_vml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-yellow"><input type="number" style="width: 35px" ng-model="rGrp.gsr_aml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rGrp.glj_vml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-yellow"><input type="number" style="width: 35px" ng-model="rGrp.glj_aml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rGrp.ven_vml"></td>
+                                                        <td ng-show="hideGrpObs" class="remp-yellow"><input type="number" style="width: 35px" ng-model="rGrp.ven_aml"></td>
+                                                        <td align="center" ng-hide="hideGrpObs" class="remp-red"><textarea style="width: 100%; resize: none" rows="5" maxlength="4500" ng-model="rGrp.obs_vml"></textarea></td>
+                                                        <td align="center" ng-hide="hideGrpObs" class="remp-yellow"><textarea style="width: 100%; resize: none" rows="5" maxlength="4500" ng-model="rGrp.obs_aml"></textarea></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" ng-click="gravarGrupo(codEmpView)">Gravar</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="modalProduto" class="modal fade" role="dialog">
+                                <div class="modal-dialog" style="width: 85%">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <div class="modal-title">
+                                                <h4>Regras por Produto, Empresa: <strong>{{ codEmpView }} - {{ descEmpView }} </strong></h4>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body table-responsive">
+                                            <button type="button" ng-click='hidePrdObs = false' ng-show="hidePrdObs" class="btn btn-primary">Mostrar Observação</button>
+                                            <button type="button" ng-click='hidePrdObs = true' ng-hide="hidePrdObs" class="btn btn-primary">Ocultar Observação</button>
+                                            <table id="tabela" class="table table-bordered table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th><input type="text" placeholder="Filtro" class="form-control fonte-size-input" id="txtColuna1"></th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th ng-click="sortBy('produto')">Produto
+                                                            <span class="sortorder" ng-show="propertyName === 'produto'" ng-class="{reverse: reverse}"></span>
+                                                        </th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Custo</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Venda</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Desc. A Vista</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Diretoria</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Ger. Geral</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Ger. Regional</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Ger. Sub-Regional</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Ger. Loja</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Vendedor</th>
+                                                        <th ng-show="hidePrdObs" colspan="1">Mark Down</th>
+                                                        <th ng-hide="hidePrdObs" width="80%" colspan="2">Observação</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr ng-repeat="rPrd in produtos.produtos | orderBy:propertyName:reverse">
+                                                        <td>{{ rPrd.produto }} - {{ rPrd.nome }} </td>
+                                                        <td ng-show="hidePrdObs">{{ rPrd.custo | currency: '' }}</td>
+                                                        <td ng-show="hidePrdObs">{{ rPrd.venda | currency: '' }}</td>
+                                                        <td ng-show="hidePrdObs"><input type="number" style="width: 40px" ng-model="rPrd.desc_vista">%</td>
+                                                        <td ng-show="hidePrdObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rPrd.drt_vml"></td>
+                                                        <td ng-show="hidePrdObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rPrd.gge_vml"></td>
+                                                        <td ng-show="hidePrdObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rPrd.gre_vml"></td>
+                                                        <td ng-show="hidePrdObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rPrd.gsr_vml"></td>
+                                                        <td ng-show="hidePrdObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rPrd.glj_vml"></td>
+                                                        <td ng-show="hidePrdObs" class="remp-red"><input type="number" style="width: 35px" ng-model="rPrd.ven_vml"></td>
+                                                        <td ng-show="hidePrdObs" class="remp-yellow" style="color: white; width: 35px"> {{rPrd.par_aml | currency: ''}} </td>
+                                                        <td align="center" ng-hide="hidePrdObs" class="remp-red"><textarea style="width: 100%; resize: none" rows="5" maxlength="4500" ng-model="rPrd.obs_vml"></textarea></td>
+                                                        <td align="center" ng-hide="hidePrdObs" class="remp-yellow"><textarea style="width: 100%; resize: none" rows="5" maxlength="4500" ng-model="rPrd.obs_aml"></textarea></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-info btn-lg" data-toggle="modal" ng-click="gravarProduto(codEmpView)">Gravar</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+        <br />
+    </div> 
+</div> 

@@ -1,0 +1,382 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="cadastroProdutoController">    
+    <div role="main">        
+      
+        <div class="row">
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">
+                        <div class="row x_title">
+                            <div class="col-md-6">
+                                <h3>Cadastro Produto<small></small></h3>
+                            </div>    
+                        </div>       
+                        <div class="row"  style="margin-top: 20px">
+                            
+                            <!-- ========================= TELA DE VISUALIZAR FORNECEDOR ========================= -->  
+                            <div ng-show ="divVisualizar" class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="cabecalhoDiv col-md-12">
+                                    <span><h2 class="col-md-4" style="margin-top: 10px"><b>Fornecedores Cadastrados</b></h2></span>
+                                    <button class="pull-right btn btn-success col-md-2"style="margin-top: 10px" ng-click="menu(1,'','')">Cadastrar Fornecedor</button> 
+                                </div>
+                                <div class="cabecalhoGeralDiv col-md-12">
+                                    <div style="margin-top: 20px; margin-bottom: 5px">                                                
+                                        <input type="text" style="border-radius: 4px; width: 20%" placeholder="Digite o nome do Fornecedor" ng-model="fornecedorPesquisa" class="form-control fonte-size-input">   
+                                    </div> 
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr> 
+                                                <th colspan="3" style="width: 1%"></th>                                                                                               
+                                                <th>Fornecedor</th>
+                                                <th>Logo Download</th>
+                                                <th>Data Cadastrada</th>                                                                                            
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in infoFornecedor | filter: fornecedorPesquisa">  
+                                                <td><a href="" ng-click="pesquisarFornProdutos(i.id,'',i.fornecedor)"><button style="font-size: 10px" class="glyphicon glyphicon-search btn btn-info" title="Visualizar Produtos"></button></a></td>   
+                                                <td><a href="" ng-click="pesquisaFornecedor('E',i.id)"><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Fornecedor" ></button></td>
+                                                <td><a href="">
+                                                    <button ng-if="i.inativo == 'N'" ng-click="pesquisaFornecedor('N',i.id)" style="font-size: 10px" class="glyphicon glyphicon-eye-open btn btn-success" title="Inativar Fornecedor" ></button>
+                                                    <button ng-if="i.inativo == 'S'" ng-click="pesquisaFornecedor('S',i.id)" style="font-size: 10px" class="glyphicon glyphicon-eye-close btn btn-danger" title="Ativar Fornecedor" ></button>
+                                                </td>
+                                                <td>{{ i.fornecedor }}</td>  
+                                                <td>                                                      
+                                                    <a ng-if=" i.caminhoLogo != ''" href="/{{ i.caminhoLogo }}" download="{{i.nomeArquivo}}">{{i.nomeArquivo}}</a>
+                                                    <a ng-if=" i.caminhoLogo == ''">Não existe arquivo</a>
+                                                </td>  
+                                                <td>{{ i.dataCadastro }}</td>                                           
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>                                          
+                            </div>   
+
+                            <!-- ========================= TELA DE VISUALIZAR FORNECEDOR ========================= -->  
+                            <div ng-show ="divVisualizarProduto" class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="cabecalhoDiv col-md-12">
+                                    <span><h2 class="col-md-4" style="margin-top: 10px"><b>Produtos do Fornecedor(a):</b> {{fornecedor}} </h2></span> 
+                                    <button class="pull-right fa fa-reply btn btn-danger"style="font-size:15px" ng-click="menu(3,'','')" title="Voltar ao Inicio"></button>                           
+                                </div>
+                                <div class="cabecalhoGeralDiv col-md-12">
+                                    <div style="margin-top: 20px; margin-bottom: 5px">                                                
+                                        <input style="border-radius: 4px; width: 20%" placeholder="Digite o nome do Produto" ng-model="produtoPesquisa" class="form-control fonte-size-input col-md-4"> 
+                                        <button style="min-width: 20%; max-width: 20%;" class="pull-right btn btn-success col-md-4" ng-click="menu(5,'',pesquisaId)">Cadastrar Produto</button>        
+                                    </div> 
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2" style="width: 1%"></th>  
+                                                <th>Produto</th>
+                                                <th>Download de Imagem</th>
+                                                <th>Download KV</th>
+                                                <th>Download Ficha Técnica</th>
+                                                <th>Download Vídeos</th>
+                                                <th>Data Cadastro</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="i in infoProdutosForn | filter: produtoPesquisa">                                                 
+                                                <td><a href="" ng-click="pesquisarFornProdutos(i.id,'E','')" ><button style="font-size: 10px" class="glyphicon glyphicon-pencil btn btn-warning" title="Editar Fornecedor" ></button></td>                                             
+                                                <td><a href="">
+                                                    <button ng-if="i.inativo == 'N'" ng-click="pesquisarFornProdutos(i.id,'N','')" style="font-size: 10px" class="glyphicon glyphicon-eye-open btn btn-success" title="Inativar Produto" ></button>
+                                                    <button ng-if="i.inativo == 'S'" ng-click="pesquisarFornProdutos(i.id,'S','')" style="font-size: 10px" class="glyphicon glyphicon-eye-close btn btn-danger" title="Ativar Produto" ></button>
+                                                </td>
+                                                <td>{{ i.produto }}</td>
+                                                <td>
+                                                    <a ng-if=" i.caminhoGeral != ''" href="/{{ i.caminhoGeral }}" download="{{i.nomeGeral}}">{{i.nomeGeral}}</a>
+                                                    <a ng-if=" i.caminhoGeral == ''">Não existe arquivo</a>
+                                                </td>
+                                                <td>                                                        
+                                                        <a ng-if=" i.caminhoKV != ''" href="/{{ i.caminhoKV }}" download="{{i.nomeKV}}">{{i.nomeKV}}</a>
+                                                        <a ng-if=" i.caminhoKV == ''">Não existe arquivo {{ i.caminhoKV }}</a>
+                                                </td>
+                                                <td>
+                                                    <a ng-if=" i.caminhoFicha != ''" href="/{{ i.caminhoFicha }}" download="{{i.nomeFicha}}">{{i.nomeFicha}}</a>
+                                                    <a ng-if=" i.caminhoFicha == ''">Não existe arquivo</a>
+                                                </td>                                            
+                                                <td>
+                                                    <a ng-if=" i.caminhoVideo != ''" href="/{{ i.caminhoVideo }}" download="{{i.nomeVideo}}">{{i.nomeVideo}}</a>
+                                                    <a ng-if=" i.caminhoVideo == ''">Não existe arquivo</a>
+                                                </td>
+                                                <td>{{ i.dataCadastro }}</td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- ========================= TELA DE CADASTRAR FORNECEDOR ========================= -->     
+                            <div ng-show="divCadastro" class="col-md-12 col-sm-12 col-xs-12">
+                                <form style="margin-top: 20px" class="form-group col-md-12" method="POST" ng-submit="cadastroFornecedor()" name="formCadastro" enctype="multipart/form-data">
+                            
+                                    <div class="form-group col-md-4">
+                                        <label>Fornecedor <b style="color:red">*</b></label>
+                                        <input type="text" class="form-control" ng-model="dadosCadastroFornecedor.fornecedor" maxlength="30" required>
+                                    </div>   
+
+                                    <div class="form-group col-md-2" style="margin-bottom: 10px">   
+                                        <label>Upload Logo</label>                                
+                                        <input id="file"  ngf-select ng-model="file" name="file" accept=".rar, .zip" type="file"/> 
+                                    
+                                        <div ng-if="progressoFornecedor > 0" class="progress " style="width:100px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" ng-style="{'width':progressoFornecedor}" aria-valuenow="{{progressoFornecedor}}" aria-valuemin="0" aria-valuemax="100">
+                                                {{progressoFornecedor}} %
+                                            </div>
+                                        </div>                                  
+                                    </div> 
+
+                                    <div class="form-group col-md-12" style="margin-top: 20px">
+                                        <button ng-show="botaoVolta" type="button"class="btn btn-primary" ng-click="menu(2,'','')">Voltar</button>
+                                        <button type="submit"class="btn btn-primary">Cadastrar</button>
+                                    </div>
+                                    <legend class="col-md-12"></legend> 
+                                    <div class="form-group col-md-6">
+                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                    </div>  
+                                </form>
+                            </div>
+
+                            <!-- ========================= TELA DE CADASTRAR FORNECEDOR -> PRODUTO ========================= -->  
+                            <div ng-show="divCadastroProduto" class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="cabecalhoDiv col-md-12">
+                                        <span><h2 class="col-md-4" style="margin-top: 10px"><b>Cadastro Produto no Fornecedor(a):</b>{{fornecedor}} </h2></span>  
+                                        <button ng-show="esconderBotao" class="pull-right fa fa-reply btn btn-danger"style="font-size:15px" ng-click="menu(3,'','')" title="Voltar ao Inicio"></button>                           
+                                </div>
+                                <form style="margin-top: 20px" class="form-group col-md-12" method="POST" ng-submit="cadastroProdutos()" name="formCadastroProd" enctype="multipart/form-data">
+                        
+                                    <div class="form-group col-md-4">
+                                        <label>Produto <b style="color:red">*</b></label>
+                                        <input type="text" class="form-control" ng-model="dadosCadastroProduto.nomeProduto" maxlength="30" required>
+                                    </div>  
+                                  
+                                    <div class="form-group col-md-4" style="margin-bottom: 10px">
+                                        <p>Upload Geral <b style="color:red">*</b></p>                                   
+                                        <input  id="fileGeral" ngf-select ng-model="fileGeral" name="fileGeral" type="file" accept=".rar, .zip" required>                                                                 
+                                    </div> 
+
+                                    <div class="form-group col-md-4" style="margin-bottom: 10px">
+                                        <p>Upload KV</p>                                        
+                                        <input  id="fileKV" ngf-select ng-model="fileKV" name="fileKV" type="file" accept=".rar, .zip">                                                                       
+                                    </div> 
+
+                                    <div class="form-group col-md-4" style="margin-bottom: 10px">
+                                        <p>Upload Ficha</p>                                 
+                                        <input id="fileFicha" ngf-select ng-model="fileFicha" name="fileFicha" type="file" accept=".rar, .zip">                                 
+                                    </div> 
+
+                                    <div class="form-group col-md-4" style="margin-bottom: 10px">
+                                        <p>Upload Vídeo</p>                                       
+                                        <input  id="fileVideo" ngf-select ng-model="fileVideo" name="fileVideo" type="file" accept=".rar, .zip"> 
+                                
+                                    </div> 
+                                   
+                                    <div class="form-group col-md-12" style="margin-bottom: 10px">
+                                        <div ng-if="progressoProdutos > 0" class="progress"  style="width:100px;">
+                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" ng-style="{'width':progressoProdutos}" aria-valuenow="{{progressoProdutos}}" aria-valuemin="0" aria-valuemax="100">
+                                                {{progressoProdutos}} %
+                                            </div>
+                                        </div>
+                                    </div>                                  
+            
+                                    <div class="form-group col-md-12" style="margin-top: 20px">                                           
+                                        <button ng-show="esconderBotao == false" type="button"class="btn btn-primary" ng-click="menu(6,'','')">Voltar</button>
+                                        <button type="submit"class="btn btn-primary">Cadastrar</button>
+                                    </div>
+                                    <legend class="col-md-12"></legend> 
+                                    <div class="form-group col-md-6">
+                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                    </div>  
+                                </form>
+                            </div>
+
+                            <!-- ========================= MODAL EDITAR - > FORNECEDOR =========================  -->                 
+                            <a id="modalEditarCadastro" data-toggle="modal" data-target="#myModalEditarCadastro"></a>                     
+                            <div class="modal fade" id="myModalEditarCadastro" role="dialog">
+                                <div class="modal-dialog" style="width: 80%;  margin-top: 100px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button> 
+                                    <div style="margin-top: 20px">                                                                           
+                                        <center><h4 class="modal-title">Edição Fornecedor</h4>  </center>    
+                                    </div>
+                                        <div class="modal-body"> 
+                                            <div>
+                                                <form style="margin-top: 20px" class="form-group col-md-12" ng-submit="editarFornecedor()" method="POST" name="formEditar" enctype="multipart/form-data">
+                                            
+                                                    <div class="form-group col-md-4">
+                                                        <label>Fornecedor</label>
+                                                        <input type="text" class="form-control" ng-model="editarCadastro.fornecedor" maxlength="30">
+                                                    </div>
+                                                    
+                                                    <div class="form-group col-md-4" style="margin-bottom: 10px">
+                                                        <label>Arquivo Atual</label>
+                                                        <input type="text" class="form-control" ng-model="editarCadastro.nomeArquivo" disabled>                                                           
+                                                    </div>
+                    
+                                                    <div class="form-group col-md-2" style="margin-bottom: 10px">
+                                                        <label>Upload Logo</label>
+                                                        <input id="file" ngf-select ng-model="file" name="file" type="file" accept=".rar, .zip" type="file"/>                                                                                                        
+                                                        <div ng-if="progressoFornecedor > 0" class="progress " style="width:100px; margin-top: 20px">
+                                                            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" ng-style="{'width':progressoFornecedor}" aria-valuenow="{{progressoFornecedor}}" aria-valuemin="0" aria-valuemax="100">
+                                                                {{progressoFornecedor}} %
+                                                            </div>
+                                                        </div>                                                         
+                                                    </div> 
+                    
+                                                    <div class="form-group col-md-12" style="margin-top: 20px">                                               
+                                                        <button type="submit"class="btn btn-primary">Editar</button>
+                                                    </div>
+                                                    <legend class="col-md-12"></legend> 
+                                                    <div class="form-group col-md-6">
+                                                        <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                    </div>  
+                                                </form>
+                                            </div>
+                                        </div>                                     
+                                        
+                                        <div class="modal-footer">  
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= MODAL EDITAR - > PRODUTOS =========================  -->                   
+                            <a id="modalEditarCadastroProduto" data-toggle="modal" data-target="#myModalEditarCadastroProduto"></a>                     
+                            <div class="modal fade" id="myModalEditarCadastroProduto" role="dialog">
+                                <div class="modal-dialog" style="width: 60%;   margin-top: 200px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>   
+                                            <center><h4 class="modal-title">Edição Produtos</h4>  </center>                                                                  
+                                            <br>
+                                            <p><b>Fornecedor(a): </b> {{ fornecedor }}</p>      
+                                        </div>
+                                        <div class="modal-body" style="padding: 0px">                                                                   
+                                            <form style="margin-top: 20px;" class="form-group col-md-12 table-responsive" method="POST" ng-submit="editarProdutos()" name="formEditarProd" enctype="multipart/form-data">
+                    
+                                                <div class="form-group col-md-12">
+                                                    <label>Produto</label>
+                                                    <input type="text" class="form-control" ng-model="editarCadastroProduto.produto" maxlength="30">
+                                                </div> 
+
+                                                <div class="form-group col-md-6">
+                                                    <label>Arquivo Geral</label>
+                                                    <input type="text" class="form-control" ng-model="editarCadastroProduto.nomeGeral" disabled>
+                                                </div> 
+                                               
+                                                <div class="form-group col-md-6" style="margin-bottom: 10px">
+                                                    <label>Upload Geral</label>
+                                                    <input id="fileGeral" ngf-select ng-model="fileGeral" name="fileGeral" type="file" accept=".rar, .zip"/></br>                                  
+                                                </div> 
+
+                                                <div class="form-group col-md-6">
+                                                    <label>Arquivo KV</label>
+                                                    <input type="text" class="form-control" ng-model="editarCadastroProduto.nomeKV" disabled>
+                                                </div> 
+            
+                                                <div class="form-group col-md-6" style="margin-bottom: 10px">
+                                                    <label>Arquivo KV</label>
+                                                    <input id="fileKV" ngf-select ng-model="fileKV" name="fileKV" type="file" accept=".rar, .zip"/></br>                                  
+                                                </div> 
+                                                
+                                                <div class="form-group col-md-6">
+                                                    <label>Arquivo Ficha</label>
+                                                    <input type="text" class="form-control" ng-model="editarCadastroProduto.nomeFicha" disabled>
+                                                </div> 
+
+                                                <div class="form-group col-md-6" style="margin-bottom: 10px">
+                                                    <label>Upload Ficha</label>
+                                                    <input id="fileFicha" ngf-select ng-model="fileFicha" name="fileFicha" type="file" accept=".rar, .zip"/></br>                                  
+                                                </div> 
+                                                
+                                                <div class="form-group col-md-6">
+                                                    <label>Arquivo Vídeo</label>
+                                                    <input type="text" class="form-control" ng-model="editarCadastroProduto.nomeVideo" disabled>                                                  
+                                                </div> 
+
+                                                <div class="form-group col-md-4" style="margin-bottom: 10px">
+                                                    <label>Upload Vídeo</label>
+                                                    <input id="fileVideo" ngf-select ng-model="fileVideo" name="fileVideo" type="file" accept=".rar, .zip"/></br>                                  
+                                                </div>   
+                                                
+                                                <div class="form-group col-md-12" style="margin-bottom: 10px">
+                                                    <div ng-if="progressoProdutos > 0" class="progress"  style="width:100px;">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" ng-style="{'width':progressoProdutos}" aria-valuenow="{{progressoProdutos}}" aria-valuemin="0" aria-valuemax="100">
+                                                            {{progressoProdutos}} %
+                                                        </div>
+                                                    </div>
+                                                </div>   
+                
+                                                <div class="form-group col-md-12" style="margin-top: 20px">                                                    
+                                                    <button type="submit"class="btn btn-primary">Editar</button>
+                                                </div>
+                                                <legend class="col-md-12"></legend> 
+                                                <div class="form-group col-md-6">
+                                                    <label>Os campos marcados com (<b style="color:red">*</b>) são obrigatórios </label>                                                          
+                                                </div>  
+                                            </form>              
+                                                
+                                        </div>
+                                        <div class="modal-footer">  
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= MODAL INATIVAR > FORNECEDOR =========================  -->                 
+                            <a id="modalInativarFornecedor" data-toggle="modal" data-target="#myModalInativarFornecedor"></a>                     
+                            <div class="modal fade" id="myModalInativarFornecedor" role="dialog">
+                                <div class="modal-dialog" style="width: 25%;  margin-top: 300px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>                                    
+                                          
+                                            <div ng-if="inativar.inativo == 'N'" class="modal-title" style="font-size:15px">
+                                                Deseja inativar o Fornecedor <b>{{inativar.fornecedor}}</b>? 
+                                            </div> 
+                                            <div ng-if="inativar.inativo == 'S'" class="modal-title" style="font-size:15px">
+                                                Deseja ativar o Fornecedor <b>{{inativar.fornecedor}}</b>? 
+                                            </div>                                    
+                                        </div>                                      
+                                        <div class="modal-footer">  
+                                            <button type="button" ng-click="inativarFornecedor(inativar.id)" class="btn btn-warning">Sim</button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+
+                            <!-- ========================= MODAL INATIVAR > FORNECEDOR =========================  -->                 
+                            <a id="modalInativarProduto" data-toggle="modal" data-target="#myModalInativarProduto"></a>                     
+                            <div class="modal fade" id="myModalInativarProduto" role="dialog">
+                                <div class="modal-dialog" style="width: 25%;  margin-top: 300px; margin-bottom: 20px; margin-right: auto; margin-left: auto">                        
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>                                    
+                                          
+                                            <div ng-if="InativarProdutos.inativo == 'N'" class="modal-title" style="font-size:15px">
+                                                Deseja inativar o Produto <b>{{InativarProdutos.produto}}</b>? 
+                                            </div> 
+                                            <div ng-if="InativarProdutos.inativo == 'S'" class="modal-title" style="font-size:15px">
+                                                Deseja ativar o Produto <b>{{InativarProdutos.produto}}</b>? 
+                                            </div>                                    
+                                        </div>                                      
+                                        <div class="modal-footer">  
+                                            <button type="button" ng-click="inativarProdutos(InativarProdutos.id)" class="btn btn-warning">Sim</button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Não</button>
+                                        </div>
+                                </div>
+                                </div>
+                            </div> 
+
+                        </div> 
+                        <!-- FIM CLASS ROW -->    
+                    <div class="clearfix"></div>
+                </div>
+            </div>   
+        </div>
+        <br/>
+    </div> 
+</div>
+

@@ -1,0 +1,162 @@
+﻿<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="evolucaoDiariaController">    
+    <div role="main">
+        <div class="row">
+                
+            <div class="col-md-12 col-sm-20 col-xs-12">
+                <div class="dashboard_graph">                    
+                    <div class="row x_title">
+                        <div class="col-md-6">
+                            <h3>Evolução Diária - E-Commerce <small></small></h3>
+                        </div> 
+                        <div class="col-md-12 col-sm-20 col-xs-12"> 
+                            
+                            <div class="pull-right divMenu1" >  
+                                <div class="pull-left ">                                    
+                                    <select class="divSelect1"name="mySelect" id="mySelect" ng-options="option.name for option in data.availableOptions track by option.id" ng-model="data.selectedOption" ng-change="dataSelect()">
+                                    </select>
+                                </div> 
+                                <div class="input-append date pull-left divMenu3"  id="datepicker" data-date="{{date}}" data-date-format="mm-yyyy" data-date-viewmode="years" data-date-minviewmode="months"  style="margin-bottom: 2px; margin-top: 8px; margin-left: 2px; margin-right: 10px;">
+                                    <span class="add-on pull-left divSpanCalendario"><i class="glyphicon glyphicon-calendar divSpanCalendarioCor"></i></span>  
+                                    <input  class="divSpanInputCalendario" type="text" id="date"  ng-model="infoDate.data" name="date" > 
+                                    <input type="checkbox" class="divCross" ng-model="cross"><span style="color:#2A3F54">Cross?</span>                                       
+                                </div> 
+                                <div class="pull-right divMenu2">
+                                    <button class="btn btn-round btn-default pull-right" type="button" ng-click="evolucaoDiaria()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button> 
+                                     
+                                </div>                                     
+                            </div>   
+                        </div>                          
+                    </div>               
+                    <div class="row">
+                        <div class="hidden-xs col-xs-12 col-sm-12 col-md-12 col-lg-16" >
+                          
+                            <div class="container ">          
+                                <!---->                  
+                                <div class="row table-responsive" ng-show="esconderTable" >
+                                      
+                                    <div style="margin-top: 10px; margin-bottom: 5px">    
+                                        
+                                        <div class="col-lg-2">
+                                             
+                                            <input type="text" style="border-radius: 4px" placeholder="Pesquisar" ng-model="pesquisa" class="form-control fonte-size-input" id="txtColuna1">                                            
+                                        </div>                                      
+                                        <div class="col-lg-1">                                               
+                                                <button id="btnExport" class="btn btn-success"  onclick="javascript:xport.toCSV('tabela');"> Export Excel</button>   
+                                        </div>                                 
+                                        
+                                    </div>   
+                                    <table class="table table-responsive" id="tabela" class="col-xs-11 col-sm-11 col-md-11 col-lg-15">
+                                        <thead style="font-size: 12px">
+                                            <tr >
+                                                <th>Produto</th>
+                                                <th>Descrição</th>
+                                                <th>Marca</th>
+                                                <th>Grupo</th>
+                                                <th>Origem</th>
+                                                <th>Local Estoque</th>
+                                                <th>C. Atual Produto</th>
+                                                <th>C. Médio</th>
+                                                <th>T. Médio</th>
+                                                <th>Estoque</th>
+                                                <th>Dias E.</th> 
+                                                <th>1</th>
+                                                <th>2</th>
+                                                <th>3</th>
+                                                <th>4</th>
+                                                <th>5</th>
+                                                <th>6</th>
+                                                <th>7</th>
+                                                <th>8</th>
+                                                <th>9</th>
+                                                <th>10</th>
+                                                <th>11</th>
+                                                <th>12</th>
+                                                <th>13</th>
+                                                <th>14</th>
+                                                <th>15</th>
+                                                <th>16</th>
+                                                <th>17</th>
+                                                <th>18</th>
+                                                <th>19</th>
+                                                <th>20</th>
+                                                <th>21</th>
+                                                <th>22</th>
+                                                <th>23</th>
+                                                <th>24</th>
+                                                <th>25</th>
+                                                <th>26</th>
+                                                <th>27</th>
+                                                <th>28</th>
+                                                <th ng-show="d29">29</th>
+                                                <th ng-show="d30">30</th>
+                                                <th ng-show="d31">31</th>                                                
+                                                <th>Q. Total</th>  
+                                                <th>F. Total</th>
+                                                 
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size: 12px">
+                                            <tr ng-repeat="i in visEvolucaoDiaria.evolucaoDiaria | filter: pesquisa  " style="font-size: 11px" > 
+                                                <td>{{ i.codigoProduto }}</td>
+                                                <td >{{ i.descricaoProduto }}</td> 
+                                                <td>{{ i.marca }}</td>
+                                                <td>{{ i.grupo }}</td>
+                                                <td>{{ i.origem }}</td>
+                                                <td>{{ i.local_estoque }}</td>
+                                                <td>{{ i.custoProduto | currency: '' }}</td>
+                                                <td>{{ i.custoMedio | currency: '' }}</td>
+                                                <td>{{ i.ticketMedio | currency: '' }}</td>
+                                                <td>{{ i.estoque }}</td> 
+                                                <td>{{ i.diasEstoque }}</td>
+                                                <td ng-class="{'semValor': i.d1 == 0, 'comValor': i.d1 !=0}">{{ i.d1 }}</td>
+                                                <td ng-class="{'semValor': i.d2 == 0, 'comValor': i.d2 !=0}">{{ i.d2 }}</td>
+                                                <td ng-class="{'semValor': i.d3 == 0, 'comValor': i.d3 !=0}">{{ i.d3 }}</td>
+                                                <td ng-class="{'semValor': i.d4 == 0, 'comValor': i.d4 !=0}">{{ i.d4 }}</td>    
+                                                <td ng-class="{'semValor': i.d5 == 0, 'comValor': i.d5 !=0}">{{ i.d5 }}</td>
+                                                <td ng-class="{'semValor': i.d6 == 0, 'comValor': i.d6 !=0}">{{ i.d6 }}</td>
+                                                <td ng-class="{'semValor': i.d7 == 0, 'comValor': i.d7 !=0}">{{ i.d7 }}</td>
+                                                <td ng-class="{'semValor': i.d8 == 0, 'comValor': i.d8 !=0}">{{ i.d8 }}</td>    
+                                                <td ng-class="{'semValor': i.d9 == 0, 'comValor': i.d9 !=0}">{{ i.d9 }}</td>
+                                                <td ng-class="{'semValor': i.d10 == 0, 'comValor': i.d10 !=0}">{{ i.d10 }}</td>
+                                                <td ng-class="{'semValor': i.d11 == 0, 'comValor': i.d11 !=0}">{{ i.d11 }}</td>
+                                                <td ng-class="{'semValor': i.d12 == 0, 'comValor': i.d12 !=0}">{{ i.d12 }}</td>    
+                                                <td ng-class="{'semValor': i.d13 == 0, 'comValor': i.d13 !=0}">{{ i.d13 }}</td>
+                                                <td ng-class="{'semValor': i.d14 == 0, 'comValor': i.d14 !=0}">{{ i.d14 }}</td>
+                                                <td ng-class="{'semValor': i.d15 == 0, 'comValor': i.d15 !=0}">{{ i.d15 }}</td>
+                                                <td ng-class="{'semValor': i.d16 == 0, 'comValor': i.d16 !=0}">{{ i.d16 }}</td>    
+                                                <td ng-class="{'semValor': i.d17 == 0, 'comValor': i.d17 !=0}">{{ i.d17 }}</td>
+                                                <td ng-class="{'semValor': i.d18 == 0, 'comValor': i.d18 !=0}">{{ i.d18 }}</td>
+                                                <td ng-class="{'semValor': i.d19 == 0, 'comValor': i.d19 !=0}">{{ i.d19 }}</td>
+                                                <td ng-class="{'semValor': i.d20 == 0, 'comValor': i.d20 !=0}">{{ i.d20 }}</td>    
+                                                <td ng-class="{'semValor': i.d21 == 0, 'comValor': i.d21 !=0}">{{ i.d21 }}</td>
+                                                <td ng-class="{'semValor': i.d22 == 0, 'comValor': i.d22 !=0}">{{ i.d22 }}</td>
+                                                <td ng-class="{'semValor': i.d23 == 0, 'comValor': i.d23 !=0}">{{ i.d23 }}</td>
+                                                <td ng-class="{'semValor': i.d24 == 0, 'comValor': i.d24 !=0}">{{ i.d24 }}</td>    
+                                                <td ng-class="{'semValor': i.d25 == 0, 'comValor': i.d25 !=0}">{{ i.d25 }}</td>
+                                                <td ng-class="{'semValor': i.d26 == 0, 'comValor': i.d26 !=0}">{{ i.d26 }}</td>
+                                                <td ng-class="{'semValor': i.d27 == 0, 'comValor': i.d27 !=0}">{{ i.d27 }}</td>
+                                                <td ng-class="{'semValor': i.d28 == 0, 'comValor': i.d28 !=0}">{{ i.d28 }}</td>    
+                                                <td ng-class="{'semValor': i.d29 == 0, 'comValor': i.d29 !=0}"  ng-show="d29">{{ i.d29 }}</td>
+                                                <td ng-class="{'semValor': i.d30 == 0, 'comValor': i.d30 !=0}"  ng-show="d30">{{ i.d30 }}</td>
+                                                <td ng-class="{'semValor': i.d31 == 0, 'comValor': i.d31 !=0}"  ng-show="d31">{{ i.d31 }}</td>
+                                                
+                                                <td>{{ i.y }}</td>
+                                                <td>{{ i.totFaturamento | currency: '' }}</td>
+                                               
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                   
+                                    
+                                </div>
+                                
+                            <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>
+

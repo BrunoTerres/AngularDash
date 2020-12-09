@@ -1,0 +1,141 @@
+<div class="col-md-12 col-sm-12 col-xs-18" ng-controller="agendamentoEntregaController">
+
+    <div role="main">
+              
+        <div class="row">
+                <div class="col-md-12 col-sm-20 col-xs-12">                   
+                    <div class="dashboard_graph">
+                        <div class="row x_title">
+                                <div class="col-md-6">
+                                    <h3>Histórico - Agendamento de Entrega e Baixados</h3>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc"> 
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px;" ng-model="filtro.dataInicial"> Até
+                                        <input type="date" style="width:125px;font-size: 13px; margin-top: 5px; margin-right: 10px" ng-model="filtro.dataFim">   
+                                        <button class="btn btn-round btn-default pull-right" type="button" ng-click="historicoAgendamento()" ><span class="glyphicon glyphicon-search"style="color:#2A3F54" aria-hidden="true"></span></button>                                    
+                                    </div>
+                                </div>       
+                        </div><p/>      
+                        
+                        <div class="row" ng-show="showDiv">  
+                            <!-- ========================= HISTORICO AGENDAMENTO JOINVILLE - ATACAO =========================  -->
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-16">
+                                <center> <h3>Agendamento Joinville - Atacado</h3></center>
+                                   <div style="margin-top: 10px; margin-bottom: 5px">                                        
+                                         <select
+                                            style="border-radius: 4px; margin-right: 4px;width: 10%"
+                                            class="form-control pull-left"
+                                            name="mySelect"
+                                            id="mySelect1"
+                                            ng-options="option.name for option in selecaoAgendamento.availableOptions track by option.id"
+                                            ng-change="filterAgendamento(selecaoAgendamento.selectedOption)"
+                                            ng-model="selecaoAgendamento.selectedOption">
+                                        </select>                                        
+                                        <input type="text" style="border-radius: 4px; width: 89.6%" placeholder="Pesquisar" ng-model="pesquisaAgendamento" class="form-control fonte-size-input">   
+                                </div>     
+                                <table class="table table-hover" style="font-size: 12px; margin-top: 10px">
+                                    <thead>                                     
+                                        <tr>                                     
+                                            <th>Série</th>
+                                            <th>Número</th>
+                                            <th>Empresa</th>
+                                            <th>Emissão</th>
+                                            <th>Código Cliente</th>
+                                            <th>Nome Cliente</th>                                          
+                                            <th>Quantidade</th>
+                                            <th>Data Agendamento</th>
+                                            <th>Data Baixada</th>
+                                            <th>Data Transportadora</th>
+                                            <th>Data Entregue Cliente</th>
+                                            <th></th>   
+                                        </tr>                                    
+                                    </thead>
+                                    <tbody>                                        
+                                        <tr dir-paginate="i in agendamentoHistorico.historicoAgendamento.data | filter: pesquisaAgendamento |itemsPerPage:contagemAgendamento" pagination-id="pesquisaAgendamento"> 
+                                                
+                                            <td>{{ i.serie }}</td>
+                                            <td>{{ i.numero }}</td>
+                                            <td>{{ i.empresa }}</td>
+                                            <td>{{ i.emissao }}</td>
+                                            <td>{{ i.codigoCliente }}</td>
+                                            <td>{{ i.cliente }}</td>                                         
+                                            <td>{{ i.quantidade }}</td>
+                                            <td>{{ i.dtAgendamento }}</td>
+                                            <td>{{ i.dataBaixada }}</td>
+                                            <td>{{ i.dataTransportador }}</td>
+                                            <td>{{ i.dataEntregueCliente }}</td>
+                                            <td><button class="btn buttonGeral" type="button" ng-click="historicoInfoAgendamento(i.serie,i.numero,i.empresa,i.emissao, i.codigoCliente,i.cliente)">Histórico</button></td>                                           
+                                        </tr>
+                                    </tbody>                                
+                                </table> 
+                                <dir-pagination-controls max-size="5"  pagination-id="pesquisaAgendamento" boundary-links="true"></dir-pagination-controls>
+                            </div> 
+                            
+                       
+                            
+                            <!-- ========================= MODAL AGENDAMENTO DE HISTORICO INFO  =========================  -->          
+                            <a id="modalHistorico" data-toggle="modal" data-target="#myModalHistorico"></a>                     
+                            <div class="modal fade" id="myModalHistorico" role="dialog">
+                                <div class="modal-dialog"  style="width: 60%; margin-top: 50px; margin-bottom: 50px; margin-right: auto; margin-left: auto">                        
+                                  <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>     
+
+                                            <div align="center">
+                                                <h4 class="modal-title">Histórico Agendamento</h4>                                      
+                                            </div> 
+                                            <br>
+                                            <p><b>Código Cliente :</b> {{ agendamentoInfo.codigoCliente  }}</p>  
+                                            <p><b>Cliente :</b> {{ agendamentoInfo.cliente }}</p>                                            
+                                            <p><b>Emissão Nota :</b> {{ agendamentoInfo.emissao }}</p>   
+                                        </div>
+                                        <div class="modal-body">                                              
+                                            <table class="table table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Série</th>
+                                                        <th>Número</th>
+                                                        <th>Empresa</th>
+                                                        <th>Usuário</th>  
+                                                        <th>Justificativa</th>
+                                                        <th>Data de Alteração</th>
+                                                        <th>Data de Agendamento</th>
+                                                        <th>Data de Baixa</th>
+                                                        <th>Data Transportadora</th>
+                                                        <th>Data Entregue Cliente</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr dir-paginate="i in agendamentoInfoHistorico.historicoAgendamentoInfo | filter: pesquisaHistorico  |itemsPerPage:contagemHistorico" pagination-id="pesquisaHistorico"> 
+                                                        <td>{{ i.serie }}</td>
+                                                        <td>{{ i.numero }}</td>
+                                                        <td>{{ i.empresa }}</td>
+                                                        <td>{{ i.usuario }}</td>
+                                                        <td>{{ i.justificativa }}</td>
+                                                        <td>{{ i.dtAlteracao }}</td>
+                                                        <td>{{ i.dtAgendamento }}</td>
+                                                        <td>{{ i.dtBaixada }}</td>
+                                                        <td>{{ i.dataTransportadora }}</td>
+                                                        <td>{{ i.dataEntregueCliente }}</td>
+                                                    </tr>
+                                                </tbody>                                            
+                                            </table> 
+                                             <dir-pagination-controls max-size="5"  pagination-id="pesquisaHistorico" boundary-links="true"></dir-pagination-controls>
+                                        </div>                                
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="close()">Close</button>
+                                        </div>
+                                  </div>
+                                </div>
+                            </div> 
+                        </div>   
+                        <!-- FIM CLASS ROW -->    
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+        </div>
+    </div>
+</div>
+    
+
